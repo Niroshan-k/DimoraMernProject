@@ -10,6 +10,7 @@ import PrivateRoute from './components/PrivateRoute';
 import SellerDashboard from './pages/SellerDashboard';
 import ContractorDashboard from './pages/ContractorDashboard';
 import Blog from './pages/Blog';
+import CreateListing from './pages/CreateListing';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route element={<PrivateRoute />} >
           <Route path="/profile" element={<Profile />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/create-listing" element={<CreateListing />} />
         </Route>
 
         {/* ✅ Seller Dashboard - Only for Sellers */}

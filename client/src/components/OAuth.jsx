@@ -51,7 +51,7 @@ export default function OAuth({ role, setError }) {
 
     return (
         <div className='flex flex-col'>
-            <p className='mt-3'>or Sign up with:</p>
+            <p className='mt-4 text-sm'>or continue with</p>
             <button
                 onClick={handleGoogleClick}
                 type='button'

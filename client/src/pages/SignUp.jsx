@@ -52,20 +52,20 @@ export default function SignUp() {
     };
 
     return (
-        <div className='p-24'>
-            <h1 className='text-6xl mb-12'>Sign Up</h1>
+        <div className='mt-10 p-3 max-w-lg mx-auto'>
+            <h6 className='text-6xl mb-12 uppercase'>Sign Up</h6>
             <form onSubmit={handleSubmit} className='flex flex-col'>
-                <label htmlFor="username">Username:</label>
+                <label className='font-semibold' htmlFor="username">Username:</label>
                 <input type="text" id='username' onChange={handleChange} className='bg-[#E8D9CD] p-3 mb-8' />
 
-                <label htmlFor="email">Email:</label>
+                <label className='font-semibold' htmlFor="email">Email:</label>
                 <input type="text" id='email' onChange={handleChange} className='bg-[#E8D9CD] p-3 mb-8' />
 
-                <label htmlFor="password">Password:</label>
+                <label className='font-semibold' htmlFor="password">Password:</label>
                 <input type="password" id='password' onChange={handleChange} className='bg-[#E8D9CD] p-3 mb-8' />
 
-                <label>Role:</label>
-                <div className='flex gap-4 mb-8'>
+                <label className='font-semibold'>Role:</label>
+                <div className='flex mt-3 gap-4 px-10 justify-between mb-8'>
                     <label>
                         <input
                             type='radio'
@@ -105,10 +105,10 @@ export default function SignUp() {
                 <OAuth role={formData.role} setError={setError} />
             </form>
 
-            <div className='flex gap-2 mt-4'>
-                <p>Have an account?</p>
-                <Link to={"/sign-in"} className='text-blue-400 font-bold'>Sign in</Link>
-            </div>
+
+            <p className='text-center mt-10'>Have an account? <Link to={"/sign-in"} className='text-[#523D35] font-bold'>Sign in</Link></p>
+
+
 
             {error && <p className='text-red-600'>{error}</p>}
         </div>

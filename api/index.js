@@ -38,7 +38,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-//user:lakshanniroshan822
-//pas-mongo:npdqfQSSI5nfF30J
+
 
 // git to git core add .env

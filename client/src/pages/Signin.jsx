@@ -47,10 +47,10 @@ export default function SignIn() {
       if (data.role === 'seller') {
         navigate('/seller-dashboard');
         return;
-      }else if (data.role === 'contractor') {
+      } else if (data.role === 'contractor') {
         navigate('/contractor-dashboard');
         return;
-      }else{
+      } else {
         navigate('/');
       }
 
@@ -59,21 +59,22 @@ export default function SignIn() {
     }
   };
   return (
-    <div className='p-24'>
+    <div className='mt-10 p-3 max-w-lg mx-auto'>
       <div>
-        <h1 className=' text-6xl mb-12'>Sign In</h1>
+        <h6 className='text-6xl mb-12 uppercase'>Sign In</h6>
       </div>
       <br />
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col'>
-          <label htmlFor="email">Email:</label>
+          <label className='font-semibold' htmlFor="email">Email:</label>
           <input type="text" id='email' onChange={handleChange} className='bg-[#E8D9CD] p-3 mb-8' />
 
-          <label htmlFor="password">Password:</label>
-          <input type="password" id='password' onChange={handleChange} className='bg-[#E8D9CD] p-3 mb-8' />
+          <label className='font-semibold' htmlFor="password">Password:</label>
+          <input type="password" id='password' onChange={handleChange} className='bg-[#E8D9CD] p-3' />
+          <p className='text-right text-yellow-700 cursor-pointer underline mb-10'>Forget Password?</p>
 
-          <label>Role:</label>
-          <div className='flex gap-4 mb-8'>
+          <label className='font-semibold'>Role:</label>
+          <div className='flex gap-4 mb-8 mt-3 px-20 justify-between'>
             <label>
               <input
                 type='radio'
@@ -112,10 +113,9 @@ export default function SignIn() {
           <OAuth role={formData.role} setError={setLocalError} />
         </form>
       </div>
-      <div className='flex gap-2 mt-4'>
-        <p>Do not Have an account?</p>
-        <Link to={"/sign-up"} className='text-blue-400 font-bold'>Sign Up</Link>
-      </div>
+
+      <p className='text-center mt-10'>Do not Have an account? <Link to={"/sign-up"} className='text-[#523D35] font-bold'>Sign Up</Link></p>
+      
       <div>
         {(error || localError) && <p className='text-red-600'>{error || localError}</p>}
       </div>

@@ -32,7 +32,7 @@ export default function header() {
                 <Link to='/profile'>
                     {currentUser ? (
                         <img src={currentUser.avatar || "https://th.bing.com/th/id/OIP.YEnn0jmP54djRm9Ma49NHgHaHa?rs=1&pid=ImgDetMain"} alt="profile" className='rounded-full border w-10 h-10' />
-                    ) : (<li> <button className='bg-[#959D90] p-3 w-24 rounded-lg cursor-pointer'>Sign In</button></li>
+                    ) : (<li> <button className='bg-[#959D90] font-bold p-3 w-24 rounded cursor-pointer'>Sign In</button></li>
                     )}
                 </Link>
             </ul>

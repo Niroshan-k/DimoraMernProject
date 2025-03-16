@@ -108,7 +108,8 @@ export default function Profile() {
       dispatch(signOutUserFailure(data.message));
     }
   }
-
+  const [showListingError, setShowListingError] = useState(false);
+  
   return (
     
     <div className='p-3 max-w-lg mx-auto'>
@@ -171,18 +172,18 @@ export default function Profile() {
           <button disabled={loading} className='bg-[#523D35] text-white font-bold p-3 w-40 cursor-pointer mt-6'>
             {loading ? 'Loading...' : 'Update'}
           </button>
-          <button onClick={handleSignOut} className='bg-red-600 text-white font-bold p-3 w-40 cursor-pointer mt-6'>
+          <button onClick={handleSignOut} className='bg-red-500 text-white font-bold p-3 w-40 cursor-pointer mt-6'>
             Sign Out
           </button>
         </div>
       </form>
 
-      <span onClick={handleDeleteUser} className='text-red-700 mt-5 font-bold flex gap-1 cursor-pointer items-center text-right'><FaRecycle />Delete account</span>
+      <span onClick={handleDeleteUser} className='text-red-500 mt-5 font-bold flex gap-1 cursor-pointer items-center text-right'><FaRecycle />Delete account</span>
         <div className='mt-5'>
-          <p className='text-red-600 text-right font-bold'>{error ? error : ""}</p>
+          <p className='text-red-500 text-right font-bold'>{error ? error : ""}</p>
           <p className='text-green-600 text-right font-bold'>{updateSuccess ? "User Updated Successfully!" : ""}</p>
         </div>
-
+        <p className='text-red-500 text-sm'>{showListingError ? 'Error showing listing' : ''}</p>
     </div>
   );
 }
