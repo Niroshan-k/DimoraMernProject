@@ -98,7 +98,7 @@ export default function SignUp() {
                     </label>
                 </div>
 
-                <button disabled={loading} type='submit' className='bg-[#523D35] w-60 p-3 text-amber-50 font-bold'>
+                <button disabled={loading} type='submit' className='bg-[#523D35] w-full p-3 text-amber-50 font-bold'>
                     {loading ? 'Loading...' : 'Sign Up'}
                 </button>
 
@@ -106,7 +106,7 @@ export default function SignUp() {
             </form>
 
 
-            <p className='text-center mt-10'>Have an account? <Link to={"/sign-in"} className='text-[#523D35] font-bold'>Sign in</Link></p>
+            <p className='text-center mt-10'>Have an account? <Link to={"/sign-in"} className='text-[#523D35] font-extrabold'>Sign in</Link></p>
 
 
 

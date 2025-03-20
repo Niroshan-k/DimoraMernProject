@@ -1,15 +1,16 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/storage';
 import { app } from '../firebase';
 import { FaTrash } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import L from 'leaflet';
 
-export default function CreateListing() {
+export default function UpdateListing() {
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
+  const params = useParams();
   const mapRef = useRef(null);
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -28,8 +29,23 @@ export default function CreateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-  console.log(formData);
-  console.log(currentUser);
+
+  //console.log(currentUser);
+
+  useEffect(() => {
+    const fetchListings = async () => {
+      const listingId = params.listingId;
+      const res = await fetch(`/api/listing/get/${listingId}`);
+      const data = await res.json();
+      if (data.success == false) {
+        console.log(data.message);
+        return;
+      }
+      setFormData(data);
+    }
+    fetchListings();
+  }, []);
+
   const handleImageSubmit = (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
@@ -58,7 +74,6 @@ export default function CreateListing() {
       const fileName = new Date().getTime() + file.name;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, file);
-      
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -104,7 +119,7 @@ export default function CreateListing() {
       }
       setLoading(true);
       setError(false);
-      const res = await fetch('/api/listing/create', {
+      const res = await fetch(`/api/listing/update/${params.listingId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -124,7 +139,7 @@ export default function CreateListing() {
       setError(error.message);
       setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -144,7 +159,6 @@ export default function CreateListing() {
         .then((data) => {
           const address = data.display_name;
           setFormData((prev) => ({ ...prev, address }));
-          alert(`Location selected: ${address}`);
         })
         .catch((error) => console.error("Error fetching address:", error));
     });
@@ -152,9 +166,10 @@ export default function CreateListing() {
     return () => map.remove();
   }, []);
 
+
   return (
     <main className='p-10 max-w-4xl mx-auto'>
-      <h6 className='uppercase text-5xl mt-10'>Create Listing</h6>
+      <h6 className='uppercase text-5xl mt-10'>Update Listing</h6>
       <form onSubmit={handleSubmit} className='mt-10 flex flex-col gap-5 sm:flex-row'>
         <div className='flex flex-col gap-4'>
           <input onChange={handleChange} value={formData.name} type="text" placeholder='name' className='p-3 bg-[#E8D9CD]' id='name' maxLength='62' minLength='10' required />
@@ -230,7 +245,7 @@ export default function CreateListing() {
 
           </div>
           <div>
-            <button disabled={loading || uploading} className='bg-[#523D35] mt-3 p-3 text-white font-bold w-full'>{loading ? 'POSTING...' : 'POST'}</button>
+            <button disabled={loading || uploading} className='bg-[#523D35] mt-3 p-3 text-white font-bold w-full'>{loading ? 'UPDATING...' : 'UPDATE'}</button>
             {error && <p className='text-red-400 text-sm'>{error}</p>}
           </div>
         </div>

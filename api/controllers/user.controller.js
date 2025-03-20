@@ -56,3 +56,16 @@ export const getUserListings = async (req, res, next) => {
     }
 
 }
+
+export const getSellerInfo = async ( req, res, next) => {
+    try {
+        const seller = await User.findById(req.params.id);
+
+        if(!seller) {
+            return next(errorHandler(404, 'Listing not found'));
+        }
+        res.status(200).json(seller);
+    } catch (error) {
+        next(error);
+    }
+}

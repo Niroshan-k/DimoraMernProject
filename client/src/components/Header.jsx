@@ -8,7 +8,7 @@ export default function header() {
     const { currentUser } = useSelector(state => state.user);
     //console.log(currentUser);
     return (
-        <header className='bg-[#EFEFE9] flex justify-between p-2 items-center'>
+        <header className='bg-[#EFEFE9] shadow-lg z-2 w-full flex justify-between p-2 fixed items-center'>
             <Link to='/'>
                 <img src="/assets/logo.png" alt="logo" className='w-32' />
             </Link>
@@ -31,10 +31,11 @@ export default function header() {
 
                 <Link to='/profile'>
                     {currentUser ? (
-                        <img src={currentUser.avatar || "https://th.bing.com/th/id/OIP.YEnn0jmP54djRm9Ma49NHgHaHa?rs=1&pid=ImgDetMain"} alt="profile" className='rounded-full border w-10 h-10' />
+                        <img src={currentUser.avatar || "https://th.bing.com/th/id/OIP.YEnn0jmP54djRm9Ma49NHgHaHa?rs=1&pid=ImgDetMain"} alt="profile" className='rounded-full border object-cover w-10 h-10' />
                     ) : (<li> <button className='bg-[#959D90] font-bold p-3 w-24 rounded cursor-pointer'>Sign In</button></li>
                     )}
                 </Link>
+                
             </ul>
         </header>
     )

@@ -51,13 +51,13 @@ export default function OAuth({ role, setError }) {
 
     return (
         <div className='flex flex-col'>
-            <p className='mt-4 text-sm'>or continue with</p>
+            <p className='mt-10 text-sm self-center'>or continue with</p>
             <button
                 onClick={handleGoogleClick}
                 type='button'
-                className='bg-amber-700 text-white p-3 mt-2 flex items-center justify-center gap-2 w-60'
+                className='bg-amber-700 text-white self-center p-3 mt-2 flex items-center justify-center gap-2 rounded-3xl'
             >
-                <FaGoogle className="text-lg" /> Google
+                <FaGoogle className="text-lg" />
             </button>
 
         </div>

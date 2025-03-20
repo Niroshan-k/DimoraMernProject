@@ -11,6 +11,8 @@ import SellerDashboard from './pages/SellerDashboard';
 import ContractorDashboard from './pages/ContractorDashboard';
 import Blog from './pages/Blog';
 import CreateListing from './pages/CreateListing';
+import UpdateListing from './pages/UpdateListing';
+import Listing from './pages/Listing';
 
 export default function App() {
   return (
@@ -20,17 +22,19 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path='/listing/:listingId' element={<Listing />}></Route>
 
         {/* ✅ Protect Profile (All Authenticated Users) */}
         <Route element={<PrivateRoute />} >
           <Route path="/profile" element={<Profile />} />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/create-listing" element={<CreateListing />} />
         </Route>
 
         {/* ✅ Seller Dashboard - Only for Sellers */}
         <Route element={<PrivateRoute allowedRoles={['seller']} />} >
           <Route path="/seller-dashboard" element={<SellerDashboard />} />
+          <Route path="/create-listing" element={<CreateListing />} />
+          <Route path='/update-listing/:listingId' element={<UpdateListing />} />
         </Route>
 
         {/* ✅ Contractor Dashboard - Only for Contractors */}

@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle } from 'react-icons/fa';
+import { FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaStreetView } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 export default function SellerDashboard() {
   const { currentUser } = useSelector(state => state.user); // ✅ Get user from Redux
@@ -29,9 +33,29 @@ export default function SellerDashboard() {
     fetchListings();
   }, [currentUser]); // ✅ Runs when `currentUser` changes
   //bg-[#523D35]
+  const handleDelete = async (listingId) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${listingId}`, {
+        method: 'DELETE',
+      });
+      if (!res.ok) {
+        console.log(`Error: ${res.status} ${res.statusText}`);
+        return;
+      }
+      const data = await res.json();
+
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
+      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId));
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
   return (
     <main className='p-10'>
-      <div>
+      <div className='mt-10'>
         <Link className='w-55 mb-10 p-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-listing"}>
           <FaPlusCircle /> Create Listing
         </Link>
@@ -41,20 +65,43 @@ export default function SellerDashboard() {
 
       <h6 className='font-serif text-5xl mb-10'>My Listing</h6>
 
-      <div className='sm:grid grid-cols-2 gap-5 flex flex-col'>
+      <div className='sm:grid grid-cols-2 gap-10 flex flex-col'>
+
         {userListings.length > 0 ? (
           userListings.map((listing) => (
-            <div className='bg-[#EFEFE9] p-10 flex gap-3 justify-between shadow-lg' >
-              <div key={listing._id}>
-                <Link to={`/listing/${listing._id}`}>
-                  <img className='object-cover h-full w-100' src={listing.imageUrls[0]} alt={listing.title} />
-                </Link>
+            <div className='bg-[#EFEFE9] p-10 flex flex-col gap-10 justify-between shadow-lg' >
+              <div className='flex flex-col justify-between'>
+                {listing.imageUrls.length > 1 ? ( // ✅ Use slider only for multiple images
+                  <Slider
+                    dots={true}
+                    infinite={true}
+                    speed={500}
+                    slidesToShow={1}
+                    slidesToScroll={1}
+                    autoplay={true}
+                    autoplaySpeed={3000}
+                    className="w-full h-100"
+                  >
+                    {listing.imageUrls.map((url, index) => (
+                      <div key={index} className="relative">
+                        <img src={url} alt={`Listing ${index}`} className="object-cover" />
+                      </div>
+                    ))}
+                  </Slider>
+                ) : ( // ✅ If only one image, show it normally
+                  <div className="relative">
+                    <img src={listing.imageUrls[0]} alt="Listing" className="w-200 h-[300px] object-cover" />
+                  </div>
+                )}
+
               </div>
-              <div>
+
+              <div className='mt-10'>
                 <div>
                   <h6 className='text-2xl font-bold mb-5'>{listing.name}</h6>
-                  <p className='flex items-center gap-2'><FaMapMarker /><b>{listing.address}</b></p>
-                  <p className='flex items-center gap-2'><FaMoneyBill /><b>රු.{listing.price}</b></p>
+                  <p className='flex items-center gap-2'><FaMapMarker />Location:</p>
+                  <p className='flex items-center gap-2 mb-2'><b>{listing.address}.</b></p>
+                  <p className='flex items-center gap-2'><FaMoneyBill />{listing.type}:<b>රු.{listing.price}</b><span className='text-sm'>{listing.type === "rent" ? "(රු.month)" : ""}</span></p>
                   <p className='flex items-center gap-2'><FaChartArea />Area:<b>{listing.area}m<sup>2</sup></b></p>
                   <p className='flex items-center gap-2'><FaBed />Bedrooms: <b>{listing.bedrooms}</b></p>
                   <p className='flex items-center gap-2'><FaBath />Bathrooms:<b>{listing.bathrooms}</b></p>
@@ -65,18 +112,24 @@ export default function SellerDashboard() {
                     value={listing.description}
                     disabled
                   />
+                  <Link className='self-end underline' to={`/listing/${listing._id}`}>
+                    <p className=' text-black font-bold px-3 py-2 flex gap-1 items-center self-end'>view Listing<FaStreetView /></p>
+                  </Link>
                 </div>
                 <div className='flex justify-between mt-10'>
-                  <button className='bg-[#523D35] hover:shadow-lg text-white font-bold px-3 py-2'>EDIT</button>
-                  <button className='bg-red-500 hover:shadow-lg text-white font-bold px-3 py-2'>DELETE</button>
+                  <Link to={`/update-listing/${listing._id}`} className='bg-[#523D35] hover:shadow-lg text-white font-bold px-3 py-2'>
+                    <button className='bg-[#523D35] hover:shadow-lg text-white font-bold px-3 py-2'>EDIT</button>
+                  </Link>
+                  <button onClick={() => handleDelete(listing._id)} className='bg-red-500 hover:shadow-lg text-white font-bold px-3 py-2'>DELETE</button>
                 </div>
               </div>
             </div>
           ))
         ) : (
-          <p className='text-5xl text-gray-400 text-center mt-20'>No listings found :(</p>
+          <p className='text-5xl text-gray-400 mx-auto mt-20'>No listings found :(</p>
         )}
       </div>
+
     </main>
   );
 }

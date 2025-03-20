@@ -113,7 +113,7 @@ export default function Profile() {
   return (
     
     <div className='p-3 max-w-lg mx-auto'>
-      <p className='text-sm'>role:{currentUser.role}</p>
+      <p className='text-sm mt-10'>role:{currentUser.role}</p>
       <p className='text-sm'>id:{currentUser._id}</p>
       <form onSubmit={handleSubmit} className='text-center mt-24'>
         <input

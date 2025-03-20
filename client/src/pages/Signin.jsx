@@ -107,17 +107,17 @@ export default function SignIn() {
             </label>
           </div>
 
-          <button disabled={loading} type='submit' className='bg-[#523D35] w-60 p-3 text-amber-50 font-bold'>
+          <button disabled={loading} type='submit' className='bg-[#523D35] w-full p-3 text-amber-50 mt-10 font-bold self-end'>
             {loading ? 'Loading...' : 'Sign In'}
           </button>
           <OAuth role={formData.role} setError={setLocalError} />
         </form>
       </div>
 
-      <p className='text-center mt-10'>Do not Have an account? <Link to={"/sign-up"} className='text-[#523D35] font-bold'>Sign Up</Link></p>
+      <p className='text-center mt-10'>Do not Have an account? <Link to={"/sign-up"} className='text-[#523D35] font-extrabold'>Sign Up</Link></p>
       
       <div>
-        {(error || localError) && <p className='text-red-600'>{error || localError}</p>}
+        {(error || localError) && <p className='text-red-600 text-center font-semibold'>{error || localError}</p>}
       </div>
     </div>
   )
