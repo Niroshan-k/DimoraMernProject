@@ -13,6 +13,7 @@ import Blog from './pages/Blog';
 import CreateListing from './pages/CreateListing';
 import UpdateListing from './pages/UpdateListing';
 import Listing from './pages/Listing';
+import CreatePost from './pages/CreatePost';
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
         {/* ✅ Contractor Dashboard - Only for Contractors */}
         <Route element={<PrivateRoute allowedRoles={['contractor']} />} >
           <Route path="/contractor-dashboard" element={<ContractorDashboard />} />
+          <Route path='/create-post' element={<CreatePost />} />
         </Route>
       </Routes>
     </BrowserRouter>
