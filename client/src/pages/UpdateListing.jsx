@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/storage';
 import { app } from '../firebase';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaSpinner } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import L from 'leaflet';
@@ -219,7 +219,7 @@ export default function UpdateListing() {
           <div>
             <div className='flex gap-3 justify-between'>
               <input onChange={(e) => setFiles(e.target.files)} className='p-3 bg-[#E8D9CD] w-full' type="file" id='images' accept='image/*' multiple />
-              <button disabled={uploading} onClick={handleImageSubmit} type='button' className='bg-[#959D90] p-3 text-white font-bold uppercase hover:shadow-lg'>{uploading ? 'Uploading' : 'Upload'}</button>
+              <button disabled={uploading} onClick={handleImageSubmit} type='button' className='bg-[#959D90] p-3 text-white font-bold uppercase hover:shadow-lg'>{uploading ? <FaSpinner className='mx-auto text-2xl animate-spin'/> : 'Upload'}</button>
             </div>
             <p className='text-red-400 text-sm'>{imageUploadError && imageUploadError}</p>
             <div className='flex'>
@@ -245,7 +245,7 @@ export default function UpdateListing() {
 
           </div>
           <div>
-            <button disabled={loading || uploading} className='bg-[#523D35] mt-3 p-3 text-white font-bold w-full'>{loading ? 'UPDATING...' : 'UPDATE'}</button>
+            <button disabled={loading || uploading} className='bg-[#523D35] mt-3 p-3 text-white font-bold w-full'>{loading ? <FaSpinner className='mx-auto text-2xl animate-spin'/> : "UPDATE"}</button>
             {error && <p className='text-red-400 text-sm'>{error}</p>}
           </div>
         </div>

@@ -14,6 +14,7 @@ import CreateListing from './pages/CreateListing';
 import UpdateListing from './pages/UpdateListing';
 import Listing from './pages/Listing';
 import CreatePost from './pages/CreatePost';
+import Search from './pages/Search';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<SignUp />} />
         <Route path='/listing/:listingId' element={<Listing />}></Route>
+        <Route path='/search' element={<Search />}></Route>
 
         {/* ✅ Protect Profile (All Authenticated Users) */}
         <Route element={<PrivateRoute />} >

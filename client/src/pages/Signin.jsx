@@ -59,9 +59,10 @@ export default function SignIn() {
     }
   };
   return (
-    <div className='mt-10 p-3 max-w-lg mx-auto'>
+    <div className=' p-3 max-w-lg mx-auto'>
+      <p>h</p>
       <div>
-        <h6 className='text-6xl mb-12 uppercase'>Sign In</h6>
+        <h6 className='mt-20 text-6xl mb-12 uppercase'>Sign In</h6>
       </div>
       <br />
       <div>

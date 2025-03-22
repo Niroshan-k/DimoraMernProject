@@ -1,7 +1,7 @@
 import React from 'react'
 import './Home.css'
 import { FaMapMarker } from 'react-icons/fa'
-import Search from './Search'
+import Search from './Searchbar'
 
 export default function Home() {
   return (
