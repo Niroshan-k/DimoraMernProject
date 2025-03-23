@@ -56,20 +56,20 @@ export default function SellerDashboard() {
   return (
     <main className='p-10'>
       <div className='mt-10'>
-        <Link className='w-55 mb-10 p-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-listing"}>
+        <Link className='w-55 mb-10 py-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-listing"}>
           <FaPlusCircle /> Create Listing
         </Link>
       </div>
 
       {showListingError && <p className='text-red-500 text-sm'>Error showing listing</p>}
 
-      <h6 className='font-serif text-5xl mb-10'>My Listing</h6>
+      <h6 className='md:text-left text-center font-serif text-5xl mb-10'>My Listing</h6>
 
-      <div className='sm:grid grid-cols-2 gap-10 flex flex-col'>
+      <div className='flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-10'>
 
         {userListings.length > 0 ? (
           userListings.map((listing) => (
-            <div className='bg-[#EFEFE9] p-10 flex flex-col gap-10 justify-between shadow-lg' >
+            <div className='bg-[#EFEFE9] rounded p-10 flex flex-col gap-10 justify-between shadow-lg' >
               <div className='flex flex-col justify-between'>
                 {listing.imageUrls.length > 1 ? ( // ✅ Use slider only for multiple images
                   <Slider
@@ -80,17 +80,17 @@ export default function SellerDashboard() {
                     slidesToScroll={1}
                     autoplay={true}
                     autoplaySpeed={3000}
-                    className="w-full h-100"
+                    className='rounded'
                   >
                     {listing.imageUrls.map((url, index) => (
                       <div key={index} className="relative">
-                        <img src={url} alt={`Listing ${index}`} className="object-cover" />
+                        <img src={url} alt={`Listing ${index}`} className="rounded w-full h-60 md:h-100 object-cover" />
                       </div>
                     ))}
                   </Slider>
                 ) : ( // ✅ If only one image, show it normally
                   <div className="relative">
-                    <img src={listing.imageUrls[0]} alt="Listing" className="w-200 h-[300px] object-cover" />
+                    <img src={listing.imageUrls[0]} alt="Listing" className="rounded w-200 h- object-cover" />
                   </div>
                 )}
 
@@ -108,7 +108,7 @@ export default function SellerDashboard() {
                   <p className='flex items-center gap-2'><FaCar />Parking:<b>{listing.parking ? 'Available' : 'No parking'}</b></p>
                   <p className='flex items-center gap-2'><FaFileInvoice /> Description:</p>
                   <textarea
-                    className="bg-white p-3 mt-3 w-full h-32 overflow-y-auto overflow-x-hidden resize-none"
+                    className="rounded bg-white p-3 mt-3 w-full h-32 overflow-y-auto overflow-x-hidden resize-none"
                     value={listing.description}
                     disabled
                   />
@@ -117,10 +117,10 @@ export default function SellerDashboard() {
                   </Link>
                 </div>
                 <div className='flex justify-between mt-10'>
-                  <Link to={`/update-listing/${listing._id}`} className='bg-[#523D35] hover:shadow-lg text-white font-bold px-3 py-2'>
+                  <Link to={`/update-listing/${listing._id}`} className='bg-[#523D35] rounded hover:shadow-lg text-white font-bold px-3 py-2'>
                     <button className='bg-[#523D35] hover:shadow-lg text-white font-bold px-3 py-2'>EDIT</button>
                   </Link>
-                  <button onClick={() => handleDelete(listing._id)} className='bg-red-500 hover:shadow-lg text-white font-bold px-3 py-2'>DELETE</button>
+                  <button onClick={() => handleDelete(listing._id)} className='bg-red-500 hover:shadow-lg rounded text-white font-bold px-3 py-2'>DELETE</button>
                 </div>
               </div>
             </div>

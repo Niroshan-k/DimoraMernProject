@@ -180,7 +180,7 @@ export default function Search() {
                                 <div class='h-4 w-4 bg-gray-400 rounded-full animate-bounce'></div>
                             </div>
                         )}
-                        <div>
+                        <div className='md:grid md:grid-cols-4 gap-2 sm:grid sm:grid-cols-2'>
                             {!loading && listing && listing.map((listing) => (
                                 <ListingItem key={listing._id} listing={listing} />
                             ))}

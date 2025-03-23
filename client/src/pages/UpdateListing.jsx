@@ -169,7 +169,7 @@ export default function UpdateListing() {
 
   return (
     <main className='p-10 max-w-4xl mx-auto'>
-      <h6 className='uppercase text-5xl mt-10'>Update Listing</h6>
+      <h6 className='md:text-left text-center uppercase text-5xl mt-10'>Update Listing</h6>
       <form onSubmit={handleSubmit} className='mt-10 flex flex-col gap-5 sm:flex-row'>
         <div className='flex flex-col gap-4'>
           <input onChange={handleChange} value={formData.name} type="text" placeholder='name' className='p-3 bg-[#E8D9CD]' id='name' maxLength='62' minLength='10' required />
@@ -195,18 +195,18 @@ export default function UpdateListing() {
             </div>
           </div>
 
-          <div className='flex gap-1 justify-between'>
+          <div className='flex gap-3 justify-between'>
             <div className='items-center'>
-              <p>Bedrooms</p>
-              <input onChange={handleChange} value={formData.bedrooms} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='bedrooms' min='1' max='10' required />
+              <p className='text-sm'>Bedrooms</p>
+              <input onChange={handleChange} value={formData.bedrooms} className='p-3 bg-[#E8D9CD] w-full' type="number" id='bedrooms' min='1' max='10' required />
             </div>
             <div className='items-center'>
-              <p>Bathrooms</p>
-              <input onChange={handleChange} value={formData.bathrooms} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='bathrooms' min='1' max='10' required />
+              <p className='text-sm'>Bathrooms</p>
+              <input onChange={handleChange} value={formData.bathrooms} className='p-3 bg-[#E8D9CD] w-full' type="number" id='bathrooms' min='1' max='10' required />
             </div>
             <div className='items-center'>
-              <p>Area m<sup>2</sup></p>
-              <input onChange={handleChange} value={formData.area} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='area' min='15' required />
+              <p className='text-sm'>Area m<sup>2</sup></p>
+              <input onChange={handleChange} value={formData.area} className='p-3 bg-[#E8D9CD] w-full' type="number" id='area' min='15' required />
             </div>
           </div>
 

@@ -14,7 +14,7 @@ export default function header() {
             </Link>
             <ul className='flex gap-5 items-center cursor-pointer'>
                 <li className='flex gap-1 items-center'><FaGlobe />English</li>
-                <li>Contact</li>
+                <li className=''>Contact</li>
                 <li>About Us</li>
                 <Link to='/blog'>
                     {currentUser ? (
