@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import { useDispatch } from 'react-redux';
-import { 
-  updateUserSuccess, updateUserFailure, updateUserStart, 
+import {
+  updateUserSuccess, updateUserFailure, updateUserStart,
   deleteUserStart, deleteUserFailure, deleteUserSuccess,
   signOutUserFailure, signOutUserStart, signOutUserSuccess
 } from '../redux/User/userSlice.js';
-import { FaRecycle } from 'react-icons/fa';
+import { FaCheckCircle, FaRecycle, FaTimes, FaUserCircle, FaWindowClose } from 'react-icons/fa';
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -19,7 +19,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const dispatch = useDispatch();
-  
+
 
   useEffect(() => {
     if (file) {
@@ -43,7 +43,7 @@ export default function Profile() {
         setFileUploadError(true);
       },
       () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => 
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
           setFormData({ ...formData, avatar: downloadURL }));
       }
     );
@@ -87,13 +87,13 @@ export default function Profile() {
         dispatch(deleteUserFailure(data.message));
         return;
       }
-      dispatch(deleteUserSuccess()); 
+      dispatch(deleteUserSuccess());
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
   }
 
-  const handleSignOut = async (e)=> {
+  const handleSignOut = async (e) => {
     e.preventDefault();
     try {
       dispatch(signOutUserStart());
@@ -109,9 +109,11 @@ export default function Profile() {
     }
   }
   const [showListingError, setShowListingError] = useState(false);
-  
+  const handleUpdate = () => {
+    updateSuccess ? setUpdateSuccess(false) : setUpdateSuccess(true);
+  }
   return (
-    
+
     <div className='p-3 max-w-lg mx-auto'>
       <p className='text-sm mt-10'>role:{currentUser.role}</p>
       <p className='text-sm'>id:{currentUser._id}</p>
@@ -147,7 +149,7 @@ export default function Profile() {
           type="text"
           value={formData.username || currentUser.username}
           onChange={handleChange}
-          className='bg-[#E8D9CD] mt-6 h-12 w-full p-2'
+          className='bg-[#E8D9CD] mt-6 h-12 w-full p-2 rounded'
           placeholder='username'
           id='username'
         />
@@ -155,7 +157,7 @@ export default function Profile() {
           type="email"
           value={formData.email || currentUser.email}
           onChange={handleChange}
-          className='bg-[#E8D9CD] mt-6 h-12 w-full p-2'
+          className='bg-[#E8D9CD] mt-6 h-12 w-full p-2 rounded'
           placeholder='email'
           id='email'
         />
@@ -163,27 +165,35 @@ export default function Profile() {
           type="password"
 
           onChange={handleChange}
-          className='bg-[#E8D9CD] mt-6 h-12 w-full p-2'
+          className='bg-[#E8D9CD] mt-6 h-12 w-full p-2 rounded'
           placeholder='password'
           id='password'
         />
 
         <div className='flex justify-between'>
-          <button disabled={loading} className='bg-[#523D35] text-white font-bold p-3 w-40 cursor-pointer mt-6'>
+          <button disabled={loading} className='bg-[#523D35] rounded text-white font-bold p-3 w-40 cursor-pointer mt-6'>
             {loading ? 'Loading...' : 'Update'}
           </button>
-          <button onClick={handleSignOut} className='bg-red-500 text-white font-bold p-3 w-40 cursor-pointer mt-6'>
+          <button onClick={handleSignOut} className='bg-red-500 rounded text-white font-bold p-3 w-40 cursor-pointer mt-6'>
             Sign Out
           </button>
         </div>
       </form>
 
-      <span onClick={handleDeleteUser} className='text-red-500 mt-5 font-bold flex gap-1 cursor-pointer items-center text-right'><FaRecycle />Delete account</span>
-        <div className='mt-5'>
-          <p className='text-red-500 text-right font-bold'>{error ? error : ""}</p>
-          <p className='text-green-600 text-right font-bold'>{updateSuccess ? "User Updated Successfully!" : ""}</p>
-        </div>
-        <p className='text-red-500 text-sm'>{showListingError ? 'Error showing listing' : ''}</p>
+      <span onClick={handleDeleteUser} className='text-red-500 mt-5 font-bold flex gap-1 cursor-pointer items-center text-right'><FaUserCircle />Deactivate account</span>
+      <div className='mt-5'>
+        <p className='text-red-500 text-right font-bold'>{error ? error : ""}</p>
+        {
+          updateSuccess ? <div className='shadow-lg p-4 fixed bottom-5 left-1/2 -translate-x-1/2 max-w-lg w-full text-center'>
+          <div className='text-right justify-self-end'>
+            <FaTimes className='cursor-pointer' onClick={handleUpdate} />
+          </div>
+          <p className='flex items-center justify-center gap-2'>
+            <FaCheckCircle className='text-green-500' /> User Updated Successfully!
+          </p>
+        </div> : ""
+        }
+      </div>
     </div>
   );
 }

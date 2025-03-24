@@ -114,36 +114,36 @@ export default function Listing() {
                             <SwiperSlide key={index}>
                                 <div className='mt-10 h-150' style={{
                                     background: `url(${Url}) center no-repeat`,
-                                    backgroundSize: 'cover'
+                                    backgroundSize: ''
                                 }}></div>
                             </SwiperSlide>
                         ))}
                     </Swiper>
                     <div className='grid grid-cols-6 gap-1 max-w-6xl mx-auto'>
                         <div className='m-5'>
-                            <img src={listing.imageUrls[0]} alt="Listing" className="w-30 h-30 object-cover" />
+                            <img src={listing.imageUrls[0]} alt="Listing" className="rounded w-30 h-30 object-cover" />
                         </div>
                         <div className='m-5'>
-                            <img src={listing.imageUrls[1]} alt="Listing" className="w-30 h-30 object-cover" />
+                            <img src={listing.imageUrls[1] || "/assets/image.png"} alt="Listing" className="rounded w-30 h-30 object-cover" />
                         </div>
                         <div className='m-5'>
-                            <img src={listing.imageUrls[2] || "/assets/image.png"} alt="Listing" className="w-30 h-30 object-cover" />
+                            <img src={listing.imageUrls[2] || "/assets/image.png"} alt="Listing" className="rounded w-30 h-30 object-cover" />
                         </div>
                         <div className='m-5'>
-                            <img src={listing.imageUrls[3] || "/assets/image.png"} alt="Listing" className="w-30 h-30 object-cover" />
+                            <img src={listing.imageUrls[3] || "/assets/image.png"} alt="Listing" className="rounded w-30 h-30 object-cover" />
                         </div>
                         <div className='m-5'>
-                            <img src={listing.imageUrls[4] || "/assets/image.png"} alt="Listing" className="w-30 h-30 object-cover" />
+                            <img src={listing.imageUrls[4] || "/assets/image.png"} alt="Listing" className="rounded w-30 h-30 object-cover" />
                         </div>
                         <div className='m-5'>
-                            <img src={listing.imageUrls[5] || "/assets/image.png"} alt="Listing" className="w-30 h-30 object-cover" />
+                            <img src={listing.imageUrls[5] || "/assets/image.png"} alt="Listing" className="rounded w-30 h-30 object-cover" />
                         </div>
                     </div>
                     <div className='p-30'>
                         <h6 className='text-4xl'>{listing.name}</h6>
                         <h6 className='flex gap-1 mt-5 mb-5 items-center'><FaMapMarker />{listing.address}.</h6>
                         <h6 className='text-5xl'>රු.{listing.price}<span className='text-sm'>{listing.type === "rent" ? "(රු month)" : ""}</span></h6>
-                        <div className='bg-[#EFEFE9] shadow-lg p-20 mt-5'>
+                        <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
                             <h1>Overview</h1>
                             <hr className='mt-5' />
                             <div className='mt-5 flex gap-10 justify-between sm:grid sm:grid-cols-3'>
@@ -173,18 +173,18 @@ export default function Listing() {
                                 </div>
                             </div>
                         </div>
-                        <div className='bg-[#EFEFE9] shadow-lg p-20 mt-5'>
+                        <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
                             <h1>Description</h1>
                             <hr className='mt-5' />
                             <p className='mt-5'>{listing.description}</p>
                         </div>
-                        <div className='bg-[#EFEFE9] shadow-lg p-20 mt-5'>
+                        <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
                             <h1>Location</h1>
                             <hr className='mt-5' />
                             <div id='map' className='mt-5' style={{ height: '300px', width: '100%' }}></div>
                         </div>
                         <div className='flex gap-3 mt-5'>
-                            <div className='flex-[0.7] shadow-lg bg-[#EFEFE9] p-20'>
+                            <div className='flex-[0.7] rounded shadow-lg bg-[#EFEFE9] p-20'>
                                 <h1>Listed By</h1>
 
                                 <hr className='mt-5' />
@@ -201,14 +201,14 @@ export default function Listing() {
                                 <form className='flex flex-col' action="">
                                     <h6 className='text-2xl text-right mb-5'>More About This Property</h6>
                                     <span>Full Name:</span>
-                                    <input type="text" id='name' className='mb-5 p-3 bg-[#E8D9CD]' />
+                                    <input type="text" id='name' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
                                     <span>Email:</span>
-                                    <input type="text" id='email' className='mb-5 p-3 bg-[#E8D9CD]' />
+                                    <input type="text" id='email' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
                                     <span>Number:</span>
-                                    <input type="text" id='number' className='mb-5 p-3 bg-[#E8D9CD]' />
+                                    <input type="text" id='number' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
                                     <span>Message:</span>
-                                    <textarea id='message' className='mb-5 p-3 bg-[#E8D9CD]' />
-                                    <button className='bg-[#523D35] p-3 text-white uppercase font-bold w-full'>MESSAGE</button>
+                                    <textarea id='message' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
+                                    <button className='bg-[#523D35] rounded p-3 text-white uppercase font-bold w-full'>MESSAGE</button>
                                 </form>
 
                             </div>

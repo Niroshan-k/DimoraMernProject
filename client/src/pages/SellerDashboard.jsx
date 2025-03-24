@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaStreetView } from 'react-icons/fa';
+import { FaArrowsAlt, FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaExpand, FaExpandAlt, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaStreetView } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Slider from "react-slick";
@@ -112,15 +112,19 @@ export default function SellerDashboard() {
                     value={listing.description}
                     disabled
                   />
-                  <Link className='self-end underline' to={`/listing/${listing._id}`}>
-                    <p className=' text-black font-bold px-3 py-2 flex gap-1 items-center self-end'>view Listing<FaStreetView /></p>
-                  </Link>
                 </div>
                 <div className='flex justify-between mt-10'>
-                  <Link to={`/update-listing/${listing._id}`} className='bg-[#523D35] rounded hover:shadow-lg text-white font-bold px-3 py-2'>
-                    <button className='bg-[#523D35] hover:shadow-lg text-white font-bold px-3 py-2'>EDIT</button>
-                  </Link>
-                  <button onClick={() => handleDelete(listing._id)} className='bg-red-500 hover:shadow-lg rounded text-white font-bold px-3 py-2'>DELETE</button>
+                  <div>
+                    <Link to={`/listing/${listing._id}`}>
+                      <button className='text-white bg-blue-500 w-max rounded font-bold px-3 py-2 flex gap-1 items-center self-end'>view Listing<FaExpandAlt /></button>
+                    </Link>
+                  </div>
+                  <div className='flex gap-2'>
+                    <Link to={`/update-listing/${listing._id}`} className='bg-[#523D35] rounded hover:shadow-lg text-white font-bold'>
+                      <button className='bg-[#523D35] hover:shadow-lg rounded text-white font-bold px-3 py-2'>EDIT</button>
+                    </Link>
+                    <button onClick={() => handleDelete(listing._id)} className='bg-red-500 hover:shadow-lg rounded text-white font-bold px-3 py-2'>DELETE</button>
+                  </div>
                 </div>
               </div>
             </div>

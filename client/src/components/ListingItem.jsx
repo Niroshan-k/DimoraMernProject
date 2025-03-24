@@ -18,8 +18,8 @@ export default function ListingItem({ listing }) {
                     <p className='flex items-center gap-1'><FaCube />Area:<b className='ml-2'>{listing.area}<span className='text-sm'>m<sup>2</sup></span></b></p>
                     <div className='flex justify-between mt-5 text-xl'>
                         {liked ? 
-                        <FaHeart className='text-red-500' onClick={saveFavorite} /> : 
-                        <FaRegHeart onClick={saveFavorite} />
+                        <FaHeart className='text-red-500 cursor-pointer' onClick={saveFavorite} /> : 
+                        <FaRegHeart className='cursor-pointer' onClick={saveFavorite} />
                         }
                         <FaShareAlt />
                     </div>
