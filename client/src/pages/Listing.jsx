@@ -6,7 +6,8 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { FaBath, FaBed, FaCar, FaChartArea, FaHome, FaMapMarker, FaSwimmingPool } from 'react-icons/fa';
+import { FaArrowLeft, FaArrowRight, FaBath, FaBed, FaCar, FaChartArea, FaHome, FaMapMarker, FaSwimmingPool } from 'react-icons/fa';
+
 
 
 export default function Listing() {
@@ -109,15 +110,29 @@ export default function Listing() {
             {error && <p>There was an error fetching the listing</p>}
             {userData && listing && !loading && !error && (
                 <>
-                    <Swiper navigation>
+                    <Swiper
+                        navigation={{
+                            prevEl: '.swiper-button-prev',
+                            nextEl: '.swiper-button-next',
+                        }}
+                        // Disable default navigation arrows
+                        modules={[Navigation]}
+                    >
                         {listing.imageUrls.map((Url, index) => (
                             <SwiperSlide key={index}>
-                                <div className='mt-10 h-150' style={{
-                                    background: `url(${Url}) center no-repeat`,
-                                    backgroundSize: ''
-                                }}></div>
+                                <img src={Url} alt={listing.name} className="w-screen h-200 object-cover" />
                             </SwiperSlide>
                         ))}
+
+                        {/* Custom left (previous) button */}
+                        <div className="swiper-button-prev absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-3">
+                            <FaArrowLeft className="text-2xl" />
+                        </div>
+
+                        {/* Custom right (next) button */}
+                        <div className="swiper-button-next absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-3">
+                            <FaArrowRight className="text-2xl" />
+                        </div>
                     </Swiper>
                     <div className='grid grid-cols-6 gap-1 max-w-6xl mx-auto'>
                         <div className='m-5'>
@@ -142,7 +157,10 @@ export default function Listing() {
                     <div className='p-30'>
                         <h6 className='text-4xl'>{listing.name}</h6>
                         <h6 className='flex gap-1 mt-5 mb-5 items-center'><FaMapMarker />{listing.address}.</h6>
-                        <h6 className='text-5xl'>රු.{listing.price}<span className='text-sm'>{listing.type === "rent" ? "(රු month)" : ""}</span></h6>
+                        <h6 className='text-4xl'>
+                            {"රු." + (Number(listing.price) || 0).toLocaleString('en-US')}
+                            {listing.type === "rent" ? " /month" : ""}
+                        </h6>
                         <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
                             <h1>Overview</h1>
                             <hr className='mt-5' />

@@ -6,6 +6,7 @@ import ListingItem from '../components/ListingItem';
 export default function Search() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [showMore, setShowMore] = useState(false);
     const [listing, setListing] = useState([]);
     const [sideBarData, setSidebarData] = useState({
         searchTerm: '',
@@ -50,9 +51,11 @@ export default function Search() {
 
         const fetchListing = async () => {
             setLoading(true);
+            setShowMore(false);
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/listing/get?${searchQuery}`);
             const data = await res.json();
+            if(data.length > 7){ setShowMore(true); }else{setShowMore(false);}
             setListing(data);
             setLoading(false);
         };
@@ -90,12 +93,25 @@ export default function Search() {
         navigate(`/search?${searchQuery}`)
     };
     console.log(listing);
+    const onShowMoreClick = async () => {
+        const nOfListing = listing.length;
+        const startIndex = nOfListing;
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex', startIndex);
+        const searchQuery = urlParams.toString();
+        const res = await fetch(`/api/listing/get?${searchQuery}`);
+        const data = await res.json();
+        if(data.length < 8 ){
+            setShowMore(false);
+        }
+        setListing([...listing, ...data])
+    }
     //console.log("Query URL: ", `/api/listing/get?${urlParams.toString()}`);
     return (
         <main>Search
             <div className='flex gap-5 flex-col md:flex-row'>
                 <form onSubmit={handleSubmit} className='flex-[0.2]'>
-                    <div className='shadow-lg flex flex-col gap-10 md:min-h-full p-6 pt-20'>
+                    <div className='shadow-lg flex flex-col gap-10 md:min-h-screen p-6 pt-20'>
                         {/* <Searchbar /> */}
                         <div>
                             <input
@@ -180,10 +196,15 @@ export default function Search() {
                                 <div class='h-4 w-4 bg-gray-400 rounded-full animate-bounce'></div>
                             </div>
                         )}
-                        <div className='md:grid md:grid-cols-4 gap-2 sm:grid sm:grid-cols-2'>
+                        <div className='md:flex md:flex-wrap gap-2 justify-between sm:grid sm:grid-cols-2'>
                             {!loading && listing && listing.map((listing) => (
                                 <ListingItem key={listing._id} listing={listing} />
                             ))}
+                            {showMore && (
+                                <button className='w-max text-center text-green-500 font-bold' onClick={
+                                    onShowMoreClick
+                                }>show more...</button>
+                            )}
                         </div>
                     </div>
 

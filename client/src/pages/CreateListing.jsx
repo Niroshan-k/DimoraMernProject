@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/storage';
 import { app } from '../firebase';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaSpinner } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
@@ -144,7 +144,6 @@ export default function CreateListing() {
         .then((data) => {
           const address = data.display_name;
           setFormData((prev) => ({ ...prev, address }));
-          alert(`Location selected: ${address}`);
         })
         .catch((error) => console.error("Error fetching address:", error));
     });
@@ -157,7 +156,7 @@ export default function CreateListing() {
       <h6 className='uppercase text-5xl mt-10'>Create Listing</h6>
       <form onSubmit={handleSubmit} className='mt-10 flex flex-col gap-5 sm:flex-row'>
         <div className='flex flex-col gap-4'>
-          <input onChange={handleChange} value={formData.name} type="text" placeholder='name' className='p-3 bg-[#E8D9CD]' id='name' maxLength='62' minLength='10' required />
+          <input onChange={handleChange} value={formData.name} type="text" placeholder='name' className='p-3 bg-[#E8D9CD]' id='name' maxLength='30' minLength='10' required />
           <textarea onChange={handleChange} value={formData.description} type="text" placeholder='Description' className='p-3 bg-[#E8D9CD]' id='description' required />
           <textarea onChange={handleChange} value={formData.address} type="text" placeholder='Address' className='p-3 bg-[#E8D9CD]' id='address' required />
 
@@ -197,14 +196,14 @@ export default function CreateListing() {
 
           <div className='justify-between items-center'>
             <p>Price <span className='text-xs'>{formData.type === 'rent' ? '($month)' : ''}</span></p>
-            <input onChange={handleChange} value={formData.price} type="number" className='p-3 bg-[#E8D9CD] w-full' id='price' required />
+            <input onChange={handleChange} value={formData.price} type="number" className='p-3 bg-[#E8D9CD] w-full' min='100000' id='price' required />
           </div>
         </div>
         <div className='flex flex-col justify-between'>
           <div>
             <div className='flex gap-3 justify-between'>
               <input onChange={(e) => setFiles(e.target.files)} className='p-3 bg-[#E8D9CD] w-full' type="file" id='images' accept='image/*' multiple />
-              <button disabled={uploading} onClick={handleImageSubmit} type='button' className='bg-[#959D90] p-3 text-white font-bold uppercase hover:shadow-lg'>{uploading ? 'Uploading' : 'Upload'}</button>
+              <button disabled={uploading} onClick={handleImageSubmit} type='button' className='bg-[#959D90] p-3 w-max text-white font-bold uppercase hover:shadow-lg'>{uploading ? <FaSpinner className='mx-auto text-2xl animate-spin'/> : 'Upload'}</button>
             </div>
             <p className='text-red-400 text-sm'>{imageUploadError && imageUploadError}</p>
             <div className='flex'>

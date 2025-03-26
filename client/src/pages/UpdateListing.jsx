@@ -172,7 +172,7 @@ export default function UpdateListing() {
       <h6 className='md:text-left text-center uppercase text-5xl mt-10'>Update Listing</h6>
       <form onSubmit={handleSubmit} className='mt-10 flex flex-col gap-5 sm:flex-row'>
         <div className='flex flex-col gap-4'>
-          <input onChange={handleChange} value={formData.name} type="text" placeholder='name' className='p-3 bg-[#E8D9CD]' id='name' maxLength='62' minLength='10' required />
+          <input onChange={handleChange} value={formData.name} type="text" placeholder='name' className='p-3 bg-[#E8D9CD]' id='name' maxLength='30' minLength='10' required />
           <textarea onChange={handleChange} value={formData.description} type="text" placeholder='Description' className='p-3 bg-[#E8D9CD]' id='description' required />
           <textarea onChange={handleChange} value={formData.address} type="text" placeholder='Address' className='p-3 bg-[#E8D9CD]' id='address' required />
 
@@ -212,7 +212,7 @@ export default function UpdateListing() {
 
           <div className='justify-between items-center'>
             <p>Price <span className='text-xs'>{formData.type === 'rent' ? '($month)' : ''}</span></p>
-            <input onChange={handleChange} value={formData.price} type="number" className='p-3 bg-[#E8D9CD] w-full' id='price' required />
+            <input onChange={handleChange} value={formData.price} type="number" className='p-3 bg-[#E8D9CD] w-full' min='100000'  id='price' required />
           </div>
         </div>
         <div className='flex flex-col justify-between'>
