@@ -4,7 +4,7 @@ import './App.css';
 import Home from './pages/Home';
 import Signin from './pages/Signin';
 import SignUp from './pages/SignUp';
-import Header from './components/header';
+import Header from './components/Header';
 import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
 import SellerDashboard from './pages/SellerDashboard';
