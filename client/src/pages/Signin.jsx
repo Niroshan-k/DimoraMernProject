@@ -118,7 +118,7 @@ export default function SignIn() {
       <p className='text-center mt-10'>Do not Have an account? <Link to={"/sign-up"} className='text-[#523D35] font-extrabold'>Sign Up</Link></p>
       
       <div>
-        {(error || localError) && <p className='text-red-600 text-center font-semibold'>{error || localError}</p>}
+        {(error || localError) && <div className='text-red-500 shadow-lg rounded-lg mt-5 p-3 text-center font-semibold'>{error || localError}</div>}
       </div>
     </div>
   )

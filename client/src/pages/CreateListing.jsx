@@ -58,7 +58,7 @@ export default function CreateListing() {
       const fileName = new Date().getTime() + file.name;
       const storageRef = ref(storage, fileName);
       const uploadTask = uploadBytesResumable(storageRef, file);
-      
+
       uploadTask.on(
         "state_changed",
         (snapshot) => {
@@ -196,14 +196,28 @@ export default function CreateListing() {
 
           <div className='justify-between items-center'>
             <p>Price <span className='text-xs'>{formData.type === 'rent' ? '($month)' : ''}</span></p>
-            <input onChange={handleChange} value={formData.price} type="number" className='p-3 bg-[#E8D9CD] w-full' min='100000' id='price' required />
+            <input
+              onChange={handleChange}
+              value={formData.price}
+              type="number"
+              className='p-3 bg-[#E8D9CD] w-full'
+              min='100000'
+              id='price'
+              required
+              onKeyDown={(e) => {
+                if (["e", "E", "+", "-"].includes(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+            />
+
           </div>
         </div>
         <div className='flex flex-col justify-between'>
           <div>
             <div className='flex gap-3 justify-between'>
               <input onChange={(e) => setFiles(e.target.files)} className='p-3 bg-[#E8D9CD] w-full' type="file" id='images' accept='image/*' multiple />
-              <button disabled={uploading} onClick={handleImageSubmit} type='button' className='bg-[#959D90] p-3 w-max text-white font-bold uppercase hover:shadow-lg'>{uploading ? <FaSpinner className='mx-auto text-2xl animate-spin'/> : 'Upload'}</button>
+              <button disabled={uploading} onClick={handleImageSubmit} type='button' className='bg-[#959D90] p-3 w-max text-white font-bold uppercase hover:shadow-lg'>{uploading ? <FaSpinner className='mx-auto text-2xl animate-spin' /> : 'Upload'}</button>
             </div>
             <p className='text-red-400 text-sm'>{imageUploadError && imageUploadError}</p>
             <div className='flex'>

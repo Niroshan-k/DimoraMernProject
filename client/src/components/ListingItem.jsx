@@ -11,7 +11,7 @@ export default function ListingItem({ listing }) {
     };
     return (
         <div className='mt-5'>
-            <div className='bg-[#EFEFE9] flex overflow-hidden flex-col shadow-lg  w-70 hover:shadow-2xl'>
+            <div className='bg-[#EFEFE9] rounded flex overflow-hidden flex-col shadow-lg  w-70 hover:shadow-2xl'>
                 <Link to={`/listing/${listing._id}`}>
                 <img className=' h-50 w-70 object-cover hover:scale-105 duration-300 transition-scale' src={listing.imageUrls[0]} alt={listing.name} />
                 </Link>

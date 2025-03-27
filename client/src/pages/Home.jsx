@@ -61,14 +61,14 @@ export default function Home() {
               </div>
               <div className='mt-10  flex justify-end'>
                 <Link to={`/search?type=sale`}>
-                <button className='p-3 bg-green-400'>show more</button>
+                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>
           )
         }
       </section>
-      <section className='px-30 mt-10'>
+      <section className='px-30 mt-10 mb-5'>
         {
           saleListings && saleListings.length > 0 && (
             <div>
@@ -84,7 +84,7 @@ export default function Home() {
               </div>
               <div className='mt-10 flex justify-end'>
                 <Link to={`/search?type=rent`}>
-                <button className='p-3 bg-green-400'>show more</button>
+                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>

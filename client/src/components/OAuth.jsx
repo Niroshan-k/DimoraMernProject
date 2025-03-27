@@ -51,7 +51,12 @@ export default function OAuth({ role, setError }) {
 
     return (
         <div className='flex flex-col'>
-            <p className='mt-10 text-sm self-center'>or continue with</p>
+            <div className='flex flex-raw mt-5 justify-center gap-3'>
+                <p>------</p>
+                <p>or</p>
+                <p>------</p>
+            </div>
+            
             <button
                 onClick={handleGoogleClick}
                 type='button'

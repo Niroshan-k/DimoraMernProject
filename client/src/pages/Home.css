@@ -1,5 +1,5 @@
 #banner{
-    background: url('assets/banner.jpg') no-repeat center center/cover;
+    background: url("https://firebasestorage.googleapis.com/v0/b/dimora-55e52.firebasestorage.app/o/banner.jpg?alt=media&token=8350d7e5-36f4-4115-a567-d3f1f90a1fd5") no-repeat center center/cover;
     height: 100vh;
     display: flex;
     flex-direction: column;

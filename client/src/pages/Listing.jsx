@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import 'swiper/css/bundle';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -65,43 +65,43 @@ export default function Listing() {
         fetchSeller();
     }, [listing]);
 
-    // useEffect(() => {
-    //     if (listing?.address) {
-    //         const fetchCoordinates = async () => {
-    //             try {
-    //                 const response = await fetch(
-    //                     `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(listing.address)}&format=json&limit=1`,
-    //                     {
-    //                         headers: {
-    //                             'User-Agent': 'DimoraApp/1.0 (https://example.com; your-email@example.com)'
-    //                         }
-    //                     }
-    //                 );
-    //                 const data = await response.json();
-    //                 if (data.length > 0) {
-    //                     setCoordinates({ lat: data[0].lat, lng: data[0].lon });
-    //                 }
-    //             } catch (error) {
-    //                 console.error("Failed to fetch coordinates:", error);
-    //             }
-    //         };
-    //         fetchCoordinates();
-    //     }
-    // }, [listing]);
+    useEffect(() => {
+        if (listing?.address) {
+            const fetchCoordinates = async () => {
+                try {
+                    const response = await fetch(
+                        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(listing.address)}&format=json&limit=1`,
+                        {
+                            headers: {
+                                'User-Agent': 'DimoraApp/1.0 (https://example.com; your-email@example.com)'
+                            }
+                        }
+                    );
+                    const data = await response.json();
+                    if (data.length > 0) {
+                        setCoordinates({ lat: data[0].lat, lng: data[0].lon });
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch coordinates:", error);
+                }
+            };
+            fetchCoordinates();
+        }
+    }, [listing]);
 
-    // useEffect(() => {
-    //     if (coordinates && mapRef.current === null) {
-    //         mapRef.current = L.map('map').setView([coordinates.lat, coordinates.lng], 12);
+    useEffect(() => {
+        if (coordinates && mapRef.current === null) {
+            mapRef.current = L.map('map').setView([coordinates.lat, coordinates.lng], 12);
 
-    //         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //             attribution: '© OpenStreetMap contributors',
-    //         }).addTo(mapRef.current);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+            }).addTo(mapRef.current);
 
-    //         L.marker([coordinates.lat, coordinates.lng]).addTo(mapRef.current)
-    //             .bindPopup(listing?.address || "Location")
-    //             .openPopup();
-    //     }
-    // }, [coordinates, listing]);
+            L.marker([coordinates.lat, coordinates.lng]).addTo(mapRef.current)
+                .bindPopup(listing?.address || "Location")
+                .openPopup();
+        }
+    }, [coordinates, listing]);
 
     // Fetch listing data
     return (
@@ -110,29 +110,17 @@ export default function Listing() {
             {error && <p>There was an error fetching the listing</p>}
             {userData && listing && !loading && !error && (
                 <>
-                    <Swiper
-                        navigation={{
-                            prevEl: '.swiper-button-prev',
-                            nextEl: '.swiper-button-next',
-                        }}
-                        // Disable default navigation arrows
-                        modules={[Navigation]}
+                    <Swiper 
+                        modules={[Navigation, Pagination, Scrollbar, A11y]}
+                        navigation
+                        pagination={{ clickable: true }}
+                        scrollbar={{ draggable: true }}
                     >
                         {listing.imageUrls.map((Url, index) => (
                             <SwiperSlide key={index}>
                                 <img src={Url} alt={listing.name} className="w-screen h-200 object-cover" />
                             </SwiperSlide>
                         ))}
-
-                        {/* Custom left (previous) button */}
-                        <div className="swiper-button-prev absolute left-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-3">
-                            <FaArrowLeft className="text-2xl" />
-                        </div>
-
-                        {/* Custom right (next) button */}
-                        <div className="swiper-button-next absolute right-5 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white rounded-full p-3">
-                            <FaArrowRight className="text-2xl" />
-                        </div>
                     </Swiper>
                     <div className='grid grid-cols-6 gap-1 max-w-6xl mx-auto'>
                         <div className='m-5'>
@@ -199,7 +187,7 @@ export default function Listing() {
                         <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
                             <h1>Location</h1>
                             <hr className='mt-5' />
-                            <div id='map' className='mt-5' style={{ height: '300px', width: '100%' }}></div>
+                            <div id='map' className='mt-5 border' style={{ height: '300px', width: '100%' }}></div>
                         </div>
                         <div className='flex gap-3 mt-5'>
                             <div className='flex-[0.7] rounded shadow-lg bg-[#EFEFE9] p-20'>
