@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <main>
       <section id='banner'>
-        <h1 className='mt-100' id='h1'>MAKE YOUR OWN</h1>
+        <h1 className='mt-50 md:mt-100' id='h1'>MAKE YOUR OWN</h1>
         <h6 id='h6'>Real Estate Network</h6>
 
         <div className='mx-auto mt-70'>
@@ -45,14 +45,14 @@ export default function Home() {
       <section id=''>
         <Search />
       </section>
-      <section className='px-30'>
+      <section className='md:px-30'>
         {
           saleListings && saleListings.length > 0 && (
-            <div>
+            <div className='px-5'>
               <div>
                 <h6 className='text-5xl'>Sales</h6>
               </div>
-              <div className='flex flex-wrap gap-3 justify-between mt-10'>
+              <div className='md:flex md:flex-wrap gap-3 justify-between mt-10'>
                 {
                   saleListings.map((listing) => (
                     <ListingItem listing={listing} key={listing._id}/>
@@ -68,10 +68,10 @@ export default function Home() {
           )
         }
       </section>
-      <section className='px-30 mt-10 mb-5'>
+      <section className='md:px-30 mt-10 mb-5'>
         {
           saleListings && saleListings.length > 0 && (
-            <div>
+            <div className='px-5'>
               <div>
                 <h6 className='text-5xl'>Rent</h6>
               </div>

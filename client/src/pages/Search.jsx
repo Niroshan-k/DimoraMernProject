@@ -101,17 +101,20 @@ export default function Search() {
         const searchQuery = urlParams.toString();
         const res = await fetch(`/api/listing/get?${searchQuery}`);
         const data = await res.json();
-        if(data.length < 8 ){
+
+        // Hide "show more" button if fewer than 8 listings are fetched     
+        if (data.length < 8) {
             setShowMore(false);
         }
-        setListing([...listing, ...data])
+
+        setListing([...listing, ...data]);
     }
     //console.log("Query URL: ", `/api/listing/get?${urlParams.toString()}`);
     return (
         <main>Search
             <div className='flex gap-5 flex-col md:flex-row'>
-                <form onSubmit={handleSubmit} className='flex-[0.2]'>
-                    <div className='shadow-lg flex flex-col gap-10 md:min-h-screen p-6 pt-20'>
+                <form onSubmit={handleSubmit} className='flex-[0.20] md:sticky md:top-20'>
+                    <div className='overflow-hidden flex flex-col gap-10 md: p-6 fixed left-0 top-10 pt-20'>
                         {/* <Searchbar /> */}
                         <div>
                             <input
@@ -182,7 +185,7 @@ export default function Search() {
                         </div>
                     </div>
                 </form>
-                <div className='flex-[0.80] p-10'>
+                <div className='flex-[0.80] grid mx-auto p-10 scroll-auto'>
                     <h6 className='md:mt-20'>Result:</h6>
                     <div className='justify-center'>
                         {!loading && listing.length === 0 && (
