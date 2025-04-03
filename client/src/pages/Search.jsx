@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Searchbar from './Searchbar'
 import { useNavigate } from 'react-router-dom';
 import ListingItem from '../components/ListingItem';
+import { FaSearch, FaTimes } from 'react-icons/fa';
 
 export default function Search() {
     const navigate = useNavigate();
@@ -16,7 +17,13 @@ export default function Search() {
         //pool: false,
         sort: 'createdAt',
         order: 'desc',
+        address: ''
     });
+    const [isFormVisible, setIsFormVisible] = useState(true); // State to toggle form visibility
+
+    const toggleFormVisibility = () => {
+        setIsFormVisible(!isFormVisible); // Toggle the form visibility
+    };
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
@@ -27,6 +34,7 @@ export default function Search() {
         //const poolFromUrl = urlParams.get('pool');
         const sortFromUrl = urlParams.get('sort');
         const orderFromUrl = urlParams.get('order');
+        const addressFromUrl = urlParams.get('address');
 
         if (
             searchTermFromUrl ||
@@ -35,7 +43,8 @@ export default function Search() {
             furnishedFromUrl ||
             //poolFromUrl ||
             sortFromUrl ||
-            orderFromUrl
+            orderFromUrl ||
+            addressFromUrl
         ) {
             setSidebarData({
                 searchTerm: searchTermFromUrl || '',
@@ -45,7 +54,7 @@ export default function Search() {
                 //pool: poolFromUrl === 'true' ? true : false,
                 sort: sortFromUrl || 'createdAt',
                 order: orderFromUrl || 'desc',
-
+                address: addressFromUrl || ''
             });
         }
 
@@ -55,7 +64,7 @@ export default function Search() {
             const searchQuery = urlParams.toString();
             const res = await fetch(`/api/listing/get?${searchQuery}`);
             const data = await res.json();
-            if(data.length > 7){ setShowMore(true); }else{setShowMore(false);}
+            if (data.length > 7) { setShowMore(true); } else { setShowMore(false); }
             setListing(data);
             setLoading(false);
         };
@@ -68,6 +77,9 @@ export default function Search() {
         }
         if (e.target.id === 'searchTerm') {
             setSidebarData({ ...sideBarData, searchTerm: e.target.value })
+        }
+        if (e.target.id === 'address') {
+            setSidebarData({ ...sideBarData, address: e.target.value })
         }
         if (e.target.id === 'parking' || e.target.id === 'furnished') {
             setSidebarData({ ...sideBarData, [e.target.id]: e.target.checked || e.target.checked === 'true' ? true : false })
@@ -88,6 +100,7 @@ export default function Search() {
         //urlParams.set('pool', sideBarData.pool)
         urlParams.set('order', sideBarData.order)
         urlParams.set('sort', sideBarData.sort)
+        urlParams.set('address', sideBarData.address)
         const searchQuery = urlParams.toString()
 
         navigate(`/search?${searchQuery}`)
@@ -109,82 +122,102 @@ export default function Search() {
 
         setListing([...listing, ...data]);
     }
+
     //console.log("Query URL: ", `/api/listing/get?${urlParams.toString()}`);
     return (
-        <main>Search
+        <main>
+            <div className='flex justify-end'>
+                <button
+                    onClick={toggleFormVisibility}
+                    className="mt-20 justify-end bg-[rgb(250, 248, 246)] text-black text-2xl px-4 py-2 fixed rounded mb-4"
+                >
+                    {isFormVisible ? <FaTimes /> : <FaSearch />}
+                </button>
+            </div>
             <div className='flex gap-5 flex-col md:flex-row'>
-                <form onSubmit={handleSubmit} className='flex-[0.20] md:sticky md:top-20'>
-                    <div className='overflow-hidden flex flex-col gap-10 md: p-6 fixed left-0 top-10 pt-20'>
-                        {/* <Searchbar /> */}
-                        <div>
-                            <input
-                                id="searchTerm"
-                                type="text"
-                                placeholder="Search..."
-                                value={sideBarData.searchTerm}
-                                onChange={handleChange}
-                                class="bg-[#E8D9CD] w-full p-3 rounded-sm" />
-                        </div>
-                        <div className='flex justify-between gap-5'>
-                            <div>
-                                <span className='text-sm font-bold'>Type:</span>
-                                <div className='flex gap-2'>
-                                    <input type="checkbox" name="all" id="all"
-                                        onChange={handleChange}
-                                        checked={sideBarData.type === 'all'} />
-                                    <span>Rent & Sale</span>
-                                </div>
-                                <div className='flex gap-2'>
-                                    <input type="checkbox" name="rent" id="rent"
-                                        onChange={handleChange}
-                                        checked={sideBarData.type === 'rent'} />
-                                    <span>Rent</span>
-                                </div>
-                                <div className='flex gap-2'>
-                                    <input type="checkbox" name="sale" id="sale"
-                                        onChange={handleChange}
-                                        checked={sideBarData.type === 'sale'} />
-                                    <span>Sale</span>
-                                </div>
+                {isFormVisible && (
+                    <form onSubmit={handleSubmit} className='flex-[0.20] md:sticky md:top-30'>
+                        <div className='overflow-hidden flex flex-col bg-white min-h-screen z-1  gap-10 md: p-6 fixed top-10 pt-20'>
+                            {/* <Searchbar /> */}
+                            <div className='flex flex-col'>
+                                <span className='text-sm font-bold'>Title:</span>
+                                <input
+                                    id="searchTerm"
+                                    type="text"
+                                    placeholder="search..."
+                                    value={sideBarData.searchTerm}
+                                    onChange={handleChange}
+                                    class="bg-[#E8D9CD] w-full p-3 rounded-sm" />
+                                <span className='text-sm font-bold mt-3'>Location:</span>
+                                <input
+                                    id="address"
+                                    type="text"
+                                    placeholder="search..."
+                                    value={sideBarData.address}
+                                    onChange={handleChange}
+                                    class="bg-[#E8D9CD] w-full p-3 rounded-sm" />
                             </div>
-                            <div>
-                                <span className='text-sm font-bold'>Amenities:</span>
-                                <div className='flex gap-2'>
-                                    <input type="checkbox" name="parking" id="parking"
-                                        onChange={handleChange}
-                                        checked={sideBarData.parking} />
-                                    <span>Parking</span>
+                            <div className='flex justify-between gap-5'>
+                                <div>
+                                    <span className='text-sm font-bold'>Type:</span>
+                                    <div className='flex gap-2'>
+                                        <input type="checkbox" name="all" id="all"
+                                            onChange={handleChange}
+                                            checked={sideBarData.type === 'all'} />
+                                        <span>Rent & Sale</span>
+                                    </div>
+                                    <div className='flex gap-2'>
+                                        <input type="checkbox" name="rent" id="rent"
+                                            onChange={handleChange}
+                                            checked={sideBarData.type === 'rent'} />
+                                        <span>Rent</span>
+                                    </div>
+                                    <div className='flex gap-2'>
+                                        <input type="checkbox" name="sale" id="sale"
+                                            onChange={handleChange}
+                                            checked={sideBarData.type === 'sale'} />
+                                        <span>Sale</span>
+                                    </div>
                                 </div>
-                                <div className='flex gap-2'>
-                                    <input type="checkbox" name="furnished" id="furnished"
-                                        onChange={handleChange}
-                                        checked={sideBarData.furnished} />
-                                    <span>Furnished</span>
-                                </div>
-                                {/* <div className='flex gap-2'>
+                                <div>
+                                    <span className='text-sm font-bold'>Amenities:</span>
+                                    <div className='flex gap-2'>
+                                        <input type="checkbox" name="parking" id="parking"
+                                            onChange={handleChange}
+                                            checked={sideBarData.parking} />
+                                        <span>Parking</span>
+                                    </div>
+                                    <div className='flex gap-2'>
+                                        <input type="checkbox" name="furnished" id="furnished"
+                                            onChange={handleChange}
+                                            checked={sideBarData.furnished} />
+                                        <span>Furnished</span>
+                                    </div>
+                                    {/* <div className='flex gap-2'>
                                     <input type="checkbox" name="pool" id="pool" 
                                     onChange={handleChange}
                                     checked={sideBarData.pool}/>
                                     <span>Pool</span>
                                 </div> */}
+                                </div>
+                            </div>
+                            <div className='flex flex-col'>
+                                <span className='text-sm font-bold'>Sort:</span>
+                                <select className='bg-[#E8D9CD] p-3 rounded' name="" id="sort_order"
+                                    onChange={handleChange} defaultValue={'createdAt_desc'}>
+                                    <option value="price_desc">Price high to low</option>
+                                    <option value="price_asc">Price low to high</option>
+                                    <option value="createdAt_desc">Latest</option>
+                                    <option value="createdAt_asc">Oldest</option>
+                                </select>
+
+                            </div>
+                            <div>
+                                <button className=' bg-[#523D35] font-bold w-full text-white py-2 px-4 rounded-sm'>search</button>
                             </div>
                         </div>
-                        <div className='flex flex-col'>
-                            <span className='text-sm font-bold'>Sort:</span>
-                            <select className='bg-[#E8D9CD] p-3 rounded' name="" id="sort_order"
-                                onChange={handleChange} defaultValue={'createdAt_desc'}>
-                                <option value="price_desc">Price high to low</option>
-                                <option value="price_asc">Price low to high</option>
-                                <option value="createdAt_desc">Latest</option>
-                                <option value="createdAt_asc">Oldest</option>
-                            </select>
-
-                        </div>
-                        <div>
-                            <button className=' bg-[#523D35] font-bold w-full text-white py-2 px-4 rounded-sm'>search</button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                )}
                 <div className='flex-[0.80] grid mx-auto p-10 scroll-auto'>
                     <h6 className='md:mt-20'>Result:</h6>
                     <div className='justify-center'>
@@ -199,18 +232,18 @@ export default function Search() {
                                 <div class='h-4 w-4 bg-gray-400 rounded-full animate-bounce'></div>
                             </div>
                         )}
-                        <div className='md:flex md:flex-wrap gap-2 justify-between sm:grid sm:grid-cols-2'>
+                        <div className='flex flex-wrap md:grid md:grid-cols-4 gap-2 justify-between'>
                             {!loading && listing && listing.map((listing) => (
                                 <ListingItem key={listing._id} listing={listing} />
                             ))}
-                            {showMore && (
-                                <button className='w-max text-center text-green-500 font-bold' onClick={
-                                    onShowMoreClick
-                                }>show more...</button>
-                            )}
+
                         </div>
                     </div>
-
+                    {showMore && (
+                        <button className='w-max mt-5 text-center text-green-500 font-bold' onClick={
+                            onShowMoreClick
+                        }>show more...</button>
+                    )}
                 </div>
             </div>
         </main>

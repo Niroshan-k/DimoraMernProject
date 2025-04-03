@@ -3,13 +3,14 @@ import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/
 import { app } from '../firebase';
 import { FaTrash } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import L from 'leaflet';
 
-export default function CreatePost() {
+export default function UpdatePost() {
     const { currentUser } = useSelector((state) => state.user);
     const navigate = useNavigate();
     const [files, setFiles] = useState([]);
+    const params = useParams();
     const mapRef = useRef(null);
     const [formData, setFormData] = useState({
         imageUrls: [],
@@ -25,8 +26,22 @@ export default function CreatePost() {
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
-    console.log(formData);
-    console.log(currentUser);
+    //console.log(params.postId);
+    // console.log(currentUser);
+
+    useEffect(() => {
+        const fetchListings = async () => {
+          const PostId = params.postId;
+          const res = await fetch(`/api/posting/get/${PostId}`);
+          const data = await res.json();
+          if (data.success == false) {
+            //console.log(data.message);
+            return;
+          }
+          setFormData(data);
+        }
+        fetchListings();
+      }, []);
 
     const handleImageSubmit = (e) => {
         if (files.length > 0 && files.length + formData.imageUrls.length < 3) {
@@ -96,7 +111,7 @@ export default function CreatePost() {
             }
             setLoading(true);
             setError(false);
-            const res = await fetch('/api/posting/create', {
+            const res = await fetch(`/api/posting/update/${params.postId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -146,10 +161,10 @@ export default function CreatePost() {
         <main>
             <p>p</p>
             <div className='p-10 max-w-4xl mx-auto'>
-                <h6 className='uppercase text-5xl mt-10'>Create Post</h6>
+                <h6 className='uppercase text-5xl mt-10'>Update Post</h6>
                 <form onSubmit={handleSubmit} className='mt-10 flex gap-5 flex-row'>
                     <div className='flex-[0.5] flex flex-col gap-5'>
-                        <input onChange={handleChange} value={formData.title} type="text" placeholder='Project Name' className='p-3 bg-[#E8D9CD]' id='title' maxLength='62' minLength='0' required />
+                        <input onChange={handleChange} value={formData.title} type="text" placeholder='Project Name' className='p-3 bg-[#E8D9CD]' id='title' maxLength='62' minLength='0' />
                         <textarea onChange={handleChange} value={formData.description} type="text" placeholder='Description' className='p-3 bg-[#E8D9CD]' id='description' required />
                         <textarea onChange={handleChange} value={formData.location} type="text" placeholder='location' className='p-3 bg-[#E8D9CD]' id='location' required />
 
@@ -160,7 +175,7 @@ export default function CreatePost() {
                         <div>
                             <p>Duration:</p>
                             <div className='flex gap-3'>
-                            <div className='items-center'>
+                                <div className='items-center'>
                                     <p className='text-sm'>Years</p>
                                     <input onChange={handleChange} value={formData.years} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='years' min='0' max='10' required />
                                 </div>
@@ -176,7 +191,7 @@ export default function CreatePost() {
                         </div>
                     </div>
                     <div className='flex-[0.5] flex flex-col justify-between'>
-                        
+
                         <div>
                             <div className='flex gap-3 justify-between'>
                                 <input onChange={(e) => setFiles(e.target.files)} className='p-3 bg-[#E8D9CD] w-full' type="file" id='images' accept='image/*' multiple />
@@ -203,7 +218,7 @@ export default function CreatePost() {
 
                         </div>
                         <div>
-                            <button disabled={loading || uploading} className='bg-[#523D35] mt-3 p-3 text-white font-bold w-full'>{loading ? 'POSTING...' : 'POST'}</button>
+                            <button disabled={loading || uploading} className='bg-[#523D35] mt-3 p-3 text-white font-bold w-full'>{loading ? 'UPDATING...' : 'UPDATE'}</button>
                             {error && <p className='text-red-400 text-sm'>{error}</p>}
                         </div>
                     </div>

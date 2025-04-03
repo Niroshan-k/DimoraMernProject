@@ -143,7 +143,7 @@ export default function UpdateListing() {
 
   useEffect(() => {
     if (!mapRef.current) return;
-    const map = L.map(mapRef.current).setView([5, 5], 2);
+    const map = L.map(mapRef.current).setView([7.8731, 80.7718], 8);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',

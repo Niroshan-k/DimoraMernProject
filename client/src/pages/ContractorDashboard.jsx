@@ -73,8 +73,10 @@ export default function ContractorDashboard() {
                   {/* Post Content */}
                   <div className='flex gap-5 justify-between'>
                     <div className='flex-[0.3]'>
-                      <img className='rounded-lg object-cover h-40 w-40' src={post.imageUrls[0]} alt="" />
-                      <img className='mt-5 rounded-lg object-cover h-40 w-40' src={post.imageUrls[1]} alt="" />
+                      <span className='text-sm'>Before:</span>
+                      <img className='rounded-lg mb-5 object-cover h-40 w-40' src={post.imageUrls[0]} alt="" />
+                      <span className='text-sm'>After:</span>
+                      <img className='rounded-lg object-cover h-40 w-40' src={post.imageUrls[1]} alt="" />
                     </div>
                     <div className='flex-[1] flex gap-5'>
                       <div>
@@ -95,9 +97,11 @@ export default function ContractorDashboard() {
 
                   {/* EDIT Button */}
                   <div className='flex justify-end gap-4'>
-                    <button className='bg-[#523D35] rounded p-2 text-white font-bold w-30'>
-                      EDIT
-                    </button>
+                    <Link to={`/update-post/${post._id}`} className='bg-[#523D35] rounded hover:shadow-lg text-white font-bold'>
+                      <button className='bg-[#523D35] rounded p-2 text-white font-bold w-30'>
+                        EDIT
+                      </button>
+                    </Link>
                     <button className='bg-red-500 rounded p-2 text-white font-bold w-30'>
                       DELETE
                     </button>

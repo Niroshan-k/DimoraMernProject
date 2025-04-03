@@ -12,6 +12,7 @@ import ContractorDashboard from './pages/ContractorDashboard';
 import Blog from './pages/Blog';
 import CreateListing from './pages/CreateListing';
 import UpdateListing from './pages/UpdateListing';
+import UpdatePost from './pages/UpdatePost';
 import Listing from './pages/Listing';
 import CreatePost from './pages/CreatePost';
 import Search from './pages/Search';
@@ -44,6 +45,7 @@ export default function App() {
         <Route element={<PrivateRoute allowedRoles={['contractor']} />} >
           <Route path="/contractor-dashboard" element={<ContractorDashboard />} />
           <Route path='/create-post' element={<CreatePost />} />
+          <Route path='/update-post/:postId' element={<UpdatePost />} />
         </Route>
       </Routes>
     </BrowserRouter>
