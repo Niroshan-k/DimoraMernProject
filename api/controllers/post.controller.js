@@ -23,6 +23,24 @@ export const getPost = async (req, res, next) => {
     }
 }
 
+export const deletePost = async (req, res, next) => {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+        return next(errorHandler(404, 'Listing not found'));
+    }
+    
+    if (!req.user || req.user.id !== post.userRef) {
+        return next(errorHandler(401, 'You are not authorized to delete this listing'));
+    }
+
+    try {
+        await Post.findByIdAndDelete(req.params.id);
+        return res.status(200).json("Listing deleted successfully");
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const updatePost = async (req, res, next) => {
     const posting = await Post.findById(req.params.id);
     if (!posting) {
@@ -36,6 +54,46 @@ export const updatePost = async (req, res, next) => {
     try {
         const updatedPost = await Post.findByIdAndUpdate(req.params.id, req.body, { new: true });
         return res.status(200).json(updatedPost);
+    } catch (error) {
+        next(error);
+    }
+};
+
+export const getPots = async (req, res, next) => {
+    try {
+        //const limit = parseInt(req.query.limit) || 8;
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        
+        let type = req.query.type;
+        if (type === undefined || type === 'all') {
+            type = { $in: ['sale', 'rent'] };
+        }
+
+        const searchTerm = req.query.searchTerm || '';
+        const address = req.query.address || '';
+
+        // Ensure sorting is valid
+        const validSortFields = ['createdAt', 'price']; // Only allow sorting by these fields
+        let sort = req.query.sort || 'createdAt';
+        if (!validSortFields.includes(sort)) {
+            sort = 'createdAt'; // Default to createdAt if invalid
+        }
+
+        // Convert order to MongoDB format (-1 for desc, 1 for asc)
+        let order = req.query.order === 'asc' ? 1 : -1;
+
+        const listing = await Listing.find({
+            name: { $regex: searchTerm, $options: 'i' },
+            furnished,
+            parking,
+            type,
+            address: {$regex: address, $options: 'i'}
+        })
+        .sort({ [sort]: order })
+        .limit(limit)
+        .skip(startIndex);
+
+        return res.status(200).json(listing);
     } catch (error) {
         next(error);
     }

@@ -16,6 +16,7 @@ import UpdatePost from './pages/UpdatePost';
 import Listing from './pages/Listing';
 import CreatePost from './pages/CreatePost';
 import Search from './pages/Search';
+import Contractors from './pages/Contractors';
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
         <Route element={<PrivateRoute />} >
           <Route path="/profile" element={<Profile />} />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/contractors" element={<Contractors />} />
         </Route>
 
         {/* ✅ Seller Dashboard - Only for Sellers */}

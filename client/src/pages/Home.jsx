@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 export default function Home() {
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
-  console.log(rentListings);
+  //console.log(rentListings);
   useEffect(()=>{
     const fetchSaleListings = async () => {
       try {

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
+import { MdLocationOn } from 'react-icons/md';
 import "slick-carousel/slick/slick-theme.css";
 import { list } from 'firebase/storage';
 
@@ -11,23 +12,23 @@ export default function ContractorDashboard() {
 
   const { currentUser } = useSelector(state => state.user); // ✅ Get user from Redux
   const [userPosts, setUserPosts] = useState([]); // ✅ Always an array
-  const [showListingError, setShowListingError] = useState(false);
+  const [showPostError, setShowPostError] = useState(false);
 
   useEffect(() => {
     if (!currentUser || !currentUser._id) return;
 
     const fetchPosts = async () => {
       try {
-        setShowListingError(false);
+        setShowPostError(false);
         const res = await fetch(`/api/user/posts/${currentUser._id}`);
         const data = await res.json();
         if (data.success === false) {
-          setShowListingError(true);
+          setShowPostError(true);
           return;
         }
         setUserPosts(data); // ✅ Ensure it's always an array
       } catch (error) {
-        setShowListingError(true);
+        setShowPostError(true);
       }
     };
 
@@ -36,9 +37,9 @@ export default function ContractorDashboard() {
 
   //console.log(userPosts);
 
-  const handleDelete = async (listingId) => {
+  const handleDelete = async (postId) => {
     try {
-      const res = await fetch(`/api/listing/delete/${listingId}`, {
+      const res = await fetch(`/api/posting/delete/${postId}`, {
         method: 'DELETE',
       });
       if (!res.ok) {
@@ -51,11 +52,12 @@ export default function ContractorDashboard() {
         console.log(data.message);
         return;
       }
-      setUserListings((prev) => prev.filter((listing) => listing._id !== listingId));
+      setUserPosts((prev) => prev.filter((post) => post._id !== postId));
     } catch (error) {
       console.error(error.message);
     }
   };
+  
 
   return (
     <main>
@@ -82,9 +84,9 @@ export default function ContractorDashboard() {
                       <div>
                         <h6 className='text-4xl uppercase'>{post.title}</h6>
                         <h1 className='text-xl mt-4 flex items-center'>
-                          <FaMapMarker />
+                          <MdLocationOn />
                           <b className='ml-4'>{post.location}</b></h1>
-                        <h1 className='text-xl mt-4'><b>රු.</b><b className='ml-4'>{post.budget}/=</b></h1>
+                        <h1 className='text-xl mt-4'><b>රු.</b><b className='ml-4'>{(Number(post.budget) || 0).toLocaleString('en-US')}/=</b></h1>
                         <p className='mt-4 mb-5 text-lg flex items-center'>
                           <FaClock />
                           <b className='ml-5'>{post.years}</b>:Years <b className='ml-3'>{post.months}</b>:Months <b className='ml-3'>{post.days}</b>:Days
@@ -102,7 +104,7 @@ export default function ContractorDashboard() {
                         EDIT
                       </button>
                     </Link>
-                    <button className='bg-red-500 rounded p-2 text-white font-bold w-30'>
+                    <button onClick={() => handleDelete(post._id)} className='bg-red-500 rounded p-2 text-white font-bold w-30'>
                       DELETE
                     </button>
                   </div>

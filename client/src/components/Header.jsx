@@ -18,7 +18,10 @@ export default function header() {
                 <li>About Us</li>
                 <Link to='/blog'>
                     {currentUser ? (
+                        <ul className='flex gap-5 items-center cursor-pointer'>
                         <li>Blog</li>
+                        <li><Link to="/contractors">Contractors</Link></li>
+                        </ul>
                     ) : (<li></li>)}
                 </Link>
 
