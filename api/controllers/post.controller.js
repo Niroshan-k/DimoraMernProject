@@ -59,18 +59,13 @@ export const updatePost = async (req, res, next) => {
     }
 };
 
-export const getPots = async (req, res, next) => {
+export const getPosts = async (req, res, next) => {
     try {
-        //const limit = parseInt(req.query.limit) || 8;
+        const limit = parseInt(req.query.limit) || 8;
         const startIndex = parseInt(req.query.startIndex) || 0;
         
-        let type = req.query.type;
-        if (type === undefined || type === 'all') {
-            type = { $in: ['sale', 'rent'] };
-        }
-
         const searchTerm = req.query.searchTerm || '';
-        const address = req.query.address || '';
+        const location = req.query.location || '';
 
         // Ensure sorting is valid
         const validSortFields = ['createdAt', 'price']; // Only allow sorting by these fields
@@ -82,18 +77,15 @@ export const getPots = async (req, res, next) => {
         // Convert order to MongoDB format (-1 for desc, 1 for asc)
         let order = req.query.order === 'asc' ? 1 : -1;
 
-        const listing = await Listing.find({
-            name: { $regex: searchTerm, $options: 'i' },
-            furnished,
-            parking,
-            type,
-            address: {$regex: address, $options: 'i'}
+        const post = await Post.find({
+            title: { $regex: searchTerm, $options: 'i' },
+            location: {$regex: location, $options: 'i'}
         })
         .sort({ [sort]: order })
         .limit(limit)
         .skip(startIndex);
 
-        return res.status(200).json(listing);
+        return res.status(200).json(post);
     } catch (error) {
         next(error);
     }

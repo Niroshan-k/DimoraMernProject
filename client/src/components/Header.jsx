@@ -16,14 +16,10 @@ export default function header() {
                 <li className='flex gap-1 items-center'><FaGlobe />English</li>
                 <li className=''>Contact</li>
                 <li>About Us</li>
-                <Link to='/blog'>
-                    {currentUser ? (
-                        <ul className='flex gap-5 items-center cursor-pointer'>
-                        <li>Blog</li>
-                        <li><Link to="/contractors">Contractors</Link></li>
-                        </ul>
-                    ) : (<li></li>)}
-                </Link>
+                <ul className='flex gap-5 items-center cursor-pointer'>
+                    <li><Link to="/blog">Blog</Link></li> {/* Use Link directly */}
+                    {currentUser && <li><Link to="/contractors">Contractors</Link></li>}
+                </ul>
 
                 {currentUser?.role === 'seller' && (
                     <li><Link to="/seller-dashboard">Dashboard</Link></li>
