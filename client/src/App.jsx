@@ -17,6 +17,8 @@ import Listing from './pages/Listing';
 import CreatePost from './pages/CreatePost';
 import Search from './pages/Search';
 import Contractors from './pages/Contractors';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 
 export default function App() {
   return (
@@ -28,6 +30,7 @@ export default function App() {
         <Route path="/sign-up" element={<SignUp />} />
         <Route path='/listing/:listingId' element={<Listing />}></Route>
         <Route path='/search' element={<Search />}></Route>
+        <Route path='/dimora/admin/login' element={<AdminLogin />} />
 
         {/* ✅ Protect Profile (All Authenticated Users) */}
         <Route element={<PrivateRoute />} >
@@ -48,6 +51,10 @@ export default function App() {
           <Route path="/contractor-dashboard" element={<ContractorDashboard />} />
           <Route path='/create-post' element={<CreatePost />} />
           <Route path='/update-post/:postId' element={<UpdatePost />} />
+        </Route>
+
+        <Route element={<PrivateRoute allowedRoles={['admin']} />} >
+          <Route path="/dimora/admin-dashboard" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -13,9 +13,13 @@ export default function header() {
                 <img src="/assets/logo.png" alt="logo" className='w-32' />
             </Link>
             <ul className='flex gap-5 items-center cursor-pointer'>
-                <li className='flex gap-1 items-center'><FaGlobe />English</li>
-                <li className=''>Contact</li>
-                <li>About Us</li>
+                {currentUser?.role != 'admin' && (
+                    <>
+                    <li className='flex gap-1 items-center'><FaGlobe />English</li>
+                    <li className=''>Contact</li>
+                    <li>About Us</li>
+                    </>
+                )}
                 <ul className='flex gap-5 items-center cursor-pointer'>
                     <li><Link to="/blog">Blog</Link></li> {/* Use Link directly */}
                     {currentUser && <li><Link to="/contractors">Contractors</Link></li>}
@@ -26,6 +30,9 @@ export default function header() {
                 )}
                 {currentUser?.role === 'contractor' && (
                     <li><Link to="/contractor-dashboard">Dashboard</Link></li>
+                )}
+                {currentUser?.role === 'admin' && (
+                    <li><Link to="/dimora/admin-dashboard">Dashboard</Link></li>
                 )}
 
                 <Link to='/profile'>

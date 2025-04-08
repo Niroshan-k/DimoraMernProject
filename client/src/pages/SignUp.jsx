@@ -145,13 +145,14 @@ export default function SignUp() {
                 <button disabled={loading} type='submit' className='bg-[#523D35] w-full p-3 text-amber-50 font-bold'>
                     {loading ? 'Loading...' : 'Sign Up'}
                 </button>
+                {error && <div className='text-red-500 mt-5 shadow-lg p-3 rounded-lg'>{error}</div>}
 
                 <OAuth role={formData.role} setError={setError} />
             </form>
 
             <p className='text-center mt-10'>Have an account? <Link to={"/sign-in"} className='text-[#523D35] font-extrabold'>Sign in</Link></p>
 
-            {error && <div className='text-red-500 mt-5 shadow-lg p-3 rounded-lg'>{error}</div>}
+            
         </div>
     );
 }

@@ -36,12 +36,28 @@ export const deleteUser = async (req, res, next) => {
     if (req.user.id !== req.params.id) return next(errorHandler(401, "you can only delete your own account."));
     try {
         await User.findByIdAndDelete(req.params.id);
-        res.clearCookie('access_token');
+        //res.clearCookie('access_token');
         res.status(200).json("Account has been deleted.");
     } catch (error) {
         next(error);
     }
 }
+
+export const deleteUserAdmin = async (req, res, next) => {
+    console.log("req.user:", req.user); // Debugging: Log the req.user object
+
+    if (!req.user || req.user.role !== 'admin') {
+        console.log("Role is not admin. Current role:", req.user ? req.user.role : "undefined"); // Log the role
+        return next(errorHandler(401, `Not admin`));
+    }
+
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json({ success: true, message: "Account has been deleted." });
+    } catch (error) {
+        next(error);
+    }
+};
 
 export const getUserListings = async (req, res, next) => {
     if (req.user.id === req.params.id) {
@@ -82,4 +98,13 @@ export const getUserPosts = async (req, res, next) => {
         return next(errorHandler(401, "you can only view your own posts."));
     }
 
+}
+
+export const getUsers = async (req, res, next) => {
+    try {
+        const users = await User.find({});
+        res.status(200).json(users);
+    } catch (error) {
+        next(error);
+    }
 }

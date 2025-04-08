@@ -8,7 +8,7 @@ import {
   deleteUserStart, deleteUserFailure, deleteUserSuccess,
   signOutUserFailure, signOutUserStart, signOutUserSuccess
 } from '../redux/User/userSlice.js';
-import { FaCheckCircle, FaRecycle, FaTimes, FaUserCircle, FaWindowClose } from 'react-icons/fa';
+import { FaCheckCircle, FaFrownOpen, FaRecycle, FaTimes, FaUserCircle, FaWindowClose } from 'react-icons/fa';
 
 export default function Profile() {
   const fileRef = useRef(null);
@@ -134,13 +134,14 @@ export default function Profile() {
         />
 
         {/* ✅ Upload Progress/Error Messages */}
-        <p>
+        <p className='mt-5'>
           {fileUploadError ? (
-            <span className='text-red-600 font-bold'>File upload failed.</span>
+            <span className='text-red-600 font-bold flex gap-3 items-center shadow p-2 justify-center'>File upload failed. <FaFrownOpen />
+            </span>
           ) : filePerc > 0 && filePerc < 100 ? (
             <span>Uploading {filePerc}%</span>
           ) : filePerc === 100 ? (
-            <span className='text-green-400 font-bold'>Upload complete</span>
+            <span className='text-green-400 p-2 justify-center flex gap-3 items-center font-bold shadow rounded'>Image Upload complete<FaCheckCircle /></span>
           ) : null}
         </p>
 
@@ -161,14 +162,24 @@ export default function Profile() {
           placeholder='email'
           id='email'
         />
-        <input
-          type="password"
-
-          onChange={handleChange}
-          className='bg-[#E8D9CD] mt-6 h-12 w-full p-2 rounded'
-          placeholder='password'
-          id='password'
-        />
+        {currentUser.role === 'contractor' && (
+          <input
+            type="password"
+            onChange={handleChange}
+            className='bg-[#E8D9CD] mt-6 h-12 w-full p-2 rounded'
+            placeholder='password'
+            id='password'
+          />
+        )}
+        {currentUser.role === 'seller' && (
+          <input
+            type="password"
+            onChange={handleChange}
+            className='bg-[#E8D9CD] mt-6 h-12 w-full p-2 rounded'
+            placeholder='password'
+            id='password'
+          />
+        )}
 
         <div className='flex justify-between'>
           <button disabled={loading} className='bg-[#523D35] rounded text-white font-bold p-3 w-40 cursor-pointer mt-6'>
@@ -185,13 +196,13 @@ export default function Profile() {
         <p className='text-red-500 text-right font-bold'>{error ? error : ""}</p>
         {
           updateSuccess ? <div className='shadow-lg p-4 fixed bottom-5 left-1/2 -translate-x-1/2 max-w-lg w-full text-center'>
-          <div className='text-right justify-self-end'>
-            <FaTimes className='cursor-pointer' onClick={handleUpdate} />
-          </div>
-          <p className='flex items-center justify-center gap-2'>
-            <FaCheckCircle className='text-green-500' /> User Updated Successfully!
-          </p>
-        </div> : ""
+            <div className='text-right justify-self-end'>
+              <FaTimes className='cursor-pointer' onClick={handleUpdate} />
+            </div>
+            <p className='flex items-center justify-center gap-2'>
+              <FaCheckCircle className='text-green-500' /> User Updated Successfully!
+            </p>
+          </div> : ""
         }
       </div>
     </div>
