@@ -108,3 +108,26 @@ export const getUsers = async (req, res, next) => {
         next(error);
     }
 }
+
+export const getUserInfo = async ( req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+}
+export const getUserListingsAdmin = async (req, res, next) => {
+    if (req.params.id) {
+        try {
+            const listing = await Listing.find({ userRef: req.params.id });
+            res.status(200).json(listing);
+        } catch (error) {
+            next(error);
+        }
+    } else {
+        return next(errorHandler(401, "you can only view your own listings."));
+    }
+
+}

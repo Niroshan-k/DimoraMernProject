@@ -57,7 +57,7 @@ export default function ContractorDashboard() {
       console.error(error.message);
     }
   };
-  
+
 
   return (
     <main>

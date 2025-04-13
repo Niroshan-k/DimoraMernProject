@@ -90,7 +90,7 @@ export default function SellerDashboard() {
                   </Slider>
                 ) : ( // ✅ If only one image, show it normally
                   <div className="relative">
-                    <img src={listing.imageUrls[0]} alt="Listing" className="rounded w-200 h- object-cover" />
+                    <img src={listing.imageUrls[0]} alt="Listing" className="rounded w-200 h-100 object-cover" />
                   </div>
                 )}
 

@@ -19,6 +19,7 @@ import Search from './pages/Search';
 import Contractors from './pages/Contractors';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import UserActivities from './pages/UserActivities';
 
 export default function App() {
   return (
@@ -55,6 +56,7 @@ export default function App() {
 
         <Route element={<PrivateRoute allowedRoles={['admin']} />} >
           <Route path="/dimora/admin-dashboard" element={<AdminDashboard />} />
+          <Route path="/dimora/admin-dashboard/user-activities/:userId" element={<UserActivities />} />
         </Route>
       </Routes>
     </BrowserRouter>
