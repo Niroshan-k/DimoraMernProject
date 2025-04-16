@@ -1,11 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useDispatch, } from 'react-redux';
-import {
-    updateUserSuccess, updateUserFailure, updateUserStart,
-    deleteUserStart, deleteUserFailure, deleteUserSuccess,
-    signOutUserFailure, signOutUserStart, signOutUserSuccess
-} from '../redux/User/userSlice.js';
 import { Link, useParams } from 'react-router-dom';
 
 export default function AdminDashboard() {
@@ -35,7 +30,7 @@ export default function AdminDashboard() {
         fetchUsers();
     }, [currentUser]);
 
-    console.log(currentUser);
+    //console.log(currentUser);
 
     const handleDeleteUser = async (id) => {
         try {
@@ -58,13 +53,6 @@ export default function AdminDashboard() {
         }
     };
 
-    const UserActivities = async (id) => {
-        try {
-
-        } catch (error) {
-
-        }
-    };
 
     return (
         <main>a
@@ -92,7 +80,7 @@ export default function AdminDashboard() {
                                         </div>
                                         <div className='flex gap-3 justify-end'>
                                             <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
-                                            <button onClick={() => UserActivities(user._id)} className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
+                                            <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
                                             </Link>
                                             <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
                                         </div>
@@ -122,7 +110,10 @@ export default function AdminDashboard() {
                                                 <p className='text-xl'>{user.email}</p>
                                             </div>
                                         </div>
-                                        <div className='flex justify-end'>
+                                        <div className='flex justify-end gap-3'>
+                                            <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
+                                            <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
+                                            </Link>
                                             <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
                                         </div>
                                     </div>

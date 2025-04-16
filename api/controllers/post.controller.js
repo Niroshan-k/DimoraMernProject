@@ -41,6 +41,25 @@ export const deletePost = async (req, res, next) => {
     }
 };
 
+export const deletePostAdmin = async (req, res, next) => {
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+        return next(errorHandler(404, 'Listing not found'));
+    }
+    
+    if (!req.user || req.user.role !== "admin") {
+        console.log("Role is not admin. Current role:", req.user ? req.user.role : "undefined"); // Log the role
+        return next(errorHandler(401, 'You are not Admin'));
+    }
+
+    try {
+        await Post.findByIdAndDelete(req.params.id);
+        return res.status(200).json("Listing deleted successfully");
+    } catch (error) {
+        next(error);
+    }
+};
+
 export const updatePost = async (req, res, next) => {
     const posting = await Post.findById(req.params.id);
     if (!posting) {

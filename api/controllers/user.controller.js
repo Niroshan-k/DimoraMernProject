@@ -118,6 +118,7 @@ export const getUserInfo = async ( req, res, next) => {
         next(error);
     }
 }
+
 export const getUserListingsAdmin = async (req, res, next) => {
     if (req.params.id) {
         try {
@@ -131,3 +132,19 @@ export const getUserListingsAdmin = async (req, res, next) => {
     }
 
 }
+
+export const getUserPostsAdmin = async (req, res, next) => {
+    if (req.params.id) {
+        try {
+            const posts = await Post.find({ userRef: req.params.id });
+            res.status(200).json(posts);
+        } catch (error) {
+            next(error);
+        }
+    } else {
+        return next(errorHandler(401, "you can only view your own posts."));
+    }
+
+}
+
+

@@ -1,7 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
 
-// https://vite.dev/config/
 export default defineConfig({
   server: {
     proxy: {
@@ -12,4 +11,12 @@ export default defineConfig({
     },
   },
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      external: ['emailjs', 'fs', 'net', 'tls'], // Exclude emailjs and Node.js modules
+    },
+  },
+  optimizeDeps: {
+    exclude: ['emailjs', 'fs', 'net', 'tls'], // Ensure emailjs and Node.js modules are excluded
+  },
 });
