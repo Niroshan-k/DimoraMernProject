@@ -186,98 +186,99 @@ export default function UserActivities() {
               </div>
             </div>
           </div>
+          <h6 className='mt-5 mb-3'>Send a Email</h6>
           <form onSubmit={sendEmail}>
             <div className="mb-4">
-              <label htmlFor="to_email" className="block text-sm font-medium text-gray-700">
-                To Email
+              <label htmlFor="to_email" className="block text-sm font-medium">
+                Email:
               </label>
               <input
                 type="email"
                 name="to_email" // Matches {{to_email}} in the template
                 id="to_email"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter recipient email"
+                className="mt-1 bg-[#EFEFE9] p-3 block w-full rounded border-gray-300 shadow-sm sm:text-sm"
+                value={user.email}
                 required
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="from_name" className="block text-sm font-medium text-gray-700">
-                From Name
+              <label htmlFor="from_name" className="block text-sm font-medium">
+                From:
               </label>
               <input
                 type="text"
                 name="from_name" // Matches {{from_name}} in the template
                 id="from_name"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                placeholder="Enter your name"
+                className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                value="DimoraLand(pvt) Ltd."
                 required
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="reply_to" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="reply_to" className="block text-sm font-medium">
                 Reply-To Email
               </label>
               <input
                 type="email"
                 name="reply_to" // Matches {{reply_to}} in the template
                 id="reply_to"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Enter reply-to email"
                 required
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="cc" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="cc" className="block text-sm font-medium">
                 CC
               </label>
               <input
-                type="text"
+                type="email"
                 name="cc" // Matches {{cc}} in the template
                 id="cc"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Enter CC email (optional)"
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="bcc" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="bcc" className="block text-sm font-medium">
                 BCC
               </label>
               <input
-                type="text"
+                type="email"
                 name="bcc" // Matches {{bcc}} in the template
                 id="bcc"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Enter BCC email (optional)"
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="subject" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="subject" className="block text-sm font-medium">
                 Subject
               </label>
               <input
                 type="text"
                 name="subject" // Matches {{subject}} in the template
                 id="subject"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Enter email subject"
                 required
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="message" className="block text-sm font-medium">
                 Message
               </label>
               <textarea
                 name="message" // Matches {{message}} in the template
                 id="message"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Enter your message"
                 required
               />
             </div>
             <button
               type="submit"
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="py-3 px-4 text-sm font-medium rounded text-white bg-[#523D35]"
             >
               Send Email
             </button>
