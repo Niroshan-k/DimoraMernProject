@@ -16,3 +16,36 @@
     font-size: 5rem;
     font-weight: 400;
 }
+
+/* Home.css */
+.home {
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  .home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .home {
+      padding: 10px;
+    }
+    
+    .featured-properties {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .featured-properties {
+      grid-template-columns: 1fr;
+    }
+    
+    .search-section {
+      flex-direction: column;
+    }
+  }
