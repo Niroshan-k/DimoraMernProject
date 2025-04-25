@@ -1,27 +1,39 @@
-import React from 'react'
-import { FaGlobe } from 'react-icons/fa';
+import React, { useState } from 'react'
+import { FaGlobe, FaBars, FaTimes } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-
-export default function header() {
+export default function Header() {
     const { currentUser } = useSelector(state => state.user);
-    //console.log(currentUser);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     return (
         <header className='bg-[#EFEFE9] shadow-lg z-2 w-full flex justify-between p-2 fixed items-center'>
             <Link to='/'>
                 <img src="/assets/logo.png" alt="logo" className='w-32' />
             </Link>
-            <ul className='flex gap-5 items-center cursor-pointer'>
+            
+            {/* Mobile Menu Button */}
+            <div className='md:hidden'>
+                <button 
+                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                    className='text-2xl p-2'
+                >
+                    {isMenuOpen ? <FaTimes /> : <FaBars />}
+                </button>
+            </div>
+
+            {/* Desktop Menu */}
+            <ul className='hidden md:flex gap-5 items-center cursor-pointer'>
                 {currentUser?.role != 'admin' && (
                     <>
-                    <li className='flex gap-1 items-center'><FaGlobe />English</li>
-                    <li className=''>Contact</li>
-                    <li>About Us</li>
+                        <li className='flex gap-1 items-center'><FaGlobe />English</li>
+                        <li className=''>Contact</li>
+                        <li>About Us</li>
                     </>
                 )}
                 <ul className='flex gap-5 items-center cursor-pointer'>
-                    <li><Link to="/blog">Blog</Link></li> {/* Use Link directly */}
+                    <li><Link to="/blog">Blog</Link></li>
                     {currentUser && <li><Link to="/contractors">Contractors</Link></li>}
                 </ul>
 
@@ -41,8 +53,47 @@ export default function header() {
                     ) : (<li> <button className='bg-[#959D90] font-bold p-3 w-24 rounded cursor-pointer'>Sign In</button></li>
                     )}
                 </Link>
-                
             </ul>
+
+            {/* Mobile Menu */}
+            {isMenuOpen && (
+                <div className='absolute top-full left-0 right-0 bg-[#EFEFE9] shadow-lg p-4 md:hidden'>
+                    <ul className='flex flex-col gap-4'>
+                        {currentUser?.role != 'admin' && (
+                            <>
+                                <li className='flex gap-1 items-center'><FaGlobe />English</li>
+                                <li className=''>Contact</li>
+                                <li>About Us</li>
+                            </>
+                        )}
+                        <li><Link to="/blog" onClick={() => setIsMenuOpen(false)}>Blog</Link></li>
+                        {currentUser && <li><Link to="/contractors" onClick={() => setIsMenuOpen(false)}>Contractors</Link></li>}
+                        
+                        {currentUser?.role === 'seller' && (
+                            <li><Link to="/seller-dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link></li>
+                        )}
+                        {currentUser?.role === 'contractor' && (
+                            <li><Link to="/contractor-dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link></li>
+                        )}
+                        {currentUser?.role === 'admin' && (
+                            <li><Link to="/dimora/admin-dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link></li>
+                        )}
+
+                        <li>
+                            <Link to='/profile' onClick={() => setIsMenuOpen(false)}>
+                                {currentUser ? (
+                                    <div className='flex items-center gap-2'>
+                                        <img src={currentUser.avatar || "https://th.bing.com/th/id/OIP.YEnn0jmP54djRm9Ma49NHgHaHa?rs=1&pid=ImgDetMain"} alt="profile" className='rounded-full border object-cover w-10 h-10' />
+                                        <span>Profile</span>
+                                    </div>
+                                ) : (
+                                    <button className='bg-[#959D90] font-bold p-3 w-full rounded cursor-pointer'>Sign In</button>
+                                )}
+                            </Link>
+                        </li>
+                    </ul>
+                </div>
+            )}
         </header>
     )
 }

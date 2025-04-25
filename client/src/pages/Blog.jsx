@@ -30,8 +30,17 @@ const blogPosts = [
 
 export default function Blog() {
   return (
-    <Container maxWidth="lg" sx={{ py: 4, pt: 12 }}>
-      <Typography variant="h3" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, pt: { xs: 12, md: 16 } }}>
+      <Typography 
+        variant="h3" 
+        component="h1" 
+        gutterBottom 
+        align="center" 
+        sx={{ 
+          mb: 4,
+          fontSize: { xs: '2rem', md: '2.5rem' }
+        }}
+      >
         Real Estate Blog
       </Typography>
       
@@ -51,13 +60,29 @@ export default function Blog() {
               }}
             >
               <CardContent>
-                <Typography variant="h5" component="h2" gutterBottom>
+                <Typography 
+                  variant="h5" 
+                  component="h2" 
+                  gutterBottom
+                  sx={{
+                    fontSize: { xs: '1.25rem', md: '1.5rem' }
+                  }}
+                >
                   {post.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary" 
+                  gutterBottom
+                  sx={{ fontSize: { xs: '0.75rem', md: '0.875rem' } }}
+                >
                   {post.date}
                 </Typography>
-                <Typography variant="body1" paragraph>
+                <Typography 
+                  variant="body1" 
+                  paragraph
+                  sx={{ fontSize: { xs: '0.875rem', md: '1rem' } }}
+                >
                   {post.excerpt}
                 </Typography>
                 <Box sx={{ mt: 2 }}>
@@ -66,6 +91,7 @@ export default function Blog() {
                     color="primary" 
                     sx={{ 
                       cursor: 'pointer',
+                      fontSize: { xs: '0.75rem', md: '0.875rem' },
                       '&:hover': {
                         textDecoration: 'underline'
                       }
