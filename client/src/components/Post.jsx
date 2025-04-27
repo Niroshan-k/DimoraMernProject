@@ -37,7 +37,7 @@ export default function Post({ post }) {
                 <img className='h-15 w-15 rounded-full' src={userData.avatar} alt="avatar" />
                 <h6 className='flex items-center gap-1 text-lg'>
                     {userData.username}
-                    <img className='h-5 w-5' src={userData ? "/assets/star.png" : ""} alt="verified-seller" />
+                    <img className='h-5 w-5' src={userData.verified ? "/assets/star.png" : "assets/cross.png"} alt="verified-seller" />
                 </h6>
             </div>
 

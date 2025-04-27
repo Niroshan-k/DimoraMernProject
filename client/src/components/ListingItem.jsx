@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FaBox, FaCube, FaCubes, FaHeart, FaRegHeart, FaShareAlt, FaSpinner } from 'react-icons/fa'
+import { FaBox, FaCube, FaCubes, FaHeart, FaHouseUser, FaRegHeart, FaShareAlt, FaSpinner, FaWarehouse } from 'react-icons/fa'
 import { MdLocationOn } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
@@ -29,6 +29,7 @@ export default function ListingItem({ listing }) {
                         <span className='truncate w-full'>{listing.address}</span>
                     </div>
                     <p className='flex items-center gap-1'><FaCube />Area:<b className='ml-2'>{listing.area}<span className='text-sm'>m<sup>2</sup></span></b></p>
+                    <p className='flex items-center gap-1'><FaHouseUser /> Type: <b className='ml-2'>{listing.property_type}</b></p>
                     </Link>
 
                     <div className='flex justify-between mt-5 text-xl'>

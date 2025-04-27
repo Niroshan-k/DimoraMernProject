@@ -31,18 +31,7 @@ const blogPosts = [
 export default function Blog() {
   return (
     <Container maxWidth="lg" sx={{ py: 4, pt: { xs: 12, md: 16 } }}>
-      <Typography 
-        variant="h3" 
-        component="h1" 
-        gutterBottom 
-        align="center" 
-        sx={{ 
-          mb: 4,
-          fontSize: { xs: '2rem', md: '2.5rem' }
-        }}
-      >
-        Real Estate Blog
-      </Typography>
+      <h6 className='text-6xl mb-10'>Blog</h6>
       
       <Grid container spacing={4}>
         {blogPosts.map((post) => (

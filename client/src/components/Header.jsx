@@ -32,11 +32,12 @@ export default function Header() {
                         <li>About Us</li>
                     </>
                 )}
+                {currentUser &&
                 <ul className='flex gap-5 items-center cursor-pointer'>
                     <li><Link to="/blog">Blog</Link></li>
-                    {currentUser && <li><Link to="/contractors">Contractors</Link></li>}
+                     <li><Link to="/contractors">Contractors</Link></li>
                 </ul>
-
+                }
                 {currentUser?.role === 'seller' && (
                     <li><Link to="/seller-dashboard">Dashboard</Link></li>
                 )}
@@ -46,7 +47,6 @@ export default function Header() {
                 {currentUser?.role === 'admin' && (
                     <li><Link to="/dimora/admin-dashboard">Dashboard</Link></li>
                 )}
-
                 <Link to='/profile'>
                     {currentUser ? (
                         <img src={currentUser.avatar || "https://th.bing.com/th/id/OIP.YEnn0jmP54djRm9Ma49NHgHaHa?rs=1&pid=ImgDetMain"} alt="profile" className='rounded-full border object-cover w-10 h-10' />

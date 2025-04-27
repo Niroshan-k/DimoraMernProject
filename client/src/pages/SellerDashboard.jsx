@@ -101,6 +101,7 @@ export default function SellerDashboard() {
                   <h6 className='text-2xl font-bold mb-5'>{listing.name}</h6>
                   <p className='flex items-center gap-2'><FaMapMarker />Location:</p>
                   <p className='flex items-center gap-2 mb-2'><b>{listing.address}.</b></p>
+                  <p>Property Type: <b>{listing.property_type}</b></p>
                   <p className='flex items-center gap-2'><FaMoneyBill />{listing.type}:<b>රු.{listing.price}</b><span className='text-sm'>{listing.type === "rent" ? "(රු.month)" : ""}</span></p>
                   <p className='flex items-center gap-2'><FaChartArea />Area:<b>{listing.area}m<sup>2</sup></b></p>
                   <p className='flex items-center gap-2'><FaBed />Bedrooms: <b>{listing.bedrooms}</b></p>

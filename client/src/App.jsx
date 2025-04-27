@@ -20,6 +20,7 @@ import Contractors from './pages/Contractors';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import UserActivities from './pages/UserActivities';
+import Verify from './pages/Verify';
 
 export default function App() {
   return (
@@ -38,6 +39,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/contractors" element={<Contractors />} />
+          <Route path="/beVerified" element={<Verify />} />
         </Route>
 
         {/* ✅ Seller Dashboard - Only for Sellers */}

@@ -22,6 +22,9 @@ export const updateUser = async (req, res, next) => {
                 email: req.body.email,
                 password: req.body.password,
                 avatar: req.body.avatar,
+                phone: req.body.phone,
+                location: req.body.location,
+                verified: req.body.verified,
             }
         }, { new: true });
 

@@ -18,6 +18,7 @@ export default function UpdateListing() {
     description: '',
     address: '',
     type: 'sale',
+    property_type: 'house',
     parking: false,
     furnished: false,
     bedrooms: 1,
@@ -105,6 +106,8 @@ export default function UpdateListing() {
       setFormData({ ...formData, type: e.target.id });
     } else if (e.target.id === 'parking' || e.target.id === 'furnished') {
       setFormData({ ...formData, [e.target.id]: e.target.checked });
+    }else if(e.target.id === 'house' || e.target.id === 'apartment' || e.target.id === 'villa' || e.target.id === 'hotel'){
+      setFormData({ ...formData, property_type: e.target.id });
     } else {
       setFormData({ ...formData, [e.target.id]: e.target.value });
     }
@@ -192,6 +195,25 @@ export default function UpdateListing() {
             <div className="flex gap-1">
               <input onChange={handleChange} checked={formData.furnished} type="checkbox" id='furnished' className='w-5' />
               <span>Furnished</span>
+            </div>
+          </div>
+
+          <div className='flex flex-wrap gap-6 justify-between'>
+            <div className="flex gap-1">
+              <input onChange={handleChange} checked={formData.property_type === 'house'} type="checkbox" id='house' className='w-5' />
+              <span>House</span>
+            </div>
+            <div className="flex gap-1">
+              <input onChange={handleChange} checked={formData.property_type === 'apartment'} type="checkbox" id='apartment' className='w-5' />
+              <span>Apartment</span>
+            </div>
+            <div className="flex gap-1">
+              <input onChange={handleChange} checked={formData.property_type === 'villa'} type="checkbox" id='villa' className='w-5' />
+              <span>Villa</span>
+            </div>
+            <div className="flex gap-1">
+              <input onChange={handleChange} checked={formData.property_type === 'hotel'} type="checkbox" id='hotel' className='w-5' />
+              <span>Hotel</span>
             </div>
           </div>
 

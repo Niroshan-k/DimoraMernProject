@@ -38,6 +38,10 @@ const listingSchema = new mongoose.Schema(
             type: Boolean,
             required: true,
         },
+        property_type:{
+            type: String,
+            default: "house",
+        },
         type:{
             type: String,
             required: true,

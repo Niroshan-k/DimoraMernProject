@@ -25,6 +25,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         default : "https://www.pngmart.com/files/23/Profile-PNG-Photo.png"
     },
+    phone: {
+        type: String,
+        default: null
+    },
+    location: {
+        type: String,
+        default: null
+    },
+    verified: {
+        type: Boolean,
+    },
 },{ timestamps: true });
 
 const User = mongoose.model('User', userSchema);

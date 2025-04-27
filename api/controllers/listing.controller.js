@@ -98,6 +98,11 @@ export const getListings = async (req, res, next) => {
             type = { $in: ['sale', 'rent'] };
         }
 
+        let property_type = req.query.property_type;
+        if (property_type === undefined || property_type === 'all') {
+            property_type = { $in: ['house', 'apartment', 'villa', 'hotel'] };
+        }
+
         const searchTerm = req.query.searchTerm || '';
         const address = req.query.address || '';
 
@@ -116,6 +121,7 @@ export const getListings = async (req, res, next) => {
             furnished,
             parking,
             type,
+            property_type,
             address: {$regex: address, $options: 'i'}
         })
         .sort({ [sort]: order })

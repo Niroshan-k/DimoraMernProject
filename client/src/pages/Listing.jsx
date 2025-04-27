@@ -200,7 +200,7 @@ export default function Listing() {
                                 <span className='text-sm'>Username:</span>
                                 <div className='flex gap-2 items-center'>
                                     <h6 className='text-2xl'>{userData.username}</h6>
-                                    <img className='h-5 w-5' src={userData ? "/assets/star.png" : ""} alt="verified-seller" />
+                                    <img className='h-5 w-5' src={userData.verified ? "/assets/star.png" : "/assets/cross.png"} alt="verified-seller" />
                                 </div>
                             </div>
                             <div className='flex-[0.3] flex flex-col w-50 float-end'>
