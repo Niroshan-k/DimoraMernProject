@@ -1,5 +1,5 @@
 import express from "express";
-import { test, updateUser, deleteUser, getUserListings, getSellerInfo, getUserPosts, getUsers, deleteUserAdmin, getUserInfo, getUserListingsAdmin, getUserPostsAdmin } from "../controllers/user.controller.js";
+import { test, updateUser, deleteUser, getUserListings, getSellerInfo, getUserPosts, getUsers, deleteUserAdmin, getUserInfo, getUserListingsAdmin, getUserPostsAdmin, createForm, UserVerified } from "../controllers/user.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
@@ -15,5 +15,7 @@ router.get('/get', verifyToken, getUsers);
 router.get('/get/:id', verifyToken, getUserInfo);
 router.get('/admin/listings/:id', verifyToken, getUserListingsAdmin);
 router.get('/admin/posts/:id', verifyToken, getUserPostsAdmin);
+router.post('/createVerifyForm/:id', verifyToken, createForm);
+router.post('/userVerified/:id',verifyToken , UserVerified);
 
 export default router;

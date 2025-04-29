@@ -150,4 +150,60 @@ export const getUserPostsAdmin = async (req, res, next) => {
 
 }
 
+export const createForm = async (req, res, next) => {
+    if (req.user.id === req.params.id) {
+        try {
+            // Log incoming data for debugging
+            console.log("Incoming Form Data:", req.body.form);
+
+            // Update the user with the verified form data
+            const form = await User.findByIdAndUpdate(
+                req.params.id,
+                {
+                    $set: {
+                        verified: "verifying", // Set verified to true
+                        verifiedFormData: req.body.form, // Update the verifiedFormData field
+                    },
+                },
+                { new: true } // Return the updated document
+            );
+
+            // Log the updated user record
+            console.log("Updated User Record:", form);
+
+            // Send a response to the client
+            res.status(200).json(form);
+        } catch (error) {
+            console.error("Error in createForm:", error); // Log the error
+            next(error);
+        }
+    } else {
+        console.error("Authorization failed."); // Log unauthorized access
+        return next(errorHandler(401, "You're not authorized."));
+    }
+};
+
+export const UserVerified = async (req, res, next) => {
+    if (req.user.role === "admin") {
+        try {
+            const user = await User.findByIdAndUpdate(
+                req.params.id,
+                {
+                    $set: {
+                        verified: req.body.verified, // Set verified field
+                    },
+                },
+                { new: true } // Return the updated document
+            );
+            res.status(200).json(user);
+        } catch (error) {
+            console.error("Error in UserVerified:", error); // Log the error
+            next(error);
+        }
+    } else {
+        console.error("Authorization failed."); // Log unauthorized access
+        return next(errorHandler(401, "You're not authorized."));
+    }
+};
+
 

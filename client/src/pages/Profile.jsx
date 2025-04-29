@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
 
 export default function Profile() {
   const fileRef = useRef(null);
-  const { currentUser, loading, error } = useSelector(state => state.user);  // ✅ Get user from Redux
+  const { currentUser, error } = useSelector(state => state.user);  // ✅ Get user from Redux
   const [file, setFile] = useState(null);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
@@ -23,6 +23,31 @@ export default function Profile() {
   const dispatch = useDispatch();
   const mapRef = useRef(null);
   const [verifying, setVerifying] = useState(false);
+  const [userData, setUserData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [userError, setErrorUser] =useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch(`/api/user/get/${currentUser._id}`);
+            const data = await res.json();
+            if (data.success === false) {
+                setError(true);
+                setLoading(false);
+                return;
+            }
+            setUserData(data);
+            setLoading(false);
+            setErrorUser(false);
+        } catch (error) {
+            setErrorUser(true);
+            setLoading(false);
+        }
+    };
+    fetchUser();
+  }, [currentUser]);
 
 
   useEffect(() => {
@@ -145,7 +170,9 @@ export default function Profile() {
   const clicked = () => {
     setVerifying(true);
   }
-  //console.log("currentUser:", currentUser); // Debugging: Log the currentUser object
+  console.log("currentUser:", currentUser);
+  console.log('userData', userData);
+  
   return (
 
     <div className='p-3 max-w-lg mx-auto'>
@@ -181,9 +208,9 @@ export default function Profile() {
 
         {/* ✅ Updated Input Fields */}
         {currentUser.role != "admin" && currentUser.role != "customer" ?
-          <>{verifying ? <p className='text-green-400 font-bold'>Verifying...</p> :
+          <>{userData.verified == "verifying" ? <p className='text-green-400 font-bold'>We will let you know after verified, enjoy!</p> :
             <>
-              {currentUser.verified ?
+              {userData.verified == "true" ?
                 <div className='flex gap-2 items-center justify-center'>
                   <span className='text-blue-400 font-bold'>Verified</span>
                   <img src="assets/star.png" className='w-5' alt="verified" />

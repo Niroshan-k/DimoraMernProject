@@ -34,8 +34,12 @@ const userSchema = new mongoose.Schema({
         default: null
     },
     verified: {
-        type: Boolean,
+        type: String,
+        default: "false"
     },
+    verifiedFormData : {
+        type: Array,
+    }
 },{ timestamps: true });
 
 const User = mongoose.model('User', userSchema);

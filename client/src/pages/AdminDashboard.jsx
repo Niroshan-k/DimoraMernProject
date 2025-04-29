@@ -93,8 +93,16 @@ export default function AdminDashboard() {
                                                 />
                                             </div>
                                             <div className='flex flex-col gap-1 overflow-hidden'>
-                                                <h6 className='text-xl'>{user.username}</h6>
+                                                <div className='flex items-center gap-3'>
+                                                    <h6 className='text-xl'>{user.username}</h6>
+                                                    {user.verified == "true" ?
+                                                        <img className='w-5' src={'/assets/star.png'} alt="" />
+                                                        :
+                                                        <img className='w-5' src={'/assets/cross.png'} alt="" />
+                                                    }
+                                                </div>
                                                 <p className='text-xl truncate w-full'>{user.email}</p>
+
                                             </div>
                                         </div>
                                         <div className='flex gap-3 p-3 justify-end'>
@@ -132,7 +140,14 @@ export default function AdminDashboard() {
                                                 />
                                             </div>
                                             <div className='flex flex-col gap-1'>
-                                                <h6 className='text-xl'>{user.username}</h6>
+                                                <div className='flex items-center gap-3'>
+                                                    <h6 className='text-xl'>{user.username}</h6>
+                                                    {user.verified == "true" ?
+                                                        <img className='w-5' src={'/assets/star.png'} alt="" />
+                                                        :
+                                                        <img className='w-5' src={'/assets/cross.png'} alt="" />
+                                                    }
+                                                </div>
                                                 <p className='text-xl'>{user.email}</p>
                                             </div>
                                         </div>
@@ -190,6 +205,46 @@ export default function AdminDashboard() {
                         Failed to fetch users. Please try again later.
                     </div>
                 )}
+
+                <section>
+                    <h6 className='mt-10 text-3xl mb-5'>Verify Requests from Users</h6>
+                    {users.length > 0 ? (
+                        users.map((user) => (
+                            user.verified === 'verifying' ? (
+                                <div key={user._id} className='bg-[#EFEFE9] mt-2 shadow flex flex-col gap-3 rounded'>
+                                    {handleNewestUser(user.createdAt) == "new" ?
+                                        <div className='flex'>
+                                            <p className='text-sm bg-green-400 px-1 rounded-br-lg text-white'>New</p> {/* Show "new" if applicable */}
+                                        </div>
+                                        :
+                                        <p className='p-2'></p>}
+
+                                    <div className='flex p-3 gap-3 items-center'>
+                                        <div>
+                                            <img
+                                                className='min-h-20 min-w-20 max-w-20 border rounded-full object-cover'
+                                                src={user?.avatar && user.avatar.trim() !== "" ? user.avatar : "https://via.placeholder.com/150"}
+                                                alt={`${user?.username || "User"}-avatar`}
+                                            />
+                                        </div>
+                                        <div className='flex flex-col gap-1 overflow-hidden'>
+                                            <h6 className='text-xl'>{user.username}</h6>
+                                            <p className='text-xl truncate w-full'>{user.email}</p>
+                                        </div>
+                                    </div>
+                                    <div className='flex gap-3 p-3 justify-end'>
+                                        <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
+                                            <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
+                                        </Link>
+                                        <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
+                                    </div>
+                                </div>
+                            ) : null
+                        ))
+                    ) : (
+                        <p className='text-5xl text-gray-400 mx-auto mt-20 col-span-2'>No Users :(</p>
+                    )}
+                </section>
             </div>
         </main>
     );

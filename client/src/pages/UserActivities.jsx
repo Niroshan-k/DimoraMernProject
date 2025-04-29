@@ -19,6 +19,11 @@ export default function UserActivities() {
   const [userPosts, setUserPosts] = useState([]);
   const [showListingError, setShowListingError] = useState(false);
   const [showPostError, setShowPostError] = useState(false);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [updateError, setUpdateError] = useState(false);
+  const [formData, setFormData] = useState({
+    verified: 'false'
+  });
 
   const params = useParams();
 
@@ -163,7 +168,52 @@ export default function UserActivities() {
     e.target.reset(); // Reset the form after submission
   };
 
-  console.log(userPosts);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  }
+
+  const verifyUser = async (e) => {
+    e.preventDefault();
+
+    // Validate user ID
+    if (!user || !user._id) {
+      setUpdateError(true);
+      alert('User ID is missing. Cannot verify user.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/user/userVerified/${user._id}`, {
+        method: 'POST', // Change to PUT or PATCH if required by the backend
+        headers: {
+          'Content-Type': 'application/json',
+          headers: {
+            Authorization: `Bearer ${currentUser.token}`, // Ensure the token is sent
+        },
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (data.success === false) {
+        setUpdateSuccess(false);
+        setUpdateError(true);
+        alert('Failed to verify user. Please try again.');
+        return;
+      }
+
+      setUpdateSuccess(true);
+      setUpdateError(false);
+    } catch (error) {
+      console.error('Error verifying user:', error);
+      setUpdateError(true);
+    }
+  };
+
+  console.log(user);
+  console.log('form data', formData);
+  console.log(currentUser)
   return (
     <main>a
       <div className='mt-10 p-10'>
@@ -283,6 +333,65 @@ export default function UserActivities() {
               Send Email
             </button>
           </form>
+
+          {user.verifiedFormData && user.verifiedFormData.length > 0 ? (
+            <div>
+              <h6 className='mt-6 text-4xl'>Verifying Request</h6>
+              <div className='bg-[#EFEFE9] rounded p-5 mt-5 shadow'>
+                <p className='mb-3 text-2xl'><b>Verification Status:<span className='text-red-500 ml-3'>{user.verified}</span></b></p>
+                <div className='flex gap-3'>
+                  <div>
+                    <p><b>Username:</b></p>
+                    <p><b>User ID:</b></p>
+                    <p><b>Full Name:</b></p>
+                    <p><b>Email:</b></p>
+                    <p><b>Date of Birth:</b></p>
+                    <p><b>Contact:</b></p>
+                    <p><b>User Role:</b></p>
+                    <p><b>ID Type:</b></p>
+                  </div>
+                  <div>
+                    <p>{user.verifiedFormData[0].username}</p>
+                    <p>{user.verifiedFormData[0].userId}</p>
+                    <p>{user.verifiedFormData[0].fullName}</p>
+                    <p>{user.verifiedFormData[0].email}</p>
+                    <p>{user.verifiedFormData[0].DOB} <span className='text-sm'>[YY/MM/DD]</span></p>
+                    <p>{user.verifiedFormData[0].phone}</p>
+                    <p>{user.verifiedFormData[0].role}</p>
+                    <p>{user.verifiedFormData[0].idType}</p>
+                  </div>
+                </div>
+                <div className='grid grid-cols-2 mt-5 gap-5'>
+                  <img src={user.verifiedFormData[0].imageUrls[0]} alt="verifyingImages" />
+                  <img src={user.verifiedFormData[0].imageUrls[1]} alt="verifyingImages" />
+                </div>
+                <div className='mt-5'>
+                  <form onSubmit={verifyUser}>
+                    <span>Verification</span>
+                    <select
+                      id="verified"
+                      name="verified"
+                      value={formData.verified}
+                      onChange={handleChange}
+                      required
+                      className="bg-[#E8D9CD] h-12 w-full p-2 rounded"
+                    >
+                      <option value="true">True</option>
+                      <option value="verifying">Verifying</option>
+                      <option value="false">False</option>
+                    </select>
+                    <button className='bg-blue-500 mt-5 rounded text-white p-3 font-bold'>Make changes</button>
+                  </form>
+                </div>
+                <div>
+                  <p className='text-sm mt-5 text-red-500'>{updateError ? "Changes have not applied!" : null}</p>
+                  <p className='text-sm mt-5 text-green-700'>{updateSuccess ? "Changes Submitted Successfully!" : null}</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <p className='mt-5'>No verification data available.</p>
+          )}
           {
             user.role === "seller" ?
               <>
