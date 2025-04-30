@@ -53,6 +53,17 @@ const listingSchema = new mongoose.Schema(
         userRef:{
             type: String,
             required: true,
+        },
+        packages:{
+            type: String
+        },
+        urgent: {
+            type : Boolean,
+            default: false
+        },
+        sold: {
+            type : Boolean,
+            default: false
         }
     }, {timestamps: true}
 )

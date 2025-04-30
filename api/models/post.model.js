@@ -37,6 +37,26 @@ const postSchema = new mongoose.Schema(
         userRef:{
             type: String,
             required: true,
+        },
+        Star1: {
+            type: Number,
+            default: 0
+        },
+        Star2: {
+            type: Number,
+            default: 0
+        },
+        Star3: {
+            type: Number,
+            default: 0
+        },
+        Star4: {
+            type: Number,
+            default: 0
+        },
+        Star5: {
+            type: Number,
+            default: 0
         }
     }, {timestamps: true}
 )

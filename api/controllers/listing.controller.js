@@ -15,7 +15,7 @@ export const deleteListing = async (req, res, next) => {
     if (!listing) {
         return next(errorHandler(404, 'Listing not found'));
     }
-    
+
     if (listing.userRef) {
         return next(errorHandler(401, 'You are not authorized to delete this listing'));
     }
@@ -69,7 +69,7 @@ export const getListing = async (req, res, next) => {
     try {
         const listing = await Listing.findById(req.params.id);
 
-        if(!listing) {
+        if (!listing) {
             return next(errorHandler(404, 'Listing not found'));
         }
         res.status(200).json(listing);
@@ -82,7 +82,7 @@ export const getListings = async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 8;
         const startIndex = parseInt(req.query.startIndex) || 0;
-        
+
         let furnished = req.query.furnished;
         if (furnished === undefined || furnished === 'false') {
             furnished = { $in: [false, true] };
@@ -101,6 +101,11 @@ export const getListings = async (req, res, next) => {
         let property_type = req.query.property_type;
         if (property_type === undefined || property_type === 'all') {
             property_type = { $in: ['house', 'apartment', 'villa', 'hotel'] };
+        }
+
+        let packages = req.query.package;
+        if (packages === undefined || packages === 'all') {
+            packages = { $in: ['normal','boost','retro','ultra'] };
         }
 
         const searchTerm = req.query.searchTerm || '';
@@ -122,7 +127,8 @@ export const getListings = async (req, res, next) => {
             parking,
             type,
             property_type,
-            address: {$regex: address, $options: 'i'}
+            packages,
+            address: { $regex: address, $options: 'i' }
         })
         .sort({ [sort]: order })
         .limit(limit)
