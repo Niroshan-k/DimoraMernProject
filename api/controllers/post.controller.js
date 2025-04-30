@@ -78,6 +78,30 @@ export const updatePost = async (req, res, next) => {
     }
 };
 
+export const updateStar = async (req, res) => {
+    const { id } = req.params; // Post ID
+    const starKey = Object.keys(req.body)[0]; // e.g., "Star3"
+    const starValue = req.body[starKey]; // e.g., 5
+
+    try {
+        // Update the star value in the database
+        const updatedPost = await Post.findByIdAndUpdate(
+            id,
+            { [starKey]: starValue },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedPost) {
+            return res.status(404).json({ success: false, message: "Post not found." });
+        }
+
+        res.status(200).json({ success: true, post: updatedPost });
+    } catch (error) {
+        console.error("Error updating star value:", error);
+        res.status(500).json({ success: false, message: "An error occurred." });
+    }
+};
+
 export const getPosts = async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 8;
@@ -109,3 +133,4 @@ export const getPosts = async (req, res, next) => {
         next(error);
     }
 };
+

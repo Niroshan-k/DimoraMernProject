@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/storage';
 import { app } from '../firebase';
-import { FaTrash, FaSpinner, FaTimes,  FaCheckCircle } from 'react-icons/fa';
+import { FaTrash, FaSpinner, FaTimes, FaCheckCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
@@ -28,6 +28,7 @@ export default function CreateListing() {
     area: 15,
     price: 0,
     urgent: false,
+    packages: ''
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -107,32 +108,38 @@ export default function CreateListing() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      if (formData.imageUrls.length < 1) {
-        setError('Please upload at least one image');
-        return;
+    if (!formData.packages) {
+      setError('Please select a package');
+      return;
+    }
+    else {
+      try {
+        if (formData.imageUrls.length < 1) {
+          setError('Please upload at least one image');
+          return;
+        }
+        setLoading(true);
+        setError(false);
+        const res = await fetch('/api/listing/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            userRef: currentUser._id
+          }),
+        });
+        const data = await res.json();
+        setLoading(false);
+        if (data.success === false) {
+          setError(data.message);
+        }
+        navigate('/seller-dashboard');
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
       }
-      setLoading(true);
-      setError(false);
-      const res = await fetch('/api/listing/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          userRef: currentUser._id
-        }),
-      });
-      const data = await res.json();
-      setLoading(false);
-      if (data.success === false) {
-        setError(data.message);
-      }
-      navigate('/seller-dashboard');
-    } catch (error) {
-      setError(error.message);
-      setLoading(false);
     }
   }
 
@@ -317,6 +324,7 @@ export default function CreateListing() {
               <input onChange={handleChange} checked={formData.urgent} type="checkbox" id='urgent' className='w-5' />
               <span className='text-red-500'>Urgent</span>
             </div>
+            <p className='text-sm text-green-500'>{formData.urgent ? formData.packages == "normal" || null ? "We recommend to use our boost package if your in a hurry..." : null : null}</p>
 
             {showForm && (
               <div className='fixed inset-0 shadow-2xl bg-opacity-40 flex justify-center items-center z-50'>

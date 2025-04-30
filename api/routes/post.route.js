@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getPost, updatePost, deletePost, getPosts, deletePostAdmin } from '../controllers/post.controller.js';
+import { createPost, getPost, updatePost, deletePost, getPosts, deletePostAdmin, updateStar } from '../controllers/post.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
 
 const router = express.Router();
@@ -10,5 +10,6 @@ router.delete('/delete/:id',verifyToken , deletePost);
 router.delete('/admin/delete/:id',verifyToken , deletePostAdmin);
 router.get('/get/:id', getPost);
 router.get('/get', getPosts);
+router.post('/updateStar/:id', updateStar);
 
 export default router;

@@ -124,7 +124,7 @@ export default function UpdateListing() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(!formData.package){
+    if(!formData.packages){
       setError('Choose a Package First!');
     }
     else{

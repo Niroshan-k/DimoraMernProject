@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FaClock, FaStar, FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaClock, FaStar, FaHeart, FaShareAlt, FaSmile, FaMeh, FaFrown } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
 
 export default function Post({ post }) {
@@ -8,12 +8,35 @@ export default function Post({ post }) {
     const [error, setError] = useState(false);
     const [showFullDescription, setShowFullDescription] = useState(false); // State to toggle description
     const [formData, setFormData] = useState({
-        Star1 : post.Star1,
-        Star2 : post.Star2,
-        Star3 : post.Star3,
-        Star4 : post.Star4,
-        Star5 : post.Star5
+        Star1: 0,
+        Star2: 0,
+        Star3: 0,
+        Star4: 0,
+        Star5: 0
     });
+
+    const [highlightedStars, setHighlightedStars] = useState(0); // For UI color
+
+    const handleMouseEnter = (star) => {
+        setHighlightedStars(star); // Highlight all stars up to the hovered star
+    };
+
+    const handleMouseLeave = () => {
+        setHighlightedStars(Object.keys(formData).findIndex((key) => formData[key] === 1) + 1); // Highlight stars up to the selected star
+    };
+
+    const [currentFace, setCurrentFace] = useState(0); // To track the current face in the animation
+
+    const faces = [<FaSmile key="smile" />, <FaMeh key="meh" />, <FaFrown key="frown" />];
+
+    useEffect(() => {
+        // Set up an interval to change the face every second
+        const interval = setInterval(() => {
+            setCurrentFace((prev) => (prev + 1) % faces.length); // Cycle through the faces
+        }, 1000);
+
+        return () => clearInterval(interval); // Cleanup the interval on component unmount
+    }, []);
 
     useEffect(() => {
         const fetchSeller = async () => {
@@ -45,10 +68,47 @@ export default function Post({ post }) {
         { count: post.Star5 || 0, stars: 5 },
         { count: post.Star4 || 0, stars: 4 },
         { count: post.Star3 || 0, stars: 3 },
-        { count: post.Star3 || 0, stars: 3 },
         { count: post.Star2 || 0, stars: 2 },
         { count: post.Star1 || 0, stars: 1 },
     ];
+
+    const handleStarClick = async (star) => {
+        try {
+            // Fetch the current value of the clicked star from post data
+            const currentStarValue = post[`Star${star}`] || 0;
+    
+            // Increment the clicked star value by 1
+            const updatedStarValue = currentStarValue + 1;
+    
+            // Update the backend with the new value
+            const res = await fetch(`/api/posting/updateStar/${post._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    [`Star${star}`]: updatedStarValue,
+                }),
+            });
+    
+            if (!res.ok) {
+                throw new Error("Failed to update star rating.");
+            }
+    
+            // Update the local `formData` to reflect the new state
+            setFormData((prev) => ({
+                ...prev,
+                [`Star${star}`]: updatedStarValue,
+            }));
+    
+            // Update the highlighted stars for UI
+            setHighlightedStars(star);
+        } catch (error) {
+            console.error("Error updating star rating:", error);
+        }
+    };
+
+    console.log(formData)
 
     return (
         <div className='p-5 bg-[#EFEFE9] rounded shadow-lg hover:shadow-xl space-y-5 overflow-hidden'>
@@ -125,15 +185,23 @@ export default function Post({ post }) {
                                 </p>
                             ))}
                         </div>
-                        <div className='flex-[0.5] bg-white p-5 items-center rounded-lg shadow'>
-                            <div className='flex justify-center gap-5 text-3xl'>
-                                <FaStar />
-                                <FaStar />
-                                <FaStar />
-                                <FaStar />
-                                <FaStar />
+                        <div className="flex-[0.5] p-5 flex flex-col justify-center rounded-lg shadow">
+                            <div className='flex justify-center gap-2 items-center'>
+                                <span className=''>Rate your Service</span>
+                                <span className='text-blue-500'>{faces[currentFace]}</span>
                             </div>
-
+                            <div className="flex justify-center gap-5 mt-5 text-3xl">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                    <FaStar
+                                        key={star}
+                                        onClick={() => handleStarClick(star)} // Handle star click
+                                        onMouseEnter={() => handleMouseEnter(star)} // Highlight stars on hover
+                                        onMouseLeave={handleMouseLeave} // Reset highlight on mouse leave
+                                        color={highlightedStars >= star ? "yellow" : "gray"} // Highlight logic
+                                        style={{ cursor: "pointer" }} // Pointer cursor for better UX
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
