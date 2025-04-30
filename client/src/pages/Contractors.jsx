@@ -64,7 +64,7 @@ export default function Contractors() {
       setLoading(false);
     }
   };
-
+  console.log(postsData);
   return (
     <main>
       <div className='md:flex gap-5'>

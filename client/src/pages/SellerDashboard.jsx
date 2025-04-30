@@ -53,6 +53,8 @@ export default function SellerDashboard() {
       console.error(error.message);
     }
   };
+
+  console.log(userListings)
   return (
     <main className='p-10'>
       <div className='mt-10'>

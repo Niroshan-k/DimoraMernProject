@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { getDownloadURL, getStorage, uploadBytesResumable, ref } from 'firebase/storage';
 import { app } from '../firebase';
-import { FaTrash, FaSpinner } from 'react-icons/fa';
+import { FaTrash, FaSpinner, FaTimes,  FaCheckCircle } from 'react-icons/fa';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import L from 'leaflet';
@@ -11,6 +11,9 @@ export default function CreateListing() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const mapRef = useRef(null);
+  const [pLoading, setPLoading] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [payment, setPayment] = useState(false);
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: '',
@@ -24,6 +27,7 @@ export default function CreateListing() {
     bathrooms: 1,
     area: 15,
     price: 0,
+    urgent: false,
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -91,10 +95,12 @@ export default function CreateListing() {
       setFormData({ ...formData, type: e.target.id });
     } else if (e.target.id === 'parking' || e.target.id === 'furnished') {
       setFormData({ ...formData, [e.target.id]: e.target.checked });
-    } else if(e.target.id === 'house' || e.target.id === 'apartment' || e.target.id === 'villa' || e.target.id === 'hotel'){
+    } else if (e.target.id === 'house' || e.target.id === 'apartment' || e.target.id === 'villa' || e.target.id === 'hotel') {
       setFormData({ ...formData, property_type: e.target.id });
+    } else if (e.target.id === 'urgent') {
+      setFormData({ ...formData, [e.target.id]: e.target.checked });
     }
-     else {
+    else {
       setFormData({ ...formData, [e.target.id]: e.target.value });
     }
   };
@@ -154,6 +160,17 @@ export default function CreateListing() {
 
     return () => map.remove();
   }, []);
+
+  const handlePayment = () => {
+    setShowForm(true);
+    setPLoading(true);
+  }
+
+  const handlePaymentSuccess = () => {
+    setPayment(true);
+    setShowForm(false);
+    setPLoading(false);
+  }
 
   return (
     <main className='p-10 max-w-4xl mx-auto'>
@@ -224,7 +241,7 @@ export default function CreateListing() {
               value={formData.price}
               type="number"
               className='p-3 bg-[#E8D9CD] w-full'
-              min='100000'
+              min='10000'
               id='price'
               required
               onKeyDown={(e) => {
@@ -264,6 +281,81 @@ export default function CreateListing() {
                 ))}
             </div>
 
+            <div className='mt-1 p-2 border border-gray-300'>
+              <p className='text-sm text-red-500'>Make your Advertisement appear first by using our premium features.</p>
+              <div className=''>
+                <span className='text-sm flex mt-6'>Choose a Package</span>
+                <div className='flex items-center gap-3'>
+                  <select
+                    id="packages"
+                    name="packages"
+                    value={formData.packages}
+                    onChange={handleChange}
+                    required
+                    className="bg-[#E8D9CD] h-13 w-full p-3"
+                  >
+                    <option value="" disabled>
+                      Select a Package
+                    </option>
+                    <option value="normal">Normal</option>
+                    <option value="boost">Boost</option>
+                    <option value="retro">Retro</option>
+                    <option value="ultra">Ultra</option>
+                  </select>
+                  <button onClick={handlePayment} type='button' className='bg-[#959D90] p-3 text-white font-bold uppercase'>
+                    {
+                      payment ? <FaCheckCircle className='text-[27px]' /> : pLoading ?
+                        <FaSpinner className='mx-auto text-2xl animate-spin' />
+                        : "Proceed"
+                    }
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className='flex gap-2 mt-5'>
+              <input onChange={handleChange} checked={formData.urgent} type="checkbox" id='urgent' className='w-5' />
+              <span className='text-red-500'>Urgent</span>
+            </div>
+
+            {showForm && (
+              <div className='fixed inset-0 shadow-2xl bg-opacity-40 flex justify-center items-center z-50'>
+                <div className='bg-white p-6 rounded-lg w-[90%] max-w-md space-y-4 shadow-xl'>
+                  <div className='flex justify-between'>
+                    <h2 className='font-bold text-lg'>Payment Method</h2>
+                    <button onClick={() => {
+                      setShowForm(false)
+                      setPLoading(false)
+                    }
+                    }
+                      className='text-red-500 font-bold'><FaTimes /></button>
+                  </div>
+
+                  <div className='flex gap-5'>
+                    <div className='flex items-center gap-3'>
+                      <input type="radio" name="card" />
+                      <img src={'/assets/visa.png'} className='w-14 rounded' alt="Visa" />
+                    </div>
+                    <div className='flex items-center gap-3'>
+                      <input type="radio" name="card" />
+                      <img src={'/assets/master.png'} className='w-14 rounded' alt="MasterCard" />
+                    </div>
+                  </div>
+
+                  <input className='p-3 bg-[#E8D9CD] rounded-lg w-full' placeholder='Holder’s Name' type="text" />
+                  <input className='p-3 bg-[#E8D9CD] rounded-lg w-full' placeholder='Card Number' type="text" />
+                  <div className='flex gap-2'>
+                    <input className='p-3 bg-[#E8D9CD] w-full rounded-lg' placeholder='CVV' type="text" />
+                    <input className='p-3 bg-[#E8D9CD] w-full rounded-lg' placeholder='Month' type="text" />
+                    <input className='p-3 bg-[#E8D9CD] w-full rounded-lg' placeholder='Year' type="text" />
+                  </div>
+                  <div>
+                    <button onClick={handlePaymentSuccess} className='bg-blue-400 rounded-lg text-white p-3 w-full font-bold' type='button'>Make a Payment</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
           <div>
             <button disabled={loading || uploading} className='bg-[#523D35] mt-3 p-3 text-white font-bold w-full'>{loading ? 'POSTING...' : 'POST'}</button>
@@ -274,7 +366,7 @@ export default function CreateListing() {
       </form>
       <div className='mt-10 shadow-lg'>
         <p class="text-sm">Choose your location, click once and wait:</p>
-        <div ref={mapRef} className="rounded mb-4 h-96"></div>
+        <div ref={mapRef} className="rounded mb-4 h-96 z-0"></div>
       </div>
     </main>
   )

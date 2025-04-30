@@ -13,8 +13,19 @@ export default function Home() {
   const [apartmentListings, setApartmentListings] = useState([]);
   const [villaListings, setVillaListings] = useState([]);
   const [hotelListings, setHotelListings] = useState([]);
-  //console.log(rentListings);
+  const [trending, setTrending] = useState([]);
+  console.log(trending);
   useEffect(()=>{
+    const fetchTOPListings = async () => {
+      try {
+        const res = await fetch('/api/listing/get?package=boost&limit=4');
+        const data = await res.json();
+        setTrending(data);
+        fetchSaleListings();
+      } catch (error) {
+        console.log(error);
+      }
+    };
     const fetchSaleListings = async () => {
       try {
         const res = await fetch('/api/listing/get?type=sale&limit=4');
@@ -74,7 +85,8 @@ export default function Home() {
         console.log(error);
       }
     }
-    fetchSaleListings();
+    fetchTOPListings();
+    //fetchSaleListings();
     console.log("h",houseListings);
     console.log(rentListings);
     console.log(saleListings);
@@ -91,6 +103,29 @@ export default function Home() {
       </section>
       <section id=''>
         <Search />
+      </section>
+      <section className='md:px-30'>
+        {
+          trending && trending.length > 0 && (
+            <div className='px-5'>
+              <div>
+                <h6 className='text-5xl'>Trending</h6>
+              </div>
+              <div className='md:flex md:flex-wrap gap-3 justify-between mt-10'>
+                {
+                  trending.map((listing) => (
+                    <ListingItem listing={listing} key={listing._id}/>
+                  ))
+                }
+              </div>
+              <div className='mt-10  flex justify-end'>
+                <Link to={`/search?package=boost`}>
+                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                </Link>
+              </div>
+            </div>
+          )
+        }
       </section>
       <section className='md:px-30'>
         {

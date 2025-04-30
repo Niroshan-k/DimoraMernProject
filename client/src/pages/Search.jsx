@@ -137,7 +137,7 @@ export default function Search() {
             <div className='flex gap-5 flex-col md:flex-row'>
                 {isFormVisible && (
                     <form onSubmit={handleSubmit} className='flex-[0.20] md:sticky md:top-30'>
-                        <div className='overflow-hidden flex flex-col bg-white min-h-screen z-1  gap-10 md: p-6 fixed top-10 pt-20'>
+                        <div className='overflow-hidden flex flex-col bg-white min-h-screen z-2  gap-10 md: p-6 fixed top-10 pt-20'>
                             {/* <Searchbar /> */}
                             <div className='flex flex-col'>
                                 <span className='text-sm font-bold'>Title:</span>

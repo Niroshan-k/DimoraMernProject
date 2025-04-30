@@ -25,6 +25,7 @@ export default function Searchbar() {
     return (
         <div class="container max-w-lg mx-auto py-8">
             <form onSubmit={handleSubmit} class="flex flex-col mt-5 p-6 md:mt-15">
+                <h6>Find the perfect property for you</h6>
                 <div class="flex gap-5 item-center">
                     <input
                         id="search"
