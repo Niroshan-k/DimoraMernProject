@@ -15,7 +15,7 @@ export default function Home() {
   const [hotelListings, setHotelListings] = useState([]);
   const [trending, setTrending] = useState([]);
   console.log(trending);
-  useEffect(()=>{
+  useEffect(() => {
     const fetchTOPListings = async () => {
       try {
         const res = await fetch('/api/listing/get?package=boost&limit=4');
@@ -87,19 +87,22 @@ export default function Home() {
     }
     fetchTOPListings();
     //fetchSaleListings();
-    console.log("h",houseListings);
+    console.log("h", houseListings);
     console.log(rentListings);
     console.log(saleListings);
-  },[]);
+  }, []);
   return (
     <main>
       <section id='banner'>
-        <h1 className='mt-50 md:mt-100' id='h1'>MAKE YOUR OWN</h1>
-        <h6 id='h6'>Real Estate Network</h6>
 
-        <div className='mx-auto mt-70'>
-          <button className='bg-[#ffffff] text-black text-2xl rounded-4xl font-bold py-3 flex gap-2 items-center px-6 hover:bg-black hover:text-white'><MdLocationOn />Get Started</button>
+        <div className='bg-[#00000083] h-screen w-full text-center md:text-left md:w-[30%] md:p-5'>
+          <h1 className='mt-50 md:mt-100' id='h1'>MAKE YOUR OWN</h1>
+          <h6 id='h6' className='uppercase'>Real Estate Network</h6>
+          <div className='flex justify-center md:justify-start'>
+            <button className='border-4 border-white mt-90 md:mt-10 text-white text-xl py-3 flex gap-2 items-center px-6 hover:bg-white hover:text-black uppercase'><MdLocationOn />Get Started</button>
+          </div>
         </div>
+
       </section>
       <section id=''>
         <Search />
@@ -109,18 +112,18 @@ export default function Home() {
           trending && trending.length > 0 && (
             <div className='px-5'>
               <div>
-                <h6 className='text-5xl'>Trending</h6>
+                <h6 className='text-5xl uppercase'>Trending</h6>
               </div>
               <div className='md:flex md:flex-wrap gap-3 justify-between mt-10'>
                 {
                   trending.map((listing) => (
-                    <ListingItem listing={listing} key={listing._id}/>
+                    <ListingItem listing={listing} key={listing._id} />
                   ))
                 }
               </div>
               <div className='mt-10  flex justify-end'>
                 <Link to={`/search?package=boost`}>
-                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                  <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>
@@ -132,18 +135,18 @@ export default function Home() {
           saleListings && saleListings.length > 0 && (
             <div className='px-5'>
               <div>
-                <h6 className='text-5xl'>Sales</h6>
+                <h6 className='text-5xl uppercase'>Sales</h6>
               </div>
               <div className='md:flex md:flex-wrap gap-3 justify-between mt-10'>
                 {
                   saleListings.map((listing) => (
-                    <ListingItem listing={listing} key={listing._id}/>
+                    <ListingItem listing={listing} key={listing._id} />
                   ))
                 }
               </div>
               <div className='mt-10  flex justify-end'>
                 <Link to={`/search?type=sale`}>
-                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                  <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>
@@ -155,41 +158,62 @@ export default function Home() {
           rentListings && rentListings.length > 0 && (
             <div className='px-5'>
               <div>
-                <h6 className='text-5xl'>Rent</h6>
+                <h6 className='text-5xl uppercase'>Rent</h6>
               </div>
               <div className='flex flex-wrap gap-3 justify-between mt-10'>
                 {
                   rentListings.map((listing) => (
-                    <ListingItem listing={listing} key={listing._id}/>
+                    <ListingItem listing={listing} key={listing._id} />
                   ))
                 }
               </div>
               <div className='mt-10 flex justify-end'>
                 <Link to={`/search?type=rent`}>
-                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                  <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>
           )
         }
       </section>
+      <section className='bg-white py-10 h-screen mt-20 mb-20'>
+        <div className='flex md:px-30 mt-10 mb-5 md:gap-10'>
+        <div className='flex-[0.5] flex flex-col justify-between'>
+          <h6 className='text-3xl'>Find the Right Contractor for Your Next Property</h6>
+          <p className='w-100'>Planning a new build? We make it easy to connect with trusted contractors who specialize in residential and commercial properties. Get your project started with the right hands—reliable, skilled, and ready to deliver. Whether you're constructing a family home, a villa, or a commercial space, our platform helps you compare services, view past work, and choose the perfect fit for your needs. With verified reviews, clear pricing, and easy communication, turning your vision into reality has never been simpler.</p>
+          <div>
+            <Link to="/contractors">
+              <button className='border-2 bg-black text-white hover:bg-white hover:text-black p-3'>Start your search today?</button>
+            </Link>
+          </div>
+        </div>
+        <div className='flex-[0.5]'>
+          <div className='grid grid-cols-2 gap-3'>
+            <img src="assets/banner2.jpg" className='w-100 h-100 object-cover' alt="" />
+            <img src="assets/banner3.jpg" className='w-100 h-100 object-cover' alt="" />
+            <img src="assets/banner4.jpg" className='w-100 h-100 object-cover' alt="" />
+            <img src="assets/banner5.jpg" className='w-100 h-100 object-cover' alt="" />
+          </div>
+        </div>
+        </div>
+      </section>
       <section className='md:px-30 mt-10 mb-5'>
         {
           houseListings && houseListings.length > 0 && (
             <div className='px-5'>
               <div>
-                <h6 className='text-5xl'>Houses</h6>
+                <h6 className='text-5xl uppercase'>Houses</h6>
               </div>
               <div className='flex flex-wrap gap-3 justify-between mt-10'>
                 {
                   houseListings.map((listing) => (
-                    <ListingItem listing={listing} key={listing._id}/>
+                    <ListingItem listing={listing} key={listing._id} />
                   ))
                 }
               </div>
               <div className='mt-10 flex justify-end'>
                 <Link to={`/search?property_type=house`}>
-                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                  <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>
@@ -201,18 +225,18 @@ export default function Home() {
           apartmentListings && apartmentListings.length > 0 && (
             <div className='px-5'>
               <div>
-                <h6 className='text-5xl'>Apartments</h6>
+                <h6 className='text-5xl uppercase'>Apartments</h6>
               </div>
               <div className='flex flex-wrap gap-3 justify-between mt-10'>
                 {
                   apartmentListings.map((listing) => (
-                    <ListingItem listing={listing} key={listing._id}/>
+                    <ListingItem listing={listing} key={listing._id} />
                   ))
                 }
               </div>
               <div className='mt-10 flex justify-end'>
                 <Link to={`/search?property_type=apartment`}>
-                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                  <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>
@@ -224,18 +248,18 @@ export default function Home() {
           villaListings && villaListings.length > 0 && (
             <div className='px-5'>
               <div>
-                <h6 className='text-5xl'>Villas</h6>
+                <h6 className='text-5xl uppercase'>Villas</h6>
               </div>
               <div className='flex flex-wrap gap-3 justify-between mt-10'>
                 {
                   villaListings.map((listing) => (
-                    <ListingItem listing={listing} key={listing._id}/>
+                    <ListingItem listing={listing} key={listing._id} />
                   ))
                 }
               </div>
               <div className='mt-10 flex justify-end'>
                 <Link to={`/search?property_type=villa`}>
-                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                  <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>
@@ -247,18 +271,18 @@ export default function Home() {
           hotelListings && hotelListings.length > 0 && (
             <div className='px-5'>
               <div>
-                <h6 className='text-5xl'>Hotels</h6>
+                <h6 className='text-5xl uppercase'>Hotels</h6>
               </div>
               <div className='flex flex-wrap gap-3 justify-between mt-10'>
                 {
                   hotelListings.map((listing) => (
-                    <ListingItem listing={listing} key={listing._id}/>
+                    <ListingItem listing={listing} key={listing._id} />
                   ))
                 }
               </div>
               <div className='mt-10 flex justify-end'>
                 <Link to={`/search?property_type=hotel`}>
-                <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
+                  <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
             </div>

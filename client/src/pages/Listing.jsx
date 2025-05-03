@@ -144,13 +144,13 @@ export default function Listing() {
                     </div>
                     <div className='p-30'>
                         <h6 className='text-4xl'>{listing.name}</h6>
-                        <h6 className='flex gap-1 mt-5 mb-5 items-center'><FaMapMarker />{listing.address}.</h6>
+                        <h1 className='flex gap-1 mt-5 mb-5 items-center'><FaMapMarker />{listing.address}.</h1>
                         <h6 className='text-4xl'>
-                            {"රු." + (Number(listing.price) || 0).toLocaleString('en-US')}
+                            {"රු. " + (Number(listing.price) || 0).toLocaleString('en-US')}
                             {listing.type === "rent" ? " /month" : ""}
                         </h6>
                         <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
-                            <h1>Overview</h1>
+                            <h6>Overview</h6>
                             <hr className='mt-5' />
                             <div className='mt-5 flex gap-10 justify-between sm:grid sm:grid-cols-3'>
                                 <div className='text-center mx-auto'>
@@ -180,18 +180,18 @@ export default function Listing() {
                             </div>
                         </div>
                         <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
-                            <h1>Description</h1>
+                            <h6>Description</h6>
                             <hr className='mt-5' />
                             <p className='mt-5'>{listing.description}</p>
                         </div>
                         <div className='rounded bg-[#EFEFE9] shadow-lg p-20 mt-5'>
-                            <h1>Location</h1>
+                            <h6>Location</h6>
                             <hr className='mt-5' />
                             <div id='map' className='mt-5 border' style={{ height: '300px', width: '100%' }}></div>
                         </div>
                         <div className='flex gap-3 mt-5'>
                             <div className='flex-[0.7] rounded shadow-lg bg-[#EFEFE9] p-20'>
-                                <h1>Listed By</h1>
+                                <h6>Listed By</h6>
 
                                 <hr className='mt-5' />
                                 <div className='mt-5 mb-5'>
@@ -199,7 +199,7 @@ export default function Listing() {
                                 </div>
                                 <span className='text-sm'>Username:</span>
                                 <div className='flex gap-2 items-center'>
-                                    <h6 className='text-2xl'>{userData.username}</h6>
+                                    <h5 className='text-2xl'>{userData.username}</h5>
                                     <img className='h-5 w-5' src={userData.verified ? "/assets/star.png" : "/assets/cross.png"} alt="verified-seller" />
                                 </div>
                             </div>

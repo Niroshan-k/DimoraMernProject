@@ -29,10 +29,10 @@ export default function ListingItem({ listing }) {
                 </Link>
                 <div className='p-4'>
                     <Link className='flex flex-col gap-2' to={`/listing/${listing._id}`}>
-                        <h6 className='truncate text-xl mt-3 uppercase'>{listing.name}</h6>
+                        <h6 className='truncate font-bold text-xl mt-3 uppercase'>{listing.name}</h6>
                         {/* <p className='text-sm'>{listing.address}</p> */}
                         <p className='font-bold'>
-                            {"රු." + (Number(listing.price) || 0).toLocaleString('en-US')}
+                            {"රු. " + (Number(listing.price) || 0).toLocaleString('en-US') + "/="}
                             {listing.type === "rent" ? " /month" : ""}
                         </p>
 

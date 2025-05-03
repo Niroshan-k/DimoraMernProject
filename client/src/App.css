@@ -2,15 +2,22 @@
 @import url('https://fonts.cdnfonts.com/css/dm-serif-display');
 @import url('https://fonts.cdnfonts.com/css/rubik-2');
 @import url('https://unpkg.com/leaflet@1.9.4/dist/leaflet.css');
+@import url('https://fonts.cdnfonts.com/css/rughato-wacner');
 
 
 
 body {
-    background: rgb(250, 248, 246);
+    background: rgb(250, 246, 241);
+    /* background: rgb(250, 248, 246); */
     font-family: 'Rubik', sans-serif;
     font-size: large;
 }
 
 h6 {
+    /* font-family: 'DM Serif Display', serif; */
+    font-family: 'RUGHATO WACNER', sans-serif;
+    /* font-weight: bold; */
+}
+h5{
     font-family: 'DM Serif Display', serif;
 }

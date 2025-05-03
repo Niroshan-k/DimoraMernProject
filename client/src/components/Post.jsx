@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FaClock, FaStar, FaHeart, FaShareAlt, FaSmile, FaMeh, FaFrown } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 
 export default function Post({ post }) {
     const [userData, setUserData] = useState({});
@@ -76,10 +77,10 @@ export default function Post({ post }) {
         try {
             // Fetch the current value of the clicked star from post data
             const currentStarValue = post[`Star${star}`] || 0;
-    
+
             // Increment the clicked star value by 1
             const updatedStarValue = currentStarValue + 1;
-    
+
             // Update the backend with the new value
             const res = await fetch(`/api/posting/updateStar/${post._id}`, {
                 method: "POST",
@@ -90,37 +91,40 @@ export default function Post({ post }) {
                     [`Star${star}`]: updatedStarValue,
                 }),
             });
-    
+
             if (!res.ok) {
                 throw new Error("Failed to update star rating.");
             }
-    
+
             // Update the local `formData` to reflect the new state
             setFormData((prev) => ({
                 ...prev,
                 [`Star${star}`]: updatedStarValue,
             }));
-    
+
             // Update the highlighted stars for UI
             setHighlightedStars(star);
         } catch (error) {
             console.error("Error updating star rating:", error);
         }
+        
     };
 
-    console.log(formData)
+    //console.log(formData)
 
     return (
         <div className='p-5 bg-[#EFEFE9] rounded shadow-lg hover:shadow-xl space-y-5 overflow-hidden'>
             {/* User Info */}
-            <div className='flex items-center gap-3'>
-                <img className='h-14 w-14 rounded-full' src={userData.avatar} alt="avatar" />
-                <h6 className='flex items-center gap-1 text-lg font-medium'>
-                    {userData.username}
-                    <img className='h-5 w-5' src={userData.verified ? "/assets/star.png" : "assets/cross.png"} alt="verified" />
-                </h6>
-            </div>
-            <hr className='text-gray-300' />
+            <Link to={`/ContractorProfile/${userData._id}`}>
+                <div className='flex items-center gap-3'>
+                    <img className='h-14 w-14 rounded-full' src={userData.avatar} alt="avatar" />
+                    <h5 className='flex items-center gap-1 text-lg font-medium'>
+                        {userData.username}
+                        <img className='h-5 w-5' src={userData.verified ? "/assets/star.png" : "assets/cross.png"} alt="verified" />
+                    </h5>
+                </div>
+            </Link>
+            <hr className='text-gray-300 mt-3' />
             {/* Grid Layout */}
             <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
                 {/* Images */}
