@@ -189,10 +189,10 @@ export default function Home() {
         </div>
         <div className='flex-[0.5]'>
           <div className='grid grid-cols-2 gap-3'>
-            <img src="assets/banner2.jpg" className='w-100 h-100 object-cover' alt="" />
-            <img src="assets/banner3.jpg" className='w-100 h-100 object-cover' alt="" />
-            <img src="assets/banner4.jpg" className='w-100 h-100 object-cover' alt="" />
-            <img src="assets/banner5.jpg" className='w-100 h-100 object-cover' alt="" />
+            <img src="assets/banner2.jpg" className='w-100 h-90 object-cover' alt="" />
+            <img src="assets/banner3.jpg" className='w-100 h-90 object-cover' alt="" />
+            <img src="assets/banner4.jpg" className='w-100 h-90 object-cover' alt="" />
+            <img src="assets/banner5.jpg" className='w-100 h-90 object-cover' alt="" />
           </div>
         </div>
         </div>

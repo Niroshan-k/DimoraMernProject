@@ -39,7 +39,17 @@ const userSchema = new mongoose.Schema({
     },
     verifiedFormData : {
         type: Array,
-    }
+    },
+    failedLoginAttempts: { 
+        type: Number, default: 0 
+    }, // Track failed login attempts
+    isLocked: { 
+        type: Boolean, 
+        default: false 
+    }, // Lock status
+    lockUntil: { 
+        type: Date 
+    },
 },{ timestamps: true });
 
 const User = mongoose.model('User', userSchema);

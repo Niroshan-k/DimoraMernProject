@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { signInStart, signInSuccess, signInFailure } from '../redux/User/userSlice';
@@ -7,19 +7,34 @@ import OAuth from '../components/OAuth';
 export default function SignIn() {
   const [formData, setFormData] = useState({});
   const [localError, setLocalError] = useState(null);
+  const [failedAttempts, setFailedAttempts] = useState(0); // Track failed attempts
+  const [isLocked, setIsLocked] = useState(false); // Lock state
   const { loading, error } = useSelector((state) => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (failedAttempts === 3) {
+      // Save failed attempts to the database after the third attempt
+      saveFailedAttempt();
+
+      // Lock the login button for 10 minutes
+      setIsLocked(true);
+      const lockTimeout = setTimeout(() => {
+        setFailedAttempts(0); // Reset failed attempts after lockout period
+        setIsLocked(false);
+      }, 10 * 60 * 1000); // 10 minutes
+
+      return () => clearTimeout(lockTimeout); // Cleanup timeout
+    }
+  }, [failedAttempts]);
+
   const handleChange = (e) => {
-    setFormData(
-      {
-        ...formData,
-        [e.target.id]: e.target.value,
-      }
-    );
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
   };
-  //console.log(formData);
 
   const handleRoleChange = (e) => {
     setFormData({
@@ -27,10 +42,34 @@ export default function SignIn() {
       role: e.target.value,
     });
   };
+
+  const saveFailedAttempt = async () => {
+    try {
+      await fetch('/api/auth/securityAlerts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          reason: "Three failed login attempts",
+        }),
+      });
+    } catch (error) {
+      console.error("Error saving failed attempt:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isLocked) {
+      setLocalError("You've been locked out due to too many failed login attempts. Please try again later.");
+      return;
+    }
+
     try {
-      dispatch(signInStart());
+      dispatch(signInStart()); // Start the loading state
       const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
@@ -38,12 +77,19 @@ export default function SignIn() {
         },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
       if (data.success === false) {
-        dispatch(signInFailure(data.message));
-        return;
+        setFailedAttempts((prev) => prev + 1); // Increment failed attempts
+        setLocalError(data.message || "Invalid login credentials.");
+        dispatch(signInFailure(data.message)); // Stop the loading state
+        return; // Exit here
       }
-      dispatch(signInSuccess(data));
+
+      dispatch(signInSuccess(data)); // Stop the loading state on success
+      setFailedAttempts(0); // Reset failed attempts on success
+      setLocalError(null);
+
       if (data.role === 'seller') {
         navigate('/seller-dashboard');
         return;
@@ -53,14 +99,14 @@ export default function SignIn() {
       } else {
         navigate('/');
       }
-
     } catch (error) {
-      dispatch(signInFailure(error.message));
+      dispatch(signInFailure(error.message)); // Stop the loading state on error
+      setLocalError("An unexpected error occurred. Please try again.");
     }
   };
+
   return (
-    <div className=' p-3 max-w-lg mx-auto'>
-      <p>h</p>
+    <div className='p-3 max-w-lg mx-auto'>
       <div>
         <h6 className='mt-20 text-6xl mb-12 uppercase'>Sign In</h6>
       </div>
@@ -108,18 +154,27 @@ export default function SignIn() {
             </label>
           </div>
 
-          <button disabled={loading} type='submit' className='bg-[#523D35] w-full p-3 text-amber-50 mt-10 font-bold self-end'>
-            {loading ? 'Loading...' : 'Sign In'}
+          <button
+            disabled={loading || isLocked}
+            type='submit'
+            className={`w-full p-3 text-amber-50 mt-10 font-bold self-end ${isLocked ? 'bg-gray-400' : 'bg-[#523D35]'
+              }`}
+          >
+            {isLocked ? 'Locked' : loading ? 'Loading...' : 'Sign In'}
           </button>
           <OAuth role={formData.role} setError={setLocalError} />
         </form>
       </div>
 
       <p className='text-center mt-10'>Do not Have an account? <Link to={"/sign-up"} className='text-[#523D35] font-extrabold'>Sign Up</Link></p>
-      
+
       <div>
-        {(error || localError) && <div className='text-red-500 shadow-lg rounded-lg mt-5 p-3 text-center font-semibold'>{error || localError}</div>}
+        {(error || localError) && (
+          <div className='text-red-500 shadow-lg rounded-lg mt-5 p-3 text-center font-semibold'>
+            {error || localError}
+          </div>
+        )}
       </div>
     </div>
-  )
-};
+  );
+}

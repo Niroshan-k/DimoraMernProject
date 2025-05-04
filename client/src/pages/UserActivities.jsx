@@ -211,9 +211,9 @@ export default function UserActivities() {
     }
   };
 
-  console.log(user);
-  console.log('form data', formData);
-  console.log(currentUser)
+  //console.log(user);
+  //console.log('form data', formData);
+  //console.log(currentUser)
   return (
     <main>a
       <div className='mt-10 p-10'>
@@ -356,7 +356,7 @@ export default function UserActivities() {
                     <p>{user.verifiedFormData[0].fullName}</p>
                     <p>{user.verifiedFormData[0].email}</p>
                     <p>{user.verifiedFormData[0].DOB} <span className='text-sm'>[YY/MM/DD]</span></p>
-                    <p>{user.verifiedFormData[0].phone}</p>
+                    <p>+94 {user.verifiedFormData[0].phone}</p>
                     <p>{user.verifiedFormData[0].role}</p>
                     <p>{user.verifiedFormData[0].idType}</p>
                   </div>

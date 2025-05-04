@@ -9,6 +9,7 @@ export default function AdminDashboard() {
     const [showUserError, setShowUserError] = useState(false);
     const dispatch = useDispatch();
     const [newestUser, setNewestUser] = useState(false);
+    const [alerts, setAlerts] = useState([]);
 
     useEffect(() => {
         if (!currentUser || !currentUser._id) return;
@@ -31,7 +32,28 @@ export default function AdminDashboard() {
         fetchUsers();
     }, [currentUser]);
 
-    //console.log(users);
+    useEffect(() => {
+        if (!currentUser || !currentUser._id) return;
+
+        const fetchAlerts = async () => {
+            try {
+                setShowUserError(false);
+                const res = await fetch(`/api/auth/alerts`);
+                const data = await res.json();
+                if (data.success === false) {
+                    setShowUserError(true);
+                    return;
+                }
+                setAlerts(data); // ✅ Ensure it's always an array
+            } catch (error) {
+                setShowUserError(true);
+            }
+        };
+
+        fetchAlerts();
+    }, [currentUser]);
+
+    console.log(alerts);
 
     const handleDeleteUser = async (id) => {
         try {
@@ -70,7 +92,7 @@ export default function AdminDashboard() {
         <main>a
             <div className='p-10 mt-10'>
                 <h6 className='text-5xl'>Users</h6>
-                <div className='flex mt-10 gap-10 flex-row justify-between'>
+                <div className='flex mt-10 gap-10 flex-row justify-between h-200 overflow-scroll'>
                     <div className='w-full'>
                         <h1>Sellers</h1>
                         {users.length > 0 ? (
@@ -94,7 +116,7 @@ export default function AdminDashboard() {
                                             </div>
                                             <div className='flex flex-col gap-1 overflow-hidden'>
                                                 <div className='flex items-center gap-3'>
-                                                    <h6 className='text-xl'>{user.username}</h6>
+                                                    <h5 className='text-xl'>{user.username}</h5>
                                                     {user.verified == "true" ?
                                                         <img className='w-5' src={'/assets/star.png'} alt="" />
                                                         :
@@ -141,7 +163,7 @@ export default function AdminDashboard() {
                                             </div>
                                             <div className='flex flex-col gap-1'>
                                                 <div className='flex items-center gap-3'>
-                                                    <h6 className='text-xl'>{user.username}</h6>
+                                                    <h5 className='text-xl'>{user.username}</h5>
                                                     {user.verified == "true" ?
                                                         <img className='w-5' src={'/assets/star.png'} alt="" />
                                                         :
@@ -185,7 +207,7 @@ export default function AdminDashboard() {
                                                 />
                                             </div>
                                             <div className='flex flex-col gap-1 overflow-hidden'>
-                                                <h6 className='text-xl'>{user.username}</h6>
+                                                <h5 className='text-xl'>{user.username}</h5>
                                                 <p className='text-xl truncate'>{user.email}</p>
                                             </div>
                                         </div>
@@ -242,7 +264,32 @@ export default function AdminDashboard() {
                             ) : null
                         ))
                     ) : (
-                        <p className='text-5xl text-gray-400 mx-auto mt-20 col-span-2'>No Users :(</p>
+                        <p className='text-xl text-gray-400 mx-auto mt-10 col-span-2'>No Verify Requests</p>
+                    )}
+                </section>
+                <section>
+                    <h6 className='mt-10 text-3xl text-red-600'>Security Alerts</h6>
+                    {alerts.length > 0 ? (
+                        <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
+                            <thead>
+                                <tr>
+                                    <th className="border border-gray-300 px-4 py-2">Email</th>
+                                    <th className="border border-gray-300 px-4 py-2">Password</th>
+                                    <th className="border border-gray-300 px-4 py-2">Reason</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {alerts.map((alert) => (
+                                    <tr key={alert._id} className="text-center">
+                                        <td className="border border-gray-300 px-4 py-2">{alert.email}</td>
+                                        <td className="border border-gray-300 px-4 py-2 truncate">{alert.password}</td>
+                                        <td className="border border-gray-300 px-4 py-2">{alert.reason}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="text-5xl text-gray-400 mx-auto mt-20 col-span-2">No Alerts :(</p>
                     )}
                 </section>
             </div>

@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import Security from "../models/Security.model.js";
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from "../utils/error.js";
 import jwt from 'jsonwebtoken';
@@ -25,18 +26,61 @@ export const signup = async (req, res, next) => {
 };
 
 export const signin = async (req, res, next) => {
-    const { username,email, password, role } = req.body;
+    const { email, password, role } = req.body;
+
     try {
         const validUser = await User.findOne({ email });
+
         if (!validUser) {
             return next(errorHandler(404, 'User not found!'));
         }
+
+        // Check if the user is temporarily locked out
+        const lockoutDuration = 10 * 60 * 1000; // 10 minutes in milliseconds
+        const failedAttemptWindow = 2 * 60 * 1000; // 2 minutes in milliseconds
+        const currentTime = Date.now();
+
+        if (validUser.isLocked && currentTime < validUser.lockUntil) {
+            const remainingTime = Math.ceil((validUser.lockUntil - currentTime) / 60000); // Calculate remaining time in minutes
+            return next(errorHandler(403, `Account is temporarily locked. Try again in ${remainingTime} minutes.`));
+        }
+
+        // If lockout period has passed, reset lock and failed attempts
+        if (validUser.isLocked && currentTime >= validUser.lockUntil) {
+            validUser.isLocked = false;
+            validUser.failedLoginAttempts = 0;
+            await validUser.save();
+        }
+
+        // Validate role
         if (validUser.role !== role) {
             return next(errorHandler(401, 'Incorrect role selection!'));
         }
-        const validPassword = bcryptjs.compareSync(password, validUser.password);
-        if (!validPassword) return next(errorHandler(401, 'Wrong credentials!'));
 
+        // Validate password
+        const validPassword = bcryptjs.compareSync(password, validUser.password);
+        if (!validPassword) {
+            validUser.failedLoginAttempts += 1;
+
+            // Check if the user has reached the failed attempts threshold
+            if (validUser.failedLoginAttempts >= 3) {
+                validUser.isLocked = true;
+                validUser.lockUntil = currentTime + lockoutDuration; // Lock user for 10 minutes
+                await validUser.save();
+                return next(errorHandler(403, `Account is temporarily locked due to too many failed login attempts. Try again in 10 minutes.`));
+            }
+
+            await validUser.save();
+            return next(errorHandler(401, 'Wrong credentials!'));
+        }
+
+        // Reset failed login attempts on successful login
+        validUser.failedLoginAttempts = 0;
+        validUser.isLocked = false;
+        validUser.lockUntil = undefined;
+        await validUser.save();
+
+        // Generate JWT Token
         const token = jwt.sign(
             { id: validUser._id, role: validUser.role },
             process.env.JWT_SECRET,
@@ -44,14 +88,14 @@ export const signin = async (req, res, next) => {
         );
 
         res.cookie('access_token', token, {
-            httpOnly: true
+            httpOnly: true,
         }).status(200).json({
             success: true,
             message: "Login successful!",
             username: validUser.username,
-            _id: validUser._id, // 🔹 Now directly accessible as `currentUser._id`
+            _id: validUser._id,
             email: validUser.email,
-            role: validUser.role
+            role: validUser.role,
         });
     } catch (error) {
         next(error);
@@ -128,5 +172,32 @@ try {
 } catch (error) {
     next(error)
 }
+}
+
+export const securityAlerts = async (req, res, next) => {
+    try {
+        const { email, password, reason } = req.body;
+
+        const newSecurityAlert = new Security({
+            email,
+            password, 
+            reason
+        });
+
+        await newSecurityAlert.save();
+        res.status(201).json({ success: true, message: "security alert successfully saved" });
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getAlerts = async (req, res, next) => {
+    try {
+        const alerts = await Security.find({});
+        res.status(200).json(alerts);
+    } catch (error) {
+        next(error);
+    }
 }
 
