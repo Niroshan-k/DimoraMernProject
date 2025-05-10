@@ -26,6 +26,7 @@ export default function Profile() {
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const [userError, setErrorUser] =useState(false);
+  
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,7 +35,7 @@ export default function Profile() {
             const res = await fetch(`/api/user/get/${currentUser._id}`);
             const data = await res.json();
             if (data.success === false) {
-                setError(true);
+                setErrorUser(true);
                 setLoading(false);
                 return;
             }
@@ -170,8 +171,8 @@ export default function Profile() {
   const clicked = () => {
     setVerifying(true);
   }
-  console.log("currentUser:", currentUser);
-  console.log('userData', userData);
+  //console.log("currentUser:", currentUser);
+  //console.log('userData', userData);
   
   return (
 
@@ -273,6 +274,15 @@ export default function Profile() {
             <div ref={mapRef} className="rounded h-50"></div>
           </>
           : ""}
+        {currentUser.role === 'contractor' && (
+          <textarea
+            onChange={handleChange}
+            value={formData.description || currentUser.description}
+            className='bg-[#E8D9CD] mt-6 h-40 w-full p-2 rounded'
+            placeholder='Description'
+            id='description'
+          />
+        )}
         {currentUser.role === 'contractor' && (
           <input
             type="password"

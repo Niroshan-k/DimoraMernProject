@@ -1,0 +1,50 @@
+/* Container for floating hearts */
+.floating-hearts-container {
+ position: absolute;
+ top: 94%; /* Adjust as needed */
+ left: 7%;
+ transform: translate(-50%, -50%);
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ pointer-events: none; /* Ensure clicks pass through */
+}
+
+/* Base animation for hearts */
+.heart-animation {
+ position: absolute;
+ font-size: 2rem;
+ color: #ff4d4d;
+ opacity: 0;
+ animation: floatHeart 2s ease-in-out infinite;
+}
+
+/* Individual heart offsets for staggered animations */
+.heart-1 {
+ animation-delay: 0s;
+}
+.heart-2 {
+ animation-delay: 0.2s;
+}
+.heart-3 {
+ animation-delay: 0.2s;
+}
+.heart-4 {
+ animation-delay: 0.4s;
+}
+.heart-5 {
+ animation-delay: 0.6s;
+}
+
+
+/* Keyframes for floating hearts */
+@keyframes floatHeart {
+ 0% {
+     transform: translate(0, 0) scale(0.2);
+     opacity: 1;
+ }
+ 50% {
+     opacity: 0;
+     transform: translate(0px, -50px) scale(1);
+ }
+}

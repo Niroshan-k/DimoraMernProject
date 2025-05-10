@@ -50,6 +50,10 @@ const userSchema = new mongoose.Schema({
     lockUntil: { 
         type: Date 
     },
+    description: {
+        type: String,
+        default: null
+    },
 },{ timestamps: true });
 
 const User = mongoose.model('User', userSchema);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaClock, FaDeskpro, FaFile, FaFileInvoice, FaFileWord, FaHeading, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaNode, FaPlusCircle, FaStreetView } from 'react-icons/fa';
+import { FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaClock, FaDeskpro, FaFile, FaFileInvoice, FaFileWord, FaHeading, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaNode, FaPlusCircle, FaStreetView, FaTimes, FaTimesCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Slider from "react-slick";
@@ -58,15 +58,32 @@ export default function ContractorDashboard() {
     }
   };
 
+  console.log(currentUser);
+
 
   return (
     <main>
       <div>
         <p>d</p>
         <div className='p-30'>
-          <Link className='w-55 mt-10 mb-10 py-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-post"}>
-            <FaPlusCircle /> Create Post
-          </Link>
+          {
+            currentUser && currentUser.verified === "true" ? (
+              <div>
+                <h5 className='text-2xl text-center'>Welcome Back, {currentUser.verifiedFormData[0].fullName.split(' ')[0]}..</h5>
+                <Link className='w-55 mt-10 mb-10 py-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-post"}>
+                  <FaPlusCircle /> Create Post
+                </Link>
+              </div>
+            ) : (
+              <div className='flex gap-5'>
+                <p className='text-red-500 font-bold flex items-center gap-2 mb-10'>You can't create posts without being verified.<FaTimesCircle /></p>
+                <Link to="/beVerified">
+                  <button className='bg-blue-400 text-white px-2 py-1 rounded cursor-pointer hover:shadow-lg'>Be Verified</button>
+                </Link>
+              </div>
+            )
+          }
+
           <h6 className='text-5xl'>My Work</h6>
           <div className='grid grid-cols-1 gap-5'>
             {userPosts.length > 0 ? (

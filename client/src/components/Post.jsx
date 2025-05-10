@@ -1,13 +1,16 @@
+import { set } from 'mongoose';
 import { useEffect, useState } from 'react';
-import { FaClock, FaStar, FaHeart, FaShareAlt, FaSmile, FaMeh, FaFrown } from 'react-icons/fa';
+import { FaClock, FaStar, FaHeart, FaShareAlt, FaSmile, FaMeh, FaFrown, FaRegHeart, FaWhatsapp, FaLinkedin, FaInstagram, FaCopy, FaFacebook, FaTwitter, FaTimes, FaCheckCircle } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 export default function Post({ post }) {
     const [userData, setUserData] = useState({});
     const [loading, setLoading] = useState(false);
+    const [submitRating, setSubmitRating] = useState(false);
     const [error, setError] = useState(false);
     const [showFullDescription, setShowFullDescription] = useState(false); // State to toggle description
+    const [clipboard, setClipboard] = useState(false); // State to manage clipboard copy
     const [formData, setFormData] = useState({
         Star1: 0,
         Star2: 0,
@@ -16,7 +19,22 @@ export default function Post({ post }) {
         Star5: 0
     });
 
+    const [liked, setLiked] = useState(false);
+
+    const saveFavorite = () => {
+        if (!liked) {
+            setLiked(true);
+        } else {
+            setLiked(false);
+        }
+    };
+
     const [highlightedStars, setHighlightedStars] = useState(0); // For UI color
+
+    const copyLink = () => {
+        navigator.clipboard.writeText(`${window.location.origin}/ContractorProfile/${userData._id}`);
+        setClipboard(true);
+    };
 
     const handleMouseEnter = (star) => {
         setHighlightedStars(star); // Highlight all stars up to the hovered star
@@ -104,24 +122,33 @@ export default function Post({ post }) {
 
             // Update the highlighted stars for UI
             setHighlightedStars(star);
+            setSubmitRating(true);
         } catch (error) {
             console.error("Error updating star rating:", error);
         }
-        
+
     };
+
+    const closeClipboard = () => {
+        setClipboard(false);
+    }
 
     //console.log(formData)
 
     return (
         <div className='p-5 bg-[#EFEFE9] rounded shadow-lg hover:shadow-xl space-y-5 overflow-hidden'>
+
             {/* User Info */}
             <Link to={`/ContractorProfile/${userData._id}`}>
                 <div className='flex items-center gap-3'>
                     <img className='h-14 w-14 rounded-full' src={userData.avatar} alt="avatar" />
-                    <h5 className='flex items-center gap-1 text-lg font-medium'>
-                        {userData.username}
-                        <img className='h-5 w-5' src={userData.verified ? "/assets/star.png" : "assets/cross.png"} alt="verified" />
-                    </h5>
+                    <div>
+                        <h5 className='flex items-center gap-1 text-lg font-medium'>
+                            {userData.username}
+                            <img className='h-5 w-5' src={userData.verified ? "/assets/star.png" : "assets/cross.png"} alt="verified" />
+                        </h5>
+                        <p className='text-sm'>{new Intl.DateTimeFormat('en-US', { dateStyle: 'medium' }).format(new Date(post.createdAt))}</p>
+                    </div>
                 </div>
             </Link>
             <hr className='text-gray-300 mt-3' />
@@ -180,7 +207,7 @@ export default function Post({ post }) {
                     </div>
 
                     {/* Ratings */}
-                    <div className='flex justify-between'>
+                    <div className='flex justify-between p-5'>
                         <div className='flex-[0.5] flex flex-col gap-1 mt-2'>
                             {starRatings.map((item, idx) => (
                                 <p key={idx} className='flex items-center gap-1'>
@@ -189,37 +216,102 @@ export default function Post({ post }) {
                                 </p>
                             ))}
                         </div>
-                        <div className="flex-[0.5] p-5 flex flex-col justify-center rounded-lg shadow">
-                            <div className='flex justify-center gap-2 items-center'>
-                                <span className=''>Rate your Service</span>
-                                <span className='text-blue-500'>{faces[currentFace]}</span>
-                            </div>
-                            <div className="flex justify-center gap-5 mt-5 text-3xl">
-                                {[1, 2, 3, 4, 5].map((star) => (
-                                    <FaStar
-                                        key={star}
-                                        onClick={() => handleStarClick(star)} // Handle star click
-                                        onMouseEnter={() => handleMouseEnter(star)} // Highlight stars on hover
-                                        onMouseLeave={handleMouseLeave} // Reset highlight on mouse leave
-                                        color={highlightedStars >= star ? "yellow" : "gray"} // Highlight logic
-                                        style={{ cursor: "pointer" }} // Pointer cursor for better UX
-                                    />
-                                ))}
-                            </div>
-                        </div>
+                        {
+                            !submitRating ? (
+                                <div className="flex-[0.5] p-5 flex flex-col justify-center rounded-lg shadow">
+                                    <div className='flex justify-center gap-2 items-center'>
+                                        <span className=''>Rate your Service</span>
+                                        <span className='text-blue-500'>{faces[currentFace]}</span>
+                                    </div>
+                                    <div className="flex justify-center gap-5 mt-5 text-3xl">
+                                        {[1, 2, 3, 4, 5].map((star) => (
+                                            <FaStar
+                                                key={star}
+                                                onClick={() => handleStarClick(star)} // Handle star click
+                                                onMouseEnter={() => handleMouseEnter(star)} // Highlight stars on hover
+                                                onMouseLeave={handleMouseLeave} // Reset highlight on mouse leave
+                                                color={highlightedStars >= star ? "yellow" : "gray"} // Highlight logic
+                                                style={{ cursor: "pointer" }} // Pointer cursor for better UX
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className='flex-[0.5] flex items-center gap-2 justify-center'>
+                                    Thank you for your feedback<br />
+                                    <span className='text-blue-500'>{faces[currentFace]}</span>
+                                </div>
+                            )
+                        }
+
                     </div>
                 </div>
             </div>
-
             {/* Bottom Buttons */}
             <div className='flex justify-between gap-3 pt-3 border-t border-gray-300'>
-                <button className='text-red-500 hover:text-red-600 transition'>
-                    <FaHeart size={20} />
+                <button className='transition'>
+                    {liked ? (
+                        <FaHeart className="text-red-500 cursor-pointer text-2xl" onClick={saveFavorite} />
+                    ) : (
+                        <FaRegHeart className="cursor-pointer text-2xl" onClick={saveFavorite} />
+                    )}
                 </button>
-                <button className='text-blue-500 hover:text-blue-600 transition'>
-                    <FaShareAlt size={20} />
-                </button>
+                <div className="flex gap-3 items-center">
+                    <FaWhatsapp
+                        className="text-green-500 text-2xl cursor-pointer"
+                        onClick={() =>
+                            window.open(
+                                `https://api.whatsapp.com/send?text=Check out this Contractor: ${window.location.origin}/ContractorProfile/${userData._id}`,
+                                '_blank'
+                            )
+                        }
+                    />
+                    <FaLinkedin
+                        className="text-blue-700 text-2xl cursor-pointer"
+                        onClick={() =>
+                            window.open(
+                                `https://www.linkedin.com/shareArticle?mini=true&url=${window.location.origin}/ContractorProfile/${userData._id}&title=Check out this Contractor!`,
+                                '_blank'
+                            )
+                        }
+                    />
+                    <FaInstagram
+                        className="text-pink-500 text-2xl cursor-pointer"
+                        onClick={() => {
+                            copyLink();
+                        }}
+                    />
+                    <FaFacebook
+                        className="text-blue-600 text-2xl cursor-pointer"
+                        onClick={() =>
+                            window.open(
+                                `https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/ContractorProfile/${userData._id}`,
+                                '_blank'
+                            )
+                        }
+                    />
+                    <FaTwitter
+                        className="text-blue-400 text-2xl cursor-pointer"
+                        onClick={() =>
+                            window.open(
+                                `https://twitter.com/intent/tweet?url=${window.location.origin}/ContractorProfile/${userData._id}&text=Check out this Contractor!`,
+                                '_blank'
+                            )
+                        }
+                    />
+                    <FaCopy className="text-gray-600 text-2xl cursor-pointer" onClick={copyLink} />
+                </div>
             </div>
+            {
+                clipboard ? <div className='bg-white shadow-lg rounded-2xl p-2 fixed bottom-5 left-1/2 -translate-x-1/2 max-w-lg w-full text-center'>
+                    <div className='text-right justify-self-end'>
+                        <FaTimes className='cursor-pointer' onClick={closeClipboard} />
+                    </div>
+                    <p className='flex items-center justify-center gap-2'>
+                        <FaCheckCircle className='text-green-500' /> Link copied to clipboard!
+                    </p>
+                </div> : ""
+            }
         </div>
     );
 }

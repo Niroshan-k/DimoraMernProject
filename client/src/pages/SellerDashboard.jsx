@@ -58,9 +58,23 @@ export default function SellerDashboard() {
   return (
     <main className='p-10'>
       <div className='mt-10'>
-        <Link className='w-55 mb-10 py-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-listing"}>
-          <FaPlusCircle /> Create Listing
-        </Link>
+        {
+          currentUser && currentUser.verified === "true" ? (
+            <div>
+              <h5 className='text-2xl text-center'>Welcome Back, {currentUser.verifiedFormData[0].fullName.split(' ')[0]}..</h5>
+              <Link className='w-55 mb-10 py-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-listing"}>
+                <FaPlusCircle /> Create Listing
+              </Link>
+            </div>
+          ) : (
+            <div className='flex gap-5'>
+              <p className='text-red-500 font-bold flex items-center gap-2 mb-10'>You can't create advertisements without being verified.<FaTimesCircle /></p>
+              <Link to="/beVerified">
+                <button className='bg-blue-400 text-white px-2 py-1 rounded cursor-pointer hover:shadow-lg'>Be Verified</button>
+              </Link>
+            </div>
+          )
+        }
       </div>
 
       {showListingError && <p className='text-red-500 text-sm'>Error showing listing</p>}

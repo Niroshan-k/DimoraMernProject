@@ -25,6 +25,7 @@ export const updateUser = async (req, res, next) => {
                 phone: req.body.phone,
                 location: req.body.location,
                 verified: req.body.verified,
+                description: req.body.description,
             }
         }, { new: true });
 
