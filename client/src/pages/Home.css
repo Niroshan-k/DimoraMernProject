@@ -13,7 +13,9 @@
 #h6{
     font-size: 5rem;
 }
-
+#blog{
+  background: url("https://firebasestorage.googleapis.com/v0/b/dimora-55e52.firebasestorage.app/o/17_cabo.jpg?alt=media&token=88df57a8-ed8a-4c32-8bb2-b3bf2fff1d0a") no-repeat center center/cover;
+}
 /* Home.css */
 .home {
     width: 100%;

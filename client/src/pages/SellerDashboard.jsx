@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FaArrowsAlt, FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaExpand, FaExpandAlt, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaStreetView } from 'react-icons/fa';
+import { FaArrowsAlt, FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaExpand, FaExpandAlt, FaEye, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaStreetView } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import './SellerDashboard.css';
 
 
 export default function SellerDashboard() {
@@ -61,7 +62,11 @@ export default function SellerDashboard() {
         {
           currentUser && currentUser.verified === "true" ? (
             <div>
-              <h5 className='text-2xl text-center'>Welcome Back, {currentUser.verifiedFormData[0].fullName.split(' ')[0]}..</h5>
+              {
+                currentUser.verifiedFormData[0] ?
+                  <h5 className='text-2xl text-center'>Welcome Back, {currentUser.verifiedFormData[0].fullName.split(' ')[0]}..</h5>
+                  : null
+              }
               <Link className='w-55 mb-10 py-3 text-center text-2xl font-bold text-[#523D35] flex items-center gap-1' to={"/create-listing"}>
                 <FaPlusCircle /> Create Listing
               </Link>
@@ -81,7 +86,7 @@ export default function SellerDashboard() {
 
       <h6 className='md:text-left text-center font-serif text-5xl mb-10'>My Listing</h6>
 
-      <div className='flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-10'>
+      <div className='flex flex-col gap-5 md:grid md:grid-cols-2 md:gap-10 p-10'>
 
         {userListings.length > 0 ? (
           userListings.map((listing) => (
@@ -115,6 +120,9 @@ export default function SellerDashboard() {
               <div className='mt-10'>
                 <div>
                   <h6 className='text-2xl font-bold mb-5'>{listing.name}</h6>
+                  <p className="flex items-center gap-2">
+                    <FaEye /> Views: <b className="ml-2">{listing.views || 0}</b>
+                  </p>
                   <p className='flex items-center gap-2'><FaMapMarker />Location:</p>
                   <p className='flex items-center gap-2 mb-2'><b>{listing.address}.</b></p>
                   <p>Property Type: <b>{listing.property_type}</b></p>

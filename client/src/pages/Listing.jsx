@@ -2,13 +2,12 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import SwiperCore from 'swiper';
+import { useSelector } from 'react-redux';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 import 'swiper/css/bundle';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { FaArrowLeft, FaArrowRight, FaBath, FaBed, FaCar, FaChartArea, FaHome, FaMapMarker, FaSwimmingPool } from 'react-icons/fa';
-
-
+import { FaArrowLeft, FaArrowRight, FaBath, FaBed, FaCar, FaChartArea, FaHome, FaMapMarker, FaSwimmingPool, FaEye } from 'react-icons/fa';
 
 export default function Listing() {
     SwiperCore.use([Navigation]);
@@ -16,9 +15,11 @@ export default function Listing() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [coordinates, setCoordinates] = useState(null);
+    const [views, setViews] = useState(0); // State to store views count
     const params = useParams();
     const mapRef = useRef(null);
     const [userData, setUserData] = useState();
+    const { currentUser } = useSelector(state => state.user);
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -32,6 +33,7 @@ export default function Listing() {
                     return;
                 }
                 setListing(data);
+                setViews(data.views || 0); // Set the initial views count
                 setLoading(false);
                 setError(false);
             } catch (error) {
@@ -41,7 +43,6 @@ export default function Listing() {
         };
         fetchListing();
     }, [params.listingId]);
-
 
     useEffect(() => {
         const fetchSeller = async () => {
@@ -103,7 +104,29 @@ export default function Listing() {
         }
     }, [coordinates, listing]);
 
-    // Fetch listing data
+    useEffect(() => {
+        const incrementViews = async () => {
+            try {
+                if (currentUser) {
+                    const res = await fetch(`/api/listing/incrementViews/${params.listingId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                    if (!res.ok) {
+                        throw new Error('Failed to increment views count.');
+                    }
+                    const data = await res.json();
+                    setViews(data.updatedViews); // Update the views count in the state
+                }
+            } catch (error) {
+                console.error('Error incrementing views count:', error);
+            }
+        };
+        incrementViews();
+    }, [currentUser, params.listingId]);
+
     return (
         <main>
             {loading && <p>Loading...</p>}
@@ -144,6 +167,7 @@ export default function Listing() {
                     </div>
                     <div className='p-30'>
                         <h6 className='text-4xl'>{listing.name}</h6>
+                        <h1 className='flex gap-1 mt-5 mb-5 items-center'><FaEye /> {views} Views</h1>
                         <h1 className='flex gap-1 mt-5 mb-5 items-center'><FaMapMarker />{listing.address}.</h1>
                         <h6 className='text-4xl'>
                             {"රු. " + (Number(listing.price) || 0).toLocaleString('en-US')}

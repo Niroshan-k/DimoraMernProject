@@ -68,7 +68,7 @@ export default function Contractors() {
   return (
     <main>
       <div className='md:flex gap-5'>
-        <div className='md:fixed bg-white z-1 md:min-h-screen p-5'>
+        <div className='md:fixed z-1 md:min-h-screen p-5'>
           <h6 className='mt-20 text-2xl'>Find Your Contractor</h6>
           <form className='mt-5' onSubmit={handleSubmit}>
             <div className='flex flex-col'>

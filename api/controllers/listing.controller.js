@@ -139,3 +139,112 @@ export const getListings = async (req, res, next) => {
         next(error);
     }
 };
+
+export const incrementViews = async (req, res, next) => {
+    try {
+        const listingId = req.params.id;
+        const listing = await Listing.findByIdAndUpdate(
+            listingId,
+            { $inc: { views: 1 } }, // Increment the views count by 1
+            { new: true } // Return the updated document
+        );
+        if (!listing) {
+            return res.status(404).json({ success: false, message: 'Listing not found' });
+        }
+        res.status(200).json({ success: true, updatedViews: listing.views });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to increment views count' });
+    }
+}
+
+export const like = async (req, res, next) => {
+    const { userId } = req.body; // Get the user ID from the request body
+    const listingId = req.params.id;
+
+    try {
+        const listing = await Listing.findById(listingId);
+
+        if (!listing) {
+            return res.status(404).json({ success: false, message: 'Listing not found' });
+        }
+
+        // Check if the user has already liked the listing
+        if (listing.likedBy.includes(userId)) {
+            return res.status(400).json({ success: false, message: 'User already liked this listing' });
+        }
+
+        // Add the user ID to the likedBy array and increment the likes count
+        listing.likedBy.push(userId);
+        listing.likes += 1;
+
+        await listing.save();
+
+        res.status(200).json({ success: true, likes: listing.likes });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to like the listing' });
+    }
+} 
+
+export const liked = async (req, res, next) => {
+    const { listingId, userId } = req.params;
+
+    try {
+        const listing = await Listing.findById(listingId);
+
+        if (!listing) {
+            return res.status(404).json({ success: false, message: 'Listing not found' });
+        }
+
+        // Check if the user has liked the listing
+        const hasLiked = listing.likedBy.includes(userId);
+
+        res.status(200).json({ success: true, liked: hasLiked });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch liked status' });
+    }
+}
+
+export const unlike = async (req, res, next) => {
+    const { userId } = req.body; // Get the user ID from the request body
+    const listingId = req.params.id;
+
+    try {
+        const listing = await Listing.findById(listingId);
+
+        if (!listing) {
+            return res.status(404).json({ success: false, message: 'Listing not found' });
+        }
+
+        // Check if the user has already liked the listing
+        if (!listing.likedBy.includes(userId)) {
+            return res.status(400).json({ success: false, message: 'User has not liked this listing' });
+        }
+
+        // Remove the user ID from the likedBy array and decrement the likes count
+        listing.likedBy = listing.likedBy.filter((id) => id !== userId);
+        listing.likes -= 1;
+
+        await listing.save();
+
+        res.status(200).json({ success: true, likes: listing.likes });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to unlike the listing' });
+    }
+}
+
+export const getLikedListings = async (req, res, next) => {
+    const { userId } = req.params;
+
+    try {
+        // Find all listings where the user ID is in the likedBy array
+        const likedListings = await Listing.find({ likedBy: userId });
+
+        if (!likedListings || likedListings.length === 0) {
+            return res.status(404).json({ success: false, message: 'No liked listings found' });
+        }
+
+        res.status(200).json({ success: true, listings: likedListings });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch liked listings' });
+    }
+};

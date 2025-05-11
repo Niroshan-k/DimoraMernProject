@@ -1,26 +1,80 @@
-import React, { useState } from 'react';
-import { FaBox, FaCube, FaCubes, FaHeart, FaHouseUser, FaImage, FaRegHeart, FaShareAlt, FaSpinner, FaWarehouse, FaWhatsapp, FaFacebook, FaTwitter, FaCopy, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
+import { FaBox, FaCube, FaCubes, FaHeart, FaHouseUser, FaImage, FaRegHeart, FaShareAlt, FaSpinner, FaWarehouse, FaWhatsapp, FaFacebook, FaTwitter, FaCopy, FaLinkedin, FaInstagram, FaEye, FaEyeSlash, FaEyeDropper } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import './listingItem.css';
+import { useSelector } from 'react-redux';
 
 export default function ListingItem({ listing }) {
     const [liked, setLiked] = useState(false);
+    const [likesCount, setLikesCount] = useState(listing.likes || 0); // Initialize with the current likes count
     const [showFloatingLike, setShowFloatingLike] = useState(false); // State to manage floating like visibility
     const [showShareForm, setShowShareForm] = useState(false); // State to manage floating share form visibility
+    const { currentUser } = useSelector((state) => state.user);
 
-    const saveFavorite = () => {
+    // Fetch the liked status when the component mounts
+    useEffect(() => {
+        const fetchLikedStatus = async () => {
+            try {
+                const res = await fetch(`/api/listing/liked/${listing._id}/${currentUser._id}`);
+                if (!res.ok) {
+                    throw new Error('Failed to fetch liked status');
+                }
+                const data = await res.json();
+                setLiked(data.liked); // Set the liked status
+            } catch (error) {
+                console.error('Error fetching liked status:', error);
+            }
+        };
+
+        fetchLikedStatus();
+    }, [currentUser._id]); // Fetch liked status when listing or user changes
+
+    const saveFavorite = async () => {
         if (!liked) {
-            setLiked(true);
-            setShowFloatingLike(true);
-
-            // Hide the floating like after 2 seconds
-            setTimeout(() => {
-                setShowFloatingLike(false);
-            }, 2000);
+            try {
+                const res = await fetch(`/api/listing/like/${listing._id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId: currentUser._id }), // Pass the user ID
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to update likes count');
+                }
+                const data = await res.json();
+                setLikesCount(data.likes); // Update the likes count in the UI
+                setLiked(true); // Mark as liked
+            } catch (error) {
+                console.error('Error updating likes:', error);
+            }
         } else {
-            setLiked(false);
-            setShowFloatingLike(false);
+            console.log('Already liked');
+        }
+    };
+
+    const unsaveFavorite = async () => {
+        if (liked) {
+            try {
+                const res = await fetch(`/api/listing/unlike/${listing._id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ userId: currentUser._id }), // Pass the user ID
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to update likes count');
+                }
+                const data = await res.json();
+                setLikesCount(data.likes); // Update the likes count in the UI
+                setLiked(false); // Mark as unliked
+            } catch (error) {
+                console.error('Error updating likes:', error);
+            }
+        } else {
+            console.log('Already unliked');
         }
     };
 
@@ -31,6 +85,18 @@ export default function ListingItem({ listing }) {
     const copyLink = () => {
         navigator.clipboard.writeText(`${window.location.origin}/listing/${listing._id}`);
         alert('Link copied to clipboard!');
+    };
+
+    const handleNewestUser = (date) => {
+        const createdAt = new Date(date);
+        const currentDate = new Date();
+        const timeDiff = Math.abs(currentDate - createdAt); // Calculate time difference
+        const differenceInDays = timeDiff / (1000 * 60 * 60 * 24); // Convert to days
+        if (differenceInDays <= 40) {
+            return "new"; // Return "new" if the user is created within the last 3 days
+        } else {
+            return null; // Return an empty string if the user is not new
+        }
     };
 
     return (
@@ -106,10 +172,18 @@ export default function ListingItem({ listing }) {
             <div className="bg-[#EFEFE9] rounded flex overflow-hidden flex-col shadow-lg w-90 hover:shadow-2xl">
                 <div className="absolute z-0 text-white">
                     {listing.urgent ? (
-                        <p className="bg-red-500 px-2 rounded-br rounded-tl">urgent</p>
+                        <p className="bg-red-500 px-2 rounded-br rounded-tl font-bold uppercase">Urgent</p>
                     ) : listing.sold ? (
-                        <p className="bg-purple-600 px-2 rounded-br rounded-tl">sold</p>
-                    ) : null}
+                        <p className="bg-purple-500 px-2 rounded-br rounded-tl font-bold uppercase">Sold</p>
+                    ) : handleNewestUser(listing.createdAt) == "new" ? (
+                        <p className='bg-green-500 px-2 rounded-br rounded-tl font-bold uppercase'>New</p>
+                    ) : listing.package = "boost" ? (
+                        <p className="bg-blue-500 px-2 rounded-br rounded-tl font-bold uppercase">Boost</p>
+                    ) : (
+                        <p className="bg-gray-500 px-2 rounded-br rounded-tl font-bold uppercase">Normal</p>
+                    )
+                    }
+
                 </div>
                 <div className="absolute mt-44 px-2 flex items-center gap-1 bg-[#EFEFE9] rounded-tr">
                     <p>{listing.imageUrls.length}</p>
@@ -126,7 +200,7 @@ export default function ListingItem({ listing }) {
                     <Link className="flex flex-col gap-2" to={`/listing/${listing._id}`}>
                         <h6 className="truncate font-bold text-xl mt-3 uppercase">{listing.name}</h6>
                         <p className="font-bold">
-                            {"රු. " + (Number(listing.price) || 0).toLocaleString('en-US') + "/="}
+                            {"රු. " + (Number(listing.price) || 0).toLocaleString('en-US') + ".00"}
                             {listing.type === "rent" ? " /month" : ""}
                         </p>
 
@@ -134,20 +208,33 @@ export default function ListingItem({ listing }) {
                             <MdLocationOn className="h-5 w-5" />
                             <span className="truncate w-full">{listing.address}</span>
                         </div>
-                        <p className="flex items-center gap-1">
-                            <FaCube />Area:<b className="ml-2">{listing.area}<span className="text-sm">m<sup>2</sup></span></b>
-                        </p>
-                        <p className="flex items-center gap-1">
-                            <FaHouseUser /> Type: <b className="ml-2">{listing.property_type}</b>
-                        </p>
+                        <div className='p-3'>
+                            <div className="flex justify-between gap-1">
+                                <p className="flex text-sm items-center gap-1">
+                                    <FaCube />Area:<b className="ml-2">{listing.area}<span className="text-sm">m<sup>2</sup></span></b>
+                                </p>
+                                <p className="flex text-sm items-center gap-1">
+                                    <FaHouseUser /> Type: <b className="ml-2">{listing.property_type}</b>
+                                </p>
+                            </div>
+                            <div className="flex justify-between gap-1">
+                                <p className="flex text-sm items-center gap-1">
+                                    <FaEye /> Views: <b className="ml-2">{listing.views || 0}</b>
+                                </p>
+                            </div>
+                        </div>
+
                     </Link>
 
                     <div className="flex justify-between mt-5 text-xl">
-                        {liked ? (
-                            <FaHeart className="text-red-500 cursor-pointer" onClick={saveFavorite} />
-                        ) : (
-                            <FaRegHeart className="cursor-pointer" onClick={saveFavorite} />
-                        )}
+                        <div className='flex items-center gap-1'>
+                            {liked ? (
+                                <FaHeart className="text-red-500 cursor-pointer" onClick={unsaveFavorite} />
+                            ) : (
+                                <FaRegHeart className="cursor-pointer" onClick={saveFavorite} />
+                            )}
+                            <p>{likesCount}</p>
+                        </div>
                         <FaShareAlt className="cursor-pointer" onClick={toggleShareForm} />
                     </div>
                 </div>

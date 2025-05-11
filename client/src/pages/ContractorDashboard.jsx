@@ -58,7 +58,7 @@ export default function ContractorDashboard() {
     }
   };
 
-  console.log(currentUser);
+  //console.log(currentUser);
 
 
   return (

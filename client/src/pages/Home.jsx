@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import './Home.css'
-import { FaMapMarker } from 'react-icons/fa'
-import Search from './Searchbar'
+import React, { useEffect, useState } from 'react';
+import './Home.css';
+import { FaMapMarker, FaPlus, FaMinus, FaLinkedin, FaInstagram, FaTwitter, FaFacebook } from 'react-icons/fa';
+import Search from './Searchbar';
 import ListingItem from '../components/ListingItem';
 import { MdLocationOn } from 'react-icons/md';
 import { Link } from 'react-router-dom';
@@ -17,20 +17,21 @@ export default function Home() {
   const [trending, setTrending] = useState([]);
   const [recommend, setRecommend] = useState([]);
   const { currentUser } = useSelector(state => state.user);
-  //console.log(trending);
-  useEffect(() => {
 
-    function extractDistrict(location) {
-      const parts = location.split(",");
-      if (parts.length >= 2) {
-        return parts[1].replace("District", "").trim(); // Remove "District" and trim spaces
-      }
-      return "";
+  function extractDistrict(location) {
+    if (!location) {
+      return ""; // Return an empty string if location is undefined or null
     }
+    const parts = location.split(",");
+    if (parts.length >= 2) {
+      return parts[1].replace("District", "").trim(); // Remove "District" and trim spaces
+    }
+    return "";
+  }
 
-    const district = extractDistrict(currentUser.location);
-    console.log(district);
+  const district = extractDistrict(currentUser ? currentUser.location : null);
 
+  useEffect(() => {
     const fetchTOPListings = async () => {
       try {
         const res = await fetch('/api/listing/get?package=boost&limit=4');
@@ -111,17 +112,13 @@ export default function Home() {
       }
     }
     fetchTOPListings();
-
-
-    //fetchSaleListings();
-    //console.log("h", houseListings);
-    //console.log(rentListings);
-    //console.log(saleListings);
   }, []);
+
+  //console.log(trending);
+
   return (
     <main>
       <section id='banner'>
-
         <div className='bg-[#00000083] h-screen w-full text-center md:text-left md:w-[30%] md:p-5'>
           <h1 className='mt-50 md:mt-100' id='h1'>MAKE YOUR OWN</h1>
           <h6 id='h6' className='uppercase'>Real Estate Network</h6>
@@ -129,7 +126,6 @@ export default function Home() {
             <button className='border-4 border-white mt-90 md:mt-10 text-white text-xl py-3 flex gap-2 items-center px-6 hover:bg-white hover:text-black uppercase'><MdLocationOn />Get Started</button>
           </div>
         </div>
-
       </section>
       <section id=''>
         <Search />
@@ -179,7 +175,7 @@ export default function Home() {
               </div>
 
               <div className='mt-10 flex justify-end'>
-                <Link to={`/search?package=boost`}>
+                <Link to={`/search?address=${district}`}>
                   <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
@@ -197,7 +193,7 @@ export default function Home() {
                 }
               </div>
               <div className='mt-10 flex justify-end'>
-                <Link to={`/search?package=boost`}>
+                <Link to={`/search?address=${district}`}>
                   <button className='p-3 bg-[#959D90] text-white font-bold rounded'>show more</button>
                 </Link>
               </div>
@@ -254,7 +250,7 @@ export default function Home() {
       <section className='bg-white py-10 h-screen mt-20 mb-20'>
         <div className='flex md:px-30 mt-10 mb-5 md:gap-10'>
           <div className='flex-[0.5] flex flex-col justify-between'>
-            <h6 className='text-3xl'>Find the Right Contractor for Your Next Property</h6>
+            <h5 className='text-3xl uppercase'>Find the Right Contractor for Your Next Property</h5>
             <p className='w-100'>Planning a new build? We make it easy to connect with trusted contractors who specialize in residential and commercial properties. Get your project started with the right hands—reliable, skilled, and ready to deliver. Whether you're constructing a family home, a villa, or a commercial space, our platform helps you compare services, view past work, and choose the perfect fit for your needs. With verified reviews, clear pricing, and easy communication, turning your vision into reality has never been simpler.</p>
             <div>
               <Link to="/contractors">
@@ -345,6 +341,59 @@ export default function Home() {
             </div>
           )
         }
+      </section>
+      <section className='bg-white py-10 h-screen mt-20 mb-20'>
+        <div className='flex md:px-30 mt-10 mb-5 md:gap-10'>
+
+          <div className='flex-[0.5]'>
+            <div className='grid grid-cols-2 gap-3'>
+              <div class="relative h-90 group overflow-hidden">
+                <img src="assets/banner2.jpg" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-0" alt="" />
+                <div class="absolute inset-0 bg-[#00000091] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+                  <button class="mt-2 self-start bg-white text-black px-4 py-1 text-sm font-semibold hover:bg-gray-200 transition">
+                    Houses
+                  </button>
+                </div>
+              </div>
+              <div class="relative h-90 group overflow-hidden">
+                <img src="assets/banner3.jpg" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-0" alt="" />
+                <div class="absolute inset-0 bg-[#00000091] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+                  <button class="mt-2 self-start bg-white text-black px-4 py-1 text-sm font-semibold hover:bg-gray-200 transition">
+                    Apartments
+                  </button>
+                </div>
+              </div>
+              <div class="relative h-90 group overflow-hidden">
+                <img src="assets/banner4.jpg" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-0" alt="" />
+                <div class="absolute inset-0 bg-[#00000091] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+                  <button class="mt-2 self-start bg-white text-black px-4 py-1 text-sm font-semibold hover:bg-gray-200 transition">
+                    Villas
+                  </button>
+                </div>
+              </div>
+              <div class="relative h-90 group overflow-hidden">
+                <img src="assets/banner5.jpg" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 z-0" alt="" />
+                <div class="absolute inset-0 bg-[#00000091] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+                  <button class="mt-2 self-start bg-white text-black px-4 py-1 text-sm font-semibold hover:bg-gray-200 transition">
+                    Hotels
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className='flex-[0.5] flex flex-col justify-between items-end'>
+            <h5 className='text-3xl uppercase'>Blog & Property News</h5>
+            <p className='w-100 text-right'>
+              Stay informed with the latest trends in real estate, expert tips, market insights, and property development news. Our blog keeps you updated on everything from buying advice and renovation ideas to legal tips and industry updates—helping you make smarter property decisions.
+            </p>
+            <div>
+              <Link to="/blog">
+                <button className='border-2 bg-black text-white hover:bg-white hover:text-black p-3'>Explore Articles</button>
+              </Link>
+            </div>
+
+          </div>
+        </div>
       </section>
       <section className='md:px-30 mt-10 mb-5'>
         {

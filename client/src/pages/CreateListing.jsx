@@ -306,8 +306,6 @@ export default function CreateListing() {
                     </option>
                     <option value="normal">Normal</option>
                     <option value="boost">Boost</option>
-                    <option value="retro">Retro</option>
-                    <option value="ultra">Ultra</option>
                   </select>
                   <button onClick={handlePayment} type='button' className='bg-[#959D90] p-3 text-white font-bold uppercase'>
                     {

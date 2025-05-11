@@ -1,21 +1,51 @@
-import React, { useState } from 'react'
-import { FaGlobe, FaBars, FaTimes } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react'
+import { FaGlobe, FaBars, FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 export default function Header() {
     const { currentUser } = useSelector(state => state.user);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [zoomLevel, setZoomLevel] = useState(1); // State to track zoom level
+
+    useEffect(() => {
+        document.body.style.zoom = zoomLevel; // Apply zoom level to the entire page
+    }, [zoomLevel]);
+
+    const handleZoomIn = () => {
+        setZoomLevel(prev => Math.min(prev + 0.1, 2)); // Limit max zoom to 2x
+    };
+
+    const handleZoomOut = () => {
+        setZoomLevel(prev => Math.max(prev - 0.1, 0.5)); // Limit min zoom to 0.5x
+    };
 
     return (
         <header className='bg-[#EFEFE9] shadow-lg z-2 w-full flex justify-between p-2 fixed items-center'>
+            {/* Zoom Buttons */}
+            <div className="fixed bottom-5 right-5 flex flex-col gap-2 z-50">
+                <button
+                    onClick={handleZoomIn}
+                    className="p-3 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-700"
+                >
+                    <FaPlus />
+                </button>
+                <button
+                    onClick={handleZoomOut}
+                    className="p-3 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-700"
+                >
+                    <FaMinus />
+                </button>
+                <p className='text-sm font-bold text-center'>{Math.round(zoomLevel * 100)}%</p>
+            </div>
+
             <Link to='/'>
                 <img src="/assets/logo.png" alt="logo" className='w-32' />
             </Link>
-            
+
             {/* Mobile Menu Button */}
             <div className='md:hidden'>
-                <button 
+                <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className='text-2xl p-2'
                 >
@@ -28,15 +58,14 @@ export default function Header() {
                 {currentUser?.role != 'admin' && (
                     <>
                         <li className='flex gap-1 items-center'><FaGlobe />English</li>
-                        <li className=''>Contact</li>
-                        <li>About Us</li>
                     </>
                 )}
                 {currentUser &&
-                <ul className='flex gap-5 items-center cursor-pointer'>
-                    <li><Link to="/blog">Blog</Link></li>
-                     <li><Link to="/contractors">Contractors</Link></li>
-                </ul>
+                    <ul className='flex gap-5 items-center cursor-pointer'>
+                        <li><Link to="/blog">Blog</Link></li>
+                        <li><Link to="/contractors">Contractors</Link></li>
+                        <li><Link to="/liked-listings">Favorites</Link></li>
+                    </ul>
                 }
                 {currentUser?.role === 'seller' && (
                     <li><Link to="/seller-dashboard">Dashboard</Link></li>
@@ -68,7 +97,7 @@ export default function Header() {
                         )}
                         <li><Link to="/blog" onClick={() => setIsMenuOpen(false)}>Blog</Link></li>
                         {currentUser && <li><Link to="/contractors" onClick={() => setIsMenuOpen(false)}>Contractors</Link></li>}
-                        
+
                         {currentUser?.role === 'seller' && (
                             <li><Link to="/seller-dashboard" onClick={() => setIsMenuOpen(false)}>Dashboard</Link></li>
                         )}
@@ -87,7 +116,7 @@ export default function Header() {
                                         <span>Profile</span>
                                     </div>
                                 ) : (
-                                    <button className='bg-[#959D90] font-bold p-3 w-full rounded cursor-pointer'>Sign In</button>
+                                    <button className='bg-[#959D90] font-bold p-3 w-full rounded text-white cursor-pointer'>Sign In</button>
                                 )}
                             </Link>
                         </li>

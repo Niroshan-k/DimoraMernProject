@@ -22,6 +22,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import UserActivities from './pages/UserActivities';
 import Verify from './pages/Verify';
 import ContractorProfile from './pages/ContractorProfile';
+import Footer from './components/Footer';
+import LikedListings from './pages/LikedListings';
 
 export default function App() {
   return (
@@ -42,6 +44,7 @@ export default function App() {
           <Route path="/contractors" element={<Contractors />} />
           <Route path='/ContractorProfile/:id' element={<ContractorProfile />} />
           <Route path="/beVerified" element={<Verify />} />
+          <Route path="/liked-listings" element={<LikedListings />} />
         </Route>
 
         {/* ✅ Seller Dashboard - Only for Sellers */}
@@ -63,6 +66,7 @@ export default function App() {
           <Route path="/dimora/admin-dashboard/user-activities/:userId" element={<UserActivities />} />
         </Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }

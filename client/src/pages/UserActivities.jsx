@@ -7,9 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { Link } from 'react-router-dom';
 import { MdLocationOn } from 'react-icons/md';
 import emailjs from 'emailjs-com';
-
-
-import { FaArrowsAlt, FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaExpand, FaExpandAlt, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaClock } from 'react-icons/fa';
+import { FaArrowsAlt, FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaExpand, FaExpandAlt, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaClock, FaEye } from 'react-icons/fa';
 
 export default function UserActivities() {
   const { currentUser } = useSelector(state => state.user);
@@ -24,6 +22,8 @@ export default function UserActivities() {
   const [formData, setFormData] = useState({
     verified: 'false'
   });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
 
   const params = useParams();
 
@@ -189,7 +189,7 @@ export default function UserActivities() {
           'Content-Type': 'application/json',
           headers: {
             Authorization: `Bearer ${currentUser.token}`, // Ensure the token is sent
-        },
+          },
         },
         body: JSON.stringify(formData),
       });
@@ -209,6 +209,16 @@ export default function UserActivities() {
       console.error('Error verifying user:', error);
       setUpdateError(true);
     }
+  };
+
+  const handleImageClick = (imageUrl) => {
+    setCurrentImage(imageUrl); // Set the clicked image
+    setIsModalOpen(true); // Open the modal
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false); // Close the modal
+    setCurrentImage(null); // Clear the current image
   };
 
   //console.log(user);
@@ -361,9 +371,16 @@ export default function UserActivities() {
                     <p>{user.verifiedFormData[0].idType}</p>
                   </div>
                 </div>
-                <div className='grid grid-cols-2 mt-5 gap-5'>
-                  <img src={user.verifiedFormData[0].imageUrls[0]} alt="verifyingImages" />
-                  <img src={user.verifiedFormData[0].imageUrls[1]} alt="verifyingImages" />
+                <div className="flex mt-5 gap-5">
+                  {user.verifiedFormData[0].imageUrls.map((url, index) => (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`Verifying Image ${index + 1}`}
+                      className="cursor-pointer rounded w-30 object-cover"
+                      onClick={() => handleImageClick(url)} // Open modal on click
+                    />
+                  ))}
                 </div>
                 <div className='mt-5'>
                   <form onSubmit={verifyUser}>
@@ -433,6 +450,9 @@ export default function UserActivities() {
                             <h6 className='text-2xl font-bold mb-5'>{listing.name}</h6>
                             <p className='flex items-center gap-2'><FaMapMarker />Location:</p>
                             <p className='flex items-center gap-2 mb-2'><b>{listing.address}.</b></p>
+                            <p className="flex items-center gap-2">
+                              <FaEye /> Views: <b className="ml-2">{listing.views || 0}</b>
+                            </p>
                             <p className='flex items-center gap-2'><FaMoneyBill />{listing.type}:<b>රු.{listing.price}</b><span className='text-sm'>{listing.type === "rent" ? "(රු.month)" : ""}</span></p>
                             <p className='flex items-center gap-2'><FaChartArea />Area:<b>{listing.area}m<sup>2</sup></b></p>
                             <p className='flex items-center gap-2'><FaBed />Bedrooms: <b>{listing.bedrooms}</b></p>
@@ -517,6 +537,26 @@ export default function UserActivities() {
           }
         </div>
       </div>
+      {/* Full-Screen Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-[#000000b7] bg-opacity-70 flex items-center justify-center z-50">
+          <div className="relative">
+            {/* Close Button */}
+            <button
+              className="absolute top-5 right-5 text-white text-5xl font-bold"
+              onClick={closeModal}
+            >
+              &times;
+            </button>
+            {/* Full-Screen Image */}
+            <img
+              src={currentImage}
+              alt="Full Screen"
+              className="max-w-full max-h-full rounded"
+            />
+          </div>
+        </div>
+      )}
     </main>
   );
 }

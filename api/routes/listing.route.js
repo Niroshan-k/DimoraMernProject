@@ -1,5 +1,5 @@
 import express from 'express';
-import { createListing, deleteListing, updateListing, getListing, getListings, deleteListingAdmin } from '../controllers/listing.controller.js';
+import { createListing, deleteListing, updateListing, getListing, getListings, deleteListingAdmin, incrementViews, like, liked, getLikedListings, unlike } from '../controllers/listing.controller.js';
 import { verifyToken } from '../utils/verifyUser.js';
 
 const router = express.Router();
@@ -9,6 +9,11 @@ router.delete('/delete/:id',verifyToken , deleteListing);
 router.delete('/admin/delete/:id',verifyToken , deleteListingAdmin);
 router.post('/update/:id',verifyToken , updateListing);
 router.get('/get/:id', getListing);
-router.get('/get', getListings)
+router.get('/get', getListings);
+router.post('/incrementViews/:id', incrementViews);
+router.post('/like/:id', verifyToken, like);
+router.get('/liked/:listingId/:userId', verifyToken , liked);
+router.get('/userLiked/:userId',verifyToken , getLikedListings);
+router.post('/unlike/:id',verifyToken ,unlike);
 
 export default router;

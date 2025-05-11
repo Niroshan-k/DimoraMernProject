@@ -64,6 +64,18 @@ const listingSchema = new mongoose.Schema(
         sold: {
             type : Boolean,
             default: false
+        },
+        views: {
+            type: Number,
+            default: 0
+        },
+        likes: {
+            type: Number,
+            default: 0
+        },
+        likedBy: { 
+            type: [String], 
+            default: [] 
         }
     }, {timestamps: true}
 )
