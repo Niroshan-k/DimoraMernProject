@@ -2,6 +2,8 @@ import { useSelector } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { useDispatch, } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import ListingItem from '../components/ListingItem';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function AdminDashboard() {
     const { currentUser } = useSelector(state => state.user);
@@ -10,6 +12,8 @@ export default function AdminDashboard() {
     const dispatch = useDispatch();
     const [newestUser, setNewestUser] = useState(false);
     const [alerts, setAlerts] = useState([]);
+    const [userListings, setUserListings] = useState([]);
+    const [listing, setListing] = useState([]);
 
     useEffect(() => {
         if (!currentUser || !currentUser._id) return;
@@ -31,6 +35,29 @@ export default function AdminDashboard() {
 
         fetchUsers();
     }, [currentUser]);
+
+    useEffect(() => {
+        if (!currentUser || !currentUser._id) return;
+
+        const fetchListing = async () => {
+            try {
+                setShowUserError(false);
+                const res = await fetch(`/api/listing/all`);
+                const data = await res.json();
+                if (data.success === false) {
+                    setShowUserError(true);
+                    return;
+                }
+                setListing(data.listings); // ✅ Ensure it's always an array
+            } catch (error) {
+                setShowUserError(true);
+            }
+        };
+
+        fetchListing();
+    }, [currentUser]);
+
+    console.log(listing);
 
     useEffect(() => {
         if (!currentUser || !currentUser._id) return;
@@ -88,10 +115,23 @@ export default function AdminDashboard() {
         }
     };
 
+    // Inside your component
+    const boostIncome = listing.filter((l) => l.packages === 'boost').length * 20000;
+    const normalIncome = listing.filter((l) => l.packages === 'normal').length * 12000;
+    const currentMonthIncome = boostIncome + normalIncome;
+    const thisMonth = new Date().toLocaleString('default', { month: 'short' });
+    const data = [
+        { name: 'Jan', income: 56000 },
+        { name: 'Feb', income: 44000 },
+        { name: 'Mar', income: 68000 },
+        { name: 'Apr', income: 62000 },
+        { name: thisMonth, income: currentMonthIncome }, // Dynamically added
+    ];
+
     return (
         <main>a
             <div className='p-10 mt-10'>
-                <h6 className='text-5xl'>Users</h6>
+                <h1 className='text-5xl font-bold'>Users</h1>
                 <div className='flex mt-10 gap-10 flex-row justify-between h-200 overflow-scroll'>
                     <div className='w-full'>
                         <h1>Sellers</h1>
@@ -229,7 +269,7 @@ export default function AdminDashboard() {
                 )}
 
                 <section>
-                    <h6 className='mt-10 text-3xl mb-5'>Verify Requests from Users</h6>
+                    <h1 className='mt-10 text-3xl mb-5 font-bold'>Verify Requests from Users</h1>
                     {users.length > 0 ? (
                         users.map((user) => (
                             user.verified === 'verifying' ? (
@@ -268,7 +308,7 @@ export default function AdminDashboard() {
                     )}
                 </section>
                 <section>
-                    <h6 className='mt-10 text-3xl text-red-600'>Security Alerts</h6>
+                    <h1 className='mt-10 text-3xl text-red-600 font-bold'>Security Alerts</h1>
                     {alerts.length > 0 ? (
                         <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
                             <thead>
@@ -291,6 +331,109 @@ export default function AdminDashboard() {
                     ) : (
                         <p className="text-5xl text-gray-400 mx-auto mt-20 col-span-2">No Alerts :(</p>
                     )}
+                </section>
+                <section>
+                    <h1 className='mt-10 text-3xl font-bold'>User Analytics</h1>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-5'>
+                        {[
+                            { title: 'Total Users', count: users.length, color: 'bg-green-500' },
+                            { title: 'Total Sellers', count: users.filter(u => u.role === 'seller').length, color: 'bg-blue-500' },
+                            { title: 'Total Contractors', count: users.filter(u => u.role === 'contractor').length, color: 'bg-yellow-500' },
+                            { title: 'Total Customers', count: users.filter(u => u.role === 'customer').length, color: 'bg-red-500' },
+                        ].map(({ title, count, color }, i) => {
+                            const percent = Math.min((count / 1000) * 100, 100); // capped at 100%
+                            return (
+                                <div key={i} className='bg-[#EFEFE9] shadow p-5 rounded space-y-3'>
+                                    <h1 className='text-xl font-bold'>{title}</h1>
+                                    <p className='text-2xl font-semibold'>{count}</p>
+                                    <div className='w-full bg-gray-300 rounded-full h-3 overflow-hidden'>
+                                        <div
+                                            className={`${color} h-full rounded-full transition-all duration-300`}
+                                            style={{ width: `${percent}%` }}
+                                        ></div>
+                                    </div>
+                                    <p className='text-sm text-gray-500'>{percent.toFixed(1)}% of goal (1000)</p>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <div>
+                        <p className='mt-10 font-bold'>Boost Package Income</p>
+                        {listing.length > 0 ? (
+                            <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Listing Id</th>
+                                        <th className="border border-gray-300 px-4 py-2">Package</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {listing
+                                        .filter((list) => list.packages === 'boost')
+                                        .map((list) => (
+                                            <tr key={alert._id} className="text-center">
+                                                <td className="border border-gray-300 px-4 py-2">{list._id}</td>
+                                                <td className="border border-gray-300 px-4 py-2 truncate">{list.packages}</td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2 text-right">Total Income</th>
+                                        <th className="border border-gray-300 px-4 py-2">
+                                            {/* Calculate total income */}
+                                            {`රු. ${listing.filter((list) => list.packages === 'boost').length * 20000}`}
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        ) : (
+                            <p className="text-5xl text-gray-400 mx-auto mt-20 col-span-2">No Listing with the boost package :(</p>
+                        )}
+                        <p className='mt-10 font-bold'>Normal Package Income</p>
+                        {listing.length > 0 ? (
+                            <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
+                                <thead>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2">Listing Id</th>
+                                        <th className="border border-gray-300 px-4 py-2">Package</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {listing
+                                        .filter((list) => list.packages === 'normal')
+                                        .map((list) => (
+                                            <tr key={alert._id} className="text-center">
+                                                <td className="border border-gray-300 px-4 py-2">{list._id}</td>
+                                                <td className="border border-gray-300 px-4 py-2 truncate">{list.packages}</td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th className="border border-gray-300 px-4 py-2 text-right">Total Income</th>
+                                        <th className="border border-gray-300 px-4 py-2">
+                                            {/* Calculate total income */}
+                                            {`රු. ${listing.filter((list) => list.packages === 'boost').length * 12000}`}
+                                        </th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        ) : (
+                            <p className="text-5xl text-gray-400 mx-auto mt-20 col-span-2">No Listing with the boost package :(</p>
+                        )}
+                    </div>
+                    <div className="w-full h-96 mt-10 bg-white p-5 rounded shadow">
+                        <h2 className="text-xl font-bold mb-5">Monthly Income</h2>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={data}>
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Bar dataKey="income" fill="#4B5563" radius={[10, 10, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
                 </section>
             </div>
         </main>

@@ -14,67 +14,69 @@ export default function ListingItem({ listing }) {
 
     // Fetch the liked status when the component mounts
     useEffect(() => {
-        const fetchLikedStatus = async () => {
-            try {
-                const res = await fetch(`/api/listing/liked/${listing._id}/${currentUser._id}`);
-                if (!res.ok) {
-                    throw new Error('Failed to fetch liked status');
+        if (currentUser && currentUser._id) {
+            const fetchLikedStatus = async () => {
+                try {
+                    const res = await fetch(`/api/listing/liked/${listing._id}/${currentUser._id}`);
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch liked status');
+                    }
+                    const data = await res.json();
+                    setLiked(data.liked); // Set the liked status
+                } catch (error) {
+                    console.error('Error fetching liked status:', error);
                 }
-                const data = await res.json();
-                setLiked(data.liked); // Set the liked status
-            } catch (error) {
-                console.error('Error fetching liked status:', error);
-            }
-        };
+            };
 
-        fetchLikedStatus();
-    }, [currentUser._id]); // Fetch liked status when listing or user changes
+            fetchLikedStatus();
+        }
+    }, [listing._id, currentUser]); // Fetch liked status when listing or user changes
 
     const saveFavorite = async () => {
-        if (!liked) {
+        if (currentUser && !liked) {
             try {
                 const res = await fetch(`/api/listing/like/${listing._id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId: currentUser._id }), // Pass the user ID
+                    body: JSON.stringify({ userId: currentUser._id }),
                 });
                 if (!res.ok) {
                     throw new Error('Failed to update likes count');
                 }
                 const data = await res.json();
-                setLikesCount(data.likes); // Update the likes count in the UI
-                setLiked(true); // Mark as liked
+                setLikesCount(data.likes);
+                setLiked(true);
             } catch (error) {
                 console.error('Error updating likes:', error);
             }
         } else {
-            console.log('Already liked');
+            console.log('User not signed in or already liked');
         }
     };
 
     const unsaveFavorite = async () => {
-        if (liked) {
+        if (currentUser && liked) {
             try {
                 const res = await fetch(`/api/listing/unlike/${listing._id}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ userId: currentUser._id }), // Pass the user ID
+                    body: JSON.stringify({ userId: currentUser._id }),
                 });
                 if (!res.ok) {
                     throw new Error('Failed to update likes count');
                 }
                 const data = await res.json();
-                setLikesCount(data.likes); // Update the likes count in the UI
-                setLiked(false); // Mark as unliked
+                setLikesCount(data.likes);
+                setLiked(false);
             } catch (error) {
                 console.error('Error updating likes:', error);
             }
         } else {
-            console.log('Already unliked');
+            console.log('User not signed in or already unliked');
         }
     };
 
@@ -228,11 +230,19 @@ export default function ListingItem({ listing }) {
 
                     <div className="flex justify-between mt-5 text-xl">
                         <div className='flex items-center gap-1'>
-                            {liked ? (
-                                <FaHeart className="text-red-500 cursor-pointer" onClick={unsaveFavorite} />
-                            ) : (
-                                <FaRegHeart className="cursor-pointer" onClick={saveFavorite} />
-                            )}
+                            {
+                                currentUser ?                                   
+                                    liked ? (
+                                        <FaHeart className = "text-red-500 cursor-pointer" onClick = { unsaveFavorite } />
+                                    ): (
+                                        <FaRegHeart className = "cursor-pointer" onClick = { saveFavorite } />
+                                    )
+                                : (
+                                    <Link to="/sign-in">
+                                        <FaRegHeart className = "cursor-pointer"/>
+                                    </Link>
+                                )
+                            }
                             <p>{likesCount}</p>
                         </div>
                         <FaShareAlt className="cursor-pointer" onClick={toggleShareForm} />

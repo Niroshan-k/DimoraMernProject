@@ -78,6 +78,15 @@ export const getListing = async (req, res, next) => {
     }
 }
 
+export const getAllListings = async (req, res, next) => {
+    try {
+        const listings = await Listing.find(); // Fetch all listings from the database
+        res.status(200).json({ success: true, listings });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Failed to fetch listings', error: error.message });
+    }
+};
+
 export const getListings = async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 8;
