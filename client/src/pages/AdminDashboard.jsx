@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import ListingItem from '../components/ListingItem';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function AdminDashboard() {
     const { currentUser } = useSelector(state => state.user);
@@ -32,6 +32,11 @@ export default function AdminDashboard() {
                 setShowUserError(true);
             }
         };
+        // Fetch users every 10 seconds
+        const interval = setInterval(fetchUsers, 10000);
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(interval);
 
         fetchUsers();
     }, [currentUser]);
@@ -57,7 +62,7 @@ export default function AdminDashboard() {
         fetchListing();
     }, [currentUser]);
 
-    console.log(listing);
+    //console.log(users);
 
     useEffect(() => {
         if (!currentUser || !currentUser._id) return;
@@ -79,8 +84,6 @@ export default function AdminDashboard() {
 
         fetchAlerts();
     }, [currentUser]);
-
-    console.log(alerts);
 
     const handleDeleteUser = async (id) => {
         try {
@@ -115,25 +118,34 @@ export default function AdminDashboard() {
         }
     };
 
+    // Generate random hex color
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    };
     // Inside your component
     const boostIncome = listing.filter((l) => l.packages === 'boost').length * 20000;
     const normalIncome = listing.filter((l) => l.packages === 'normal').length * 12000;
     const currentMonthIncome = boostIncome + normalIncome;
     const thisMonth = new Date().toLocaleString('default', { month: 'short' });
     const data = [
-        { name: 'Jan', income: 56000 },
-        { name: 'Feb', income: 44000 },
-        { name: 'Mar', income: 68000 },
-        { name: 'Apr', income: 62000 },
-        { name: thisMonth, income: currentMonthIncome }, // Dynamically added
+        { name: 'Jan', income: 56000, color: getRandomColor() },
+        { name: 'Feb', income: 44000, color: getRandomColor() },
+        { name: 'Mar', income: 68000, color: getRandomColor() },
+        { name: 'Apr', income: 62000, color: getRandomColor() },
+        { name: thisMonth, income: currentMonthIncome, color: getRandomColor() }, // Dynamically added
     ];
 
     return (
         <main>a
             <div className='p-10 mt-10'>
                 <h1 className='text-5xl font-bold'>Users</h1>
-                <div className='flex mt-10 gap-10 flex-row justify-between h-200 overflow-scroll'>
-                    <div className='w-full'>
+                <div className='flex mt-10 gap-10 flex-row justify-between h-200'>
+                    <div className='w-full overflow-scroll'>
                         <h1>Sellers</h1>
                         {users.length > 0 ? (
                             users.map((user) => (
@@ -167,11 +179,23 @@ export default function AdminDashboard() {
 
                                             </div>
                                         </div>
-                                        <div className='flex gap-3 p-3 justify-end'>
-                                            <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
-                                                <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
-                                            </Link>
-                                            <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
+                                        <div className='flex p-3 gap-3 items-center justify-between'>
+                                            <div>
+                                                <button disabled>
+                                                    {
+                                                        user.loggedIn === "logedin" ?
+                                                            <p className='bg-green-400 text-white font-bold py-1 px-3 rounded'>Active</p>
+                                                            :
+                                                            <p className='bg-red-500 text-white font-bold py-1 px-3 rounded'>Logged Out</p>
+                                                    }
+                                                </button>
+                                            </div>
+                                            <div className='flex gap-3 p-3'>
+                                                <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
+                                                    <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
+                                                </Link>
+                                                <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
+                                            </div>
                                         </div>
                                     </div>
                                 ) : null
@@ -180,7 +204,7 @@ export default function AdminDashboard() {
                             <p className='text-5xl text-gray-400 mx-auto mt-20 col-span-2'>No Users :(</p>
                         )}
                     </div>
-                    <div className='w-full'>
+                    <div className='w-full overflow-scroll'>
                         <h1>Contractors</h1>
                         {users.length > 0 ? (
                             users.map((user) => (
@@ -213,11 +237,23 @@ export default function AdminDashboard() {
                                                 <p className='text-xl'>{user.email}</p>
                                             </div>
                                         </div>
-                                        <div className='flex p-3 justify-end gap-3'>
-                                            <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
-                                                <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
-                                            </Link>
-                                            <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
+                                        <div className='flex p-3 gap-3 items-center justify-between'>
+                                            <div>
+                                                <button disabled>
+                                                    {
+                                                        user.loggedIn === "logedin" ?
+                                                            <p className='bg-green-400 text-white font-bold py-1 px-3 rounded'>Active</p>
+                                                            :
+                                                            <p className='bg-red-500 text-white font-bold py-1 px-3 rounded'>Logged Out</p>
+                                                    }
+                                                </button>
+                                            </div>
+                                            <div className='flex gap-3 p-3'>
+                                                <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
+                                                    <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
+                                                </Link>
+                                                <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
+                                            </div>
                                         </div>
                                     </div>
                                 ) : null
@@ -226,7 +262,7 @@ export default function AdminDashboard() {
                             <p className='text-5xl text-gray-400 mx-auto mt-20 col-span-2'>No Users :(</p>
                         )}
                     </div>
-                    <div className='w-full'>
+                    <div className='w-full overflow-scroll'>
                         <h1>Customers</h1>
                         {users.length > 0 ? (
                             users.map((user) => (
@@ -251,8 +287,23 @@ export default function AdminDashboard() {
                                                 <p className='text-xl truncate'>{user.email}</p>
                                             </div>
                                         </div>
-                                        <div className='flex p-3 justify-end'>
-                                            <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
+                                        <div className='flex p-3 gap-3 items-center justify-between'>
+                                            <div>
+                                                <button disabled>
+                                                    {
+                                                        user.loggedIn === "logedin" ?
+                                                            <p className='bg-green-400 text-white font-bold py-1 px-3 rounded'>Active</p>
+                                                            :
+                                                            <p className='bg-red-500 text-white font-bold py-1 px-3 rounded'>Logged Out</p>
+                                                    }
+                                                </button>
+                                            </div>
+                                            <div className='flex gap-3 p-3'>
+                                                <Link to={`/dimora/admin-dashboard/user-activities/${user._id}`}>
+                                                    <button className='bg-[#523D35] py-1 px-3 text-white font-bold rounded'>Activities</button>
+                                                </Link>
+                                                <button onClick={() => handleDeleteUser(user._id)} className='bg-red-500 py-1 px-3 text-white font-bold rounded'>Delete</button>
+                                            </div>
                                         </div>
                                     </div>
                                 ) : null
@@ -357,80 +408,156 @@ export default function AdminDashboard() {
                             );
                         })}
                     </div>
+                    <p className='mt-10 font-bold'>Boost Package Income</p>
                     <div>
-                        <p className='mt-10 font-bold'>Boost Package Income</p>
-                        {listing.length > 0 ? (
-                            <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
-                                <thead>
-                                    <tr>
-                                        <th className="border border-gray-300 px-4 py-2">Listing Id</th>
-                                        <th className="border border-gray-300 px-4 py-2">Package</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listing
-                                        .filter((list) => list.packages === 'boost')
-                                        .map((list) => (
-                                            <tr key={alert._id} className="text-center">
-                                                <td className="border border-gray-300 px-4 py-2">{list._id}</td>
-                                                <td className="border border-gray-300 px-4 py-2 truncate">{list.packages}</td>
-                                            </tr>
-                                        ))}
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th className="border border-gray-300 px-4 py-2 text-right">Total Income</th>
-                                        <th className="border border-gray-300 px-4 py-2">
-                                            {/* Calculate total income */}
-                                            {`රු. ${listing.filter((list) => list.packages === 'boost').length * 20000}`}
-                                        </th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        ) : (
-                            <p className="text-5xl text-gray-400 mx-auto mt-20 col-span-2">No Listing with the boost package :(</p>
-                        )}
+                        <div>
+
+                            {listing.length > 0 ? (
+                                <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
+                                    <thead>
+                                        <tr>
+                                            <th className="border border-gray-300 px-4 py-2">Seller Profile</th>
+                                            <th className="border border-gray-300 px-4 py-2">Seller Id</th>
+                                            <th className="border border-gray-300 px-4 py-2">Listing Id</th>
+                                            <th className="border border-gray-300 px-4 py-2">Package</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {listing
+                                            .filter((list) => list.packages === 'boost') // Filter only "boost" packages
+                                            .map((list) => {
+                                                // Find the corresponding user for the listing
+                                                const seller = users.find((user) => user._id === list.userRef);
+                                                return (
+                                                    <tr key={list._id} className="text-center">
+                                                        <td className="border border-gray-300 px-4 py-2">
+                                                            {seller?.avatar && seller.avatar.trim() !== "" ? (
+                                                                <img
+                                                                    className="h-10 w-10 rounded-full object-cover mx-auto"
+                                                                    src={seller.avatar}
+                                                                    alt={`${seller.username || "Seller"}'s avatar`}
+                                                                />
+                                                            ) : (
+                                                                <img
+                                                                    className="h-10 w-10 rounded-full object-cover mx-auto"
+                                                                    src="https://via.placeholder.com/150"
+                                                                    alt="Default avatar"
+                                                                />
+                                                            )}
+                                                        </td>
+                                                        <td className="border border-gray-300 px-4 py-2">{list.userRef}</td>
+                                                        <td className="border border-gray-300 px-4 py-2">{list._id}</td>
+                                                        <td className="border border-gray-300 px-4 py-2 truncate">{list.packages}</td>
+                                                    </tr>
+                                                );
+                                            })}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th className="border border-gray-300 px-4 py-2 text-right" colSpan="3">
+                                                Total Income
+                                            </th>
+                                            <th className="border border-gray-300 px-4 py-2">
+                                                {`රු. ${listing.filter((list) => list.packages === 'boost').length * 20000}`}
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            ) : (
+                                <p className="text-5xl text-gray-400 mx-auto mt-20 col-span-2">No Listing with the boost package :(</p>
+                            )}
+                        </div>
+
                         <p className='mt-10 font-bold'>Normal Package Income</p>
-                        {listing.length > 0 ? (
-                            <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
-                                <thead>
-                                    <tr>
-                                        <th className="border border-gray-300 px-4 py-2">Listing Id</th>
-                                        <th className="border border-gray-300 px-4 py-2">Package</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listing
-                                        .filter((list) => list.packages === 'normal')
-                                        .map((list) => (
-                                            <tr key={alert._id} className="text-center">
+                        <table className="table-auto border-collapse border border-gray-300 w-full mt-5">
+                            <thead>
+                                <tr>
+                                    <th className="border border-gray-300 px-4 py-2">Seller Profile</th>
+                                    <th className="border border-gray-300 px-4 py-2">Seller Id</th>
+                                    <th className="border border-gray-300 px-4 py-2">Listing Id</th>
+                                    <th className="border border-gray-300 px-4 py-2">Package</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {listing
+                                    .filter((list) => list.packages === 'normal') // Filter only "boost" packages
+                                    .map((list) => {
+                                        // Find the corresponding user for the listing
+                                        const seller = users.find((user) => user._id === list.userRef);
+                                        return (
+                                            <tr key={list._id} className="text-center">
+                                                <td className="border border-gray-300 px-4 py-2">
+                                                    {seller?.avatar && seller.avatar.trim() !== "" ? (
+                                                        <img
+                                                            className="h-10 w-10 rounded-full object-cover mx-auto"
+                                                            src={seller.avatar}
+                                                            alt={`${seller.username || "Seller"}'s avatar`}
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            className="h-10 w-10 rounded-full object-cover mx-auto"
+                                                            src="https://via.placeholder.com/150"
+                                                            alt="Default avatar"
+                                                        />
+                                                    )}
+                                                </td>
+                                                <td className="border border-gray-300 px-4 py-2">{list.userRef}</td>
                                                 <td className="border border-gray-300 px-4 py-2">{list._id}</td>
                                                 <td className="border border-gray-300 px-4 py-2 truncate">{list.packages}</td>
                                             </tr>
-                                        ))}
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th className="border border-gray-300 px-4 py-2 text-right">Total Income</th>
-                                        <th className="border border-gray-300 px-4 py-2">
-                                            {/* Calculate total income */}
-                                            {`රු. ${listing.filter((list) => list.packages === 'boost').length * 12000}`}
-                                        </th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        ) : (
-                            <p className="text-5xl text-gray-400 mx-auto mt-20 col-span-2">No Listing with the boost package :(</p>
-                        )}
+                                        );
+                                    })}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th className="border border-gray-300 px-4 py-2 text-right" colSpan="3">
+                                        Total Income
+                                    </th>
+                                    <th className="border border-gray-300 px-4 py-2">
+                                        {`රු. ${listing.filter((list) => list.packages === 'normal').length * 12000}`}
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mt-5'>
+                        {[
+                            { title: 'Boost Earning', count: listing.filter((list) => list.packages === 'boost').length* 20000, color: 'bg-blue-500' },
+                            { title: 'Normal Earning', count: listing.filter((list) => list.packages === 'normal').length * 12000, color: 'bg-green-500' },
+                        ].map(({ title, count, color }, i) => {
+                            const percent = Math.min((count / 500000) * 100, 100); // capped at 100%
+                            return (
+                                <div key={i} className='bg-[#EFEFE9] shadow p-5 rounded space-y-3'>
+                                    <h1 className='text-xl font-bold'>{title}</h1>
+                                    <p className='text-2xl font-semibold'>{"රු. " + (Number(count) || 0).toLocaleString('en-US')}</p>
+                                    <div className='w-full bg-gray-300 rounded-full h-3 overflow-hidden'>
+                                        <div
+                                            className={`${color} h-full rounded-full transition-all duration-300`}
+                                            style={{ width: `${percent}%` }}
+                                        ></div>
+                                    </div>
+                                    <p className='text-sm text-gray-500'>{percent.toFixed(1)}% of goal (රු.5,00,000)</p>
+                                </div>
+                            );
+                        })}
                     </div>
                     <div className="w-full h-96 mt-10 bg-white p-5 rounded shadow">
                         <h2 className="text-xl font-bold mb-5">Monthly Income</h2>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={data}>
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="income" fill="#4B5563" radius={[10, 10, 0, 0]} />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip />
+                                {/* Render a single Bar component */}
+                                <Bar
+                                    dataKey="income"
+                                    radius={[5, 5, 0, 0]}
+                                >
+                                    {/* Add random colors for each bar */}
+                                    {data.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.color} />
+                                    ))}
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

@@ -78,6 +78,7 @@ export const signin = async (req, res, next) => {
         validUser.failedLoginAttempts = 0;
         validUser.isLocked = false;
         validUser.lockUntil = undefined;
+        validUser.loggedIn = "logedin";
         await validUser.save();
 
         // Generate JWT Token
@@ -116,6 +117,10 @@ export const google = async (req, res) => {
                 });
             }
 
+            // Update the loggedIn status to "logedin"
+            user.loggedIn = "logedin";
+            await user.save();
+
             // Generate JWT token
             const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET);
             const { password: pass, ...userData } = user._doc;
@@ -143,7 +148,8 @@ export const google = async (req, res) => {
                 email: req.body.email, 
                 password: hashedPassword,
                 role: req.body.role, 
-                avatar: req.body.photo 
+                avatar: req.body.photo,
+                loggedIn: "logedin" 
             });
 
             await newUser.save();
@@ -166,12 +172,21 @@ export const google = async (req, res) => {
 };
 
 export const signOut = async (req, res, next)=> {
-try {
-    res.clearCookie('access_token');
-    res.status(200).json('User has been logged out');
-} catch (error) {
-    next(error)
-}
+    try {
+        const { email } = req.body;
+        // Update the loggedIn status to "logout"
+        await User.findOneAndUpdate(
+            { email },
+            { loggedIn: "logout" },
+            { new: true }
+        );
+        
+        res.clearCookie('access_token');
+        res.status(200).json('User has been logged out');
+    } catch (error) {
+        next(error);
+        res.status(500).json({ success: false, message: "Internal server error" });
+    }
 }
 
 export const securityAlerts = async (req, res, next) => {

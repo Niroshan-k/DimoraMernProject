@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: null
     },
+    loggedIn : {
+        type : String,
+        default : "logout"
+    }
 },{ timestamps: true });
 
 const User = mongoose.model('User', userSchema);

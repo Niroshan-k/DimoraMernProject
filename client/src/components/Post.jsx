@@ -83,13 +83,41 @@ export default function Post({ post }) {
         [...Array(count)].map((_, i) => <FaStar key={i} className='text-yellow-300' />)
     );
 
-    const starRatings = [
+    const [starRatings, setStarRatings] = useState([
         { count: post.Star5 || 0, stars: 5 },
         { count: post.Star4 || 0, stars: 4 },
         { count: post.Star3 || 0, stars: 3 },
         { count: post.Star2 || 0, stars: 2 },
         { count: post.Star1 || 0, stars: 1 },
-    ];
+    ]);
+
+    // Polling function to fetch updated star ratings
+    useEffect(() => {
+        const fetchStarRatings = async () => {
+            try {
+                const res = await fetch(`/api/post/${post._id}/stars`);
+                if (!res.ok) {
+                    throw new Error('Failed to fetch star ratings');
+                }
+                const data = await res.json();
+                setStarRatings([
+                    { count: data.stars.Star5, stars: 5 },
+                    { count: data.stars.Star4, stars: 4 },
+                    { count: data.stars.Star3, stars: 3 },
+                    { count: data.stars.Star2, stars: 2 },
+                    { count: data.stars.Star1, stars: 1 },
+                ]);
+            } catch (error) {
+                console.error('Error fetching star ratings:', error);
+            }
+        };
+
+        // Poll every 10 seconds
+        const interval = setInterval(fetchStarRatings, 10000);
+
+        // Cleanup interval on component unmount
+        return () => clearInterval(interval);
+    }, [post]);
 
     const handleStarClick = async (star) => {
         try {
@@ -114,11 +142,16 @@ export default function Post({ post }) {
                 throw new Error("Failed to update star rating.");
             }
 
-            // Update the local `formData` to reflect the new state
-            setFormData((prev) => ({
-                ...prev,
-                [`Star${star}`]: updatedStarValue,
-            }));
+            const data = await res.json();
+
+            // Update the starRatings state to reflect the new values
+            setStarRatings([
+                { count: data.post.Star5, stars: 5 },
+                { count: data.post.Star4, stars: 4 },
+                { count: data.post.Star3, stars: 3 },
+                { count: data.post.Star2, stars: 2 },
+                { count: data.post.Star1, stars: 1 },
+            ]);
 
             // Update the highlighted stars for UI
             setHighlightedStars(star);

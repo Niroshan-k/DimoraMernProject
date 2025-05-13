@@ -149,20 +149,34 @@ export default function Profile() {
   }
 
   const handleSignOut = async (e) => {
-    e.preventDefault();
-    try {
-      dispatch(signOutUserStart());
-      const res = await fetch('/api/auth/signout');
-      const data = await res.json();
-      if (data.success === false) {
-        dispatch(signOutUserFailure(data.message));
-        return;
+      e.preventDefault();
+      try {
+          dispatch(signOutUserStart());
+          const res = await fetch('/api/auth/signout', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email: currentUser.email }), // Pass the email in the request body
+          });
+
+          // Check if the response is JSON
+          const contentType = res.headers.get('content-type');
+          if (!contentType || !contentType.includes('application/json')) {
+              throw new Error('Invalid response from server');
+          }
+
+          const data = await res.json();
+          if (data.success === false) {
+              dispatch(signOutUserFailure(data.message));
+              return;
+          }
+          dispatch(signOutUserSuccess(data));
+      } catch (error) {
+          console.error('Error during sign out:', error);
+          dispatch(signOutUserFailure(error.message));
       }
-      dispatch(signOutUserSuccess(data));
-    } catch (error) {
-      dispatch(signOutUserFailure(data.message));
-    }
-  }
+  };
   const [showListingError, setShowListingError] = useState(false);
   const handleUpdate = () => {
     updateSuccess ? setUpdateSuccess(false) : setUpdateSuccess(true);
@@ -171,7 +185,7 @@ export default function Profile() {
   const clicked = () => {
     setVerifying(true);
   }
-  //console.log("currentUser:", currentUser);
+  console.log("currentUser:", currentUser);
   //console.log('userData', userData);
   
   return (

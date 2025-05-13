@@ -102,6 +102,31 @@ export const updateStar = async (req, res) => {
     }
 };
 
+export const getStarRatings = async (req, res) => {
+    try {
+        const { id } = req.params; // Post ID
+        const post = await Post.findById(id);
+
+        if (!post) {
+            return res.status(404).json({ success: false, message: "Post not found." });
+        }
+
+        res.status(200).json({
+            success: true,
+            stars: {
+                Star1: post.Star1 || 0,
+                Star2: post.Star2 || 0,
+                Star3: post.Star3 || 0,
+                Star4: post.Star4 || 0,
+                Star5: post.Star5 || 0,
+            },
+        });
+    } catch (error) {
+        console.error("Error fetching star ratings:", error);
+        res.status(500).json({ success: false, message: "An error occurred." });
+    }
+};
+
 export const getPosts = async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 8;

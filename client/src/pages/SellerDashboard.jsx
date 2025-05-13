@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import { FaArrowsAlt, FaBath, FaBed, FaCar, FaCashRegister, FaChartArea, FaDeskpro, FaExpand, FaExpandAlt, FaEye, FaFile, FaFileInvoice, FaFileWord, FaLocationArrow, FaMap, FaMapMarked, FaMapMarker, FaMarker, FaMoneyBill, FaPlusCircle, FaStreetView } from 'react-icons/fa';
+import {
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer
+} from 'recharts';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Slider from "react-slick";
@@ -12,6 +15,9 @@ export default function SellerDashboard() {
   const { currentUser } = useSelector(state => state.user); // ✅ Get user from Redux
   const [userListings, setUserListings] = useState([]); // ✅ Always an array
   const [showListingError, setShowListingError] = useState(false);
+  const [recommend, setRecommend] = useState([]);
+  const [district, setDistrict] = useState(''); // State for the district input
+  const [searchValue, setSearchValue] = useState('');
 
   useEffect(() => {
     if (!currentUser || !currentUser._id) return;
@@ -55,7 +61,46 @@ export default function SellerDashboard() {
     }
   };
 
-  console.log(userListings)
+  useEffect(() => {
+    const fetchRecommendListings = async () => {
+      try {
+        const res = await fetch(`/api/listing/get?address=${district}&type=sale`);
+        const data = await res.json();
+        setRecommend(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (district) {
+      fetchRecommendListings();
+    }
+  }, [district]); // ✅ Runs when `district` changes
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setDistrict(searchValue); // Update the district state with the search box value
+  };
+
+  // Calculate total advertisements, average price, lowest price, and highest price
+  const totalAds = recommend.length;
+  const prices = recommend.map((listing) => listing.price || 0); // Extract prices, default to 0 if undefined
+  const totalPrice = prices.reduce((sum, price) => sum + price, 0);
+  const averagePrice = prices.length > 0 ? (totalPrice / prices.length).toFixed(2) : 0;
+  const lowestPrice = prices.length > 0 ? Math.min(...prices) : 0;
+  const highestPrice = prices.length > 0 ? Math.max(...prices) : 0;
+
+  // Fake + Real Data
+  const chartData = [
+    { month: 'Jan', avg: 1250000, low: 900000, high: 1600000 },
+    { month: 'Feb', avg: 1150000, low: 870000, high: 1550000 },
+    { month: 'Mar', avg: 1300000, low: 950000, high: 1650000 },
+    { month: 'Apr', avg: 1400000, low: 980000, high: 1700000 },
+    { month: 'May', avg: averagePrice, low: lowestPrice, high: highestPrice }
+  ];
+
+  const percentage = Math.min((totalAds / 1000) * 100, 100); // full is 1000
+  console.log(recommend);
   return (
     <main className='p-10'>
       <div className='mt-10'>
@@ -81,6 +126,64 @@ export default function SellerDashboard() {
           )
         }
       </div>
+
+      <div className='grid grid-cols-2'>
+        <div>
+          <form onSubmit={handleSearch}>
+            <label className="font-semibold">Search:</label>
+            <div className="flex gap-4 mb-8 mt-3 px-20 justify-between">
+              <input
+                type="text"
+                placeholder="Search by district"
+                className="bg-[#E8D9CD] p-3 w-full"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)} // Update the search box value
+              />
+              <button
+                type="submit"
+                className="bg-[#523D35] text-white px-2 py-1 rounded cursor-pointer hover:shadow-lg"
+              >
+                Search
+              </button>
+            </div>
+          </form>
+          <div className='flex p-10 items-center gap-10 justify-center'>
+            <div className="relative w-64 h-64">
+              <svg className="transform rotate-[-90deg]" width="100%" height="100%">
+                <circle cx="128" cy="128" r="108" stroke="#E5E7EB" strokeWidth="10" fill="none" />
+                <circle cx="128" cy="128" r="108" stroke="#10B981" strokeWidth="10" fill="none"
+                  strokeDasharray={`${678.584 * percentage / 100} 678.584`} strokeLinecap="round" />
+              </svg>
+              <div className="absolute inset-0 flex flex-col justify-center items-center">
+                <p className="text-xl font-bold">{totalAds}</p>
+                <p className="text-sm">Total Ads</p>
+              </div>
+            </div>
+            <div className="bg-[#EFEFE9] p-5 rounded shadow-lg">
+              <h5 className="text-2xl font-bold mb-5">Statistics</h5>
+              <p>Average Price: <b>රු. {Number(averagePrice).toLocaleString('en-US')}</b></p>
+              <p>Lowest Price: <b>රු. {Number(lowestPrice).toLocaleString('en-US')}</b></p>
+              <p>Highest Price: <b>රු. {Number(highestPrice).toLocaleString('en-US')}</b></p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="bg-white shadow rounded min-w-full h-100 py-10 pl-10 ">
+            <h5 className="text-lg font-bold mb-3">Monthly Price Stats</h5>
+            <ResponsiveContainer width="90%" height="100%" className="p-2">
+              <BarChart data={chartData}>
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="avg" fill="#6366F1" name="Average Price" />
+                <Bar dataKey="low" fill="#10B981" name="Lowest Price" />
+                <Bar dataKey="high" fill="#EF4444" name="Highest Price" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      </div>
+
 
       {showListingError && <p className='text-red-500 text-sm'>Error showing listing</p>}
 

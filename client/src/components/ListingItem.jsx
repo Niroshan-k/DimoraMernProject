@@ -48,6 +48,9 @@ export default function ListingItem({ listing }) {
                 const data = await res.json();
                 setLikesCount(data.likes);
                 setLiked(true);
+
+                setShowFloatingLike(true);
+                setTimeout(() => setShowFloatingLike(false), 1500);
             } catch (error) {
                 console.error('Error updating likes:', error);
             }
