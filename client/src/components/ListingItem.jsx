@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaBox, FaCube, FaCubes, FaHeart, FaHouseUser, FaImage, FaRegHeart, FaShareAlt, FaSpinner, FaWarehouse, FaWhatsapp, FaFacebook, FaTwitter, FaCopy, FaLinkedin, FaInstagram, FaEye, FaEyeSlash, FaEyeDropper } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
 import { Link } from 'react-router-dom';
-import './listingItem.css';
+import './listingitem.css';
 import { useSelector } from 'react-redux';
 
 export default function ListingItem({ listing }) {
