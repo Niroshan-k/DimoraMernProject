@@ -88,15 +88,14 @@ export const signin = async (req, res, next) => {
             { expiresIn: '7d' }
         );
 
+        // Exclude sensitive fields like password
+        const { password: pass, ...userData } = validUser._doc;
+
         res.cookie('access_token', token, {
             httpOnly: true,
         }).status(200).json({
             success: true,
-            message: "Login successful!",
-            username: validUser.username,
-            _id: validUser._id,
-            email: validUser.email,
-            role: validUser.role,
+            ...userData, // Include all user data except the password
         });
     } catch (error) {
         next(error);
