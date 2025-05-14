@@ -1,4 +1,3 @@
-import { set } from 'mongoose';
 import { useEffect, useState } from 'react';
 import { FaClock, FaStar, FaHeart, FaShareAlt, FaSmile, FaMeh, FaFrown, FaRegHeart, FaWhatsapp, FaLinkedin, FaInstagram, FaCopy, FaFacebook, FaTwitter, FaTimes, FaCheckCircle } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
