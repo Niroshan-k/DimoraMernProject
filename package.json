@@ -1,0 +1,20 @@
+{
+  "name": "dimorarealestate",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Niroshan-k/DimoraMernProject#readme",
+  "bugs": {
+    "url": "https://github.com/Niroshan-k/DimoraMernProject/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Niroshan-k/DimoraMernProject.git"
+  },
+  "license": "ISC",
+  "author": "Niroshan",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
