@@ -2,21 +2,26 @@
   "name": "dimorarealestate",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://github.com/Niroshan-k/DimoraMernProject#readme",
-  "bugs": {
-    "url": "https://github.com/Niroshan-k/DimoraMernProject/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Niroshan-k/DimoraMernProject.git"
-  },
-  "license": "ISC",
-  "author": "Niroshan",
-  "type": "module",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon api/index.js",
     "start": "node api/index.js",
     "build": "npm install && npm install --prefix client && npm run build --prefix client"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "emailjs": "^4.0.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.0",
+    "nodemon": "^3.1.9",
+    "qrcode": "^1.5.4",
+    "speakeasy": "^2.0.0"
   }
 }
