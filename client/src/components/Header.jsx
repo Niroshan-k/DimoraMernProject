@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaGlobe, FaBars, FaTimes, FaPlus, FaMinus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import AIagent from './AIagent';
 
 export default function Header() {
     const { currentUser } = useSelector(state => state.user);
@@ -23,7 +24,7 @@ export default function Header() {
     return (
         <header className='bg-[#EFEFE9] shadow-lg z-2 w-full flex justify-between p-2 fixed items-center'>
             {/* Zoom Buttons */}
-            <div className="fixed bottom-5 right-5 flex flex-col gap-2 z-50">
+            <div className="fixed bottom-5 left-5 flex flex-col gap-2 z-50">
                 <button
                     onClick={handleZoomIn}
                     className="p-3 bg-gray-800 text-white rounded-full shadow-lg hover:bg-gray-700"

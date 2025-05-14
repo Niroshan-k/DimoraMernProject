@@ -20,6 +20,42 @@ export default function Listing() {
     const mapRef = useRef(null);
     const [userData, setUserData] = useState();
     const { currentUser } = useSelector(state => state.user);
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        number: '',
+        message: '',
+    });
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData((prevData) => ({
+            ...prevData,
+            [id]: value,
+        }));
+    };
+
+    const handleWhatsAppMessage = (e) => {
+        e.preventDefault();
+
+        const { name, email, number, message } = formData;
+
+        // Replace with your WhatsApp number (include country code, e.g., +94771234567)
+        const phoneNumber = '+94788672025';
+
+        // Construct the WhatsApp message
+        const whatsappMessage = `Hello, I am interested in this property. :
+- Name: ${name}
+- Email: ${email}
+- Number: ${number}
+- Message: ${message}`;
+
+        // Encode the message for the URL
+        const encodedMessage = encodeURIComponent(whatsappMessage);
+
+        // Open WhatsApp with the pre-filled message
+        window.open(`https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`, '_blank');
+    };
 
     useEffect(() => {
         const fetchListing = async () => {
@@ -133,7 +169,7 @@ export default function Listing() {
             {error && <p>There was an error fetching the listing</p>}
             {userData && listing && !loading && !error && (
                 <>
-                    <Swiper 
+                    <Swiper
                         modules={[Navigation, Pagination, Scrollbar, A11y]}
                         navigation
                         pagination={{ clickable: true }}
@@ -228,19 +264,63 @@ export default function Listing() {
                                 </div>
                             </div>
                             <div className='flex-[0.3] flex flex-col w-50 float-end'>
-                                <form className='flex flex-col' action="">
+                                <form className='flex flex-col' onSubmit={handleWhatsAppMessage}>
                                     <h6 className='text-2xl text-right mb-5'>More About This Property</h6>
                                     <span>Full Name:</span>
-                                    <input type="text" id='name' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
+                                    <input
+                                        type="text"
+                                        id='name'
+                                        value={formData.name}
+                                        onChange={handleInputChange}
+                                        className='mb-5 p-3 rounded bg-[#E8D9CD]'
+                                        required
+                                    />
                                     <span>Email:</span>
-                                    <input type="text" id='email' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
+                                    <input
+                                        type="email"
+                                        id='email'
+                                        value={formData.email}
+                                        onChange={handleInputChange}
+                                        className='mb-5 p-3 rounded bg-[#E8D9CD]'
+                                        required
+                                    />
                                     <span>Number:</span>
-                                    <input type="text" id='number' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
+                                    <input
+                                        type="text"
+                                        id='number'
+                                        value={formData.number}
+                                        onChange={handleInputChange}
+                                        className='mb-5 p-3 rounded bg-[#E8D9CD]'
+                                        required
+                                    />
                                     <span>Message:</span>
-                                    <textarea id='message' className='mb-5 p-3 rounded bg-[#E8D9CD]' />
-                                    <button className='bg-[#523D35] rounded p-3 text-white uppercase font-bold w-full'>MESSAGE</button>
+                                    <textarea
+                                        id='message'
+                                        value={formData.message}
+                                        onChange={handleInputChange}
+                                        className='mb-5 p-3 rounded bg-[#E8D9CD]'
+                                        required
+                                    />
+                                    {
+                                        currentUser ? (
+                                            <button
+                                                type="submit"
+                                                className='bg-[#523D35] rounded p-3 text-white uppercase font-bold w-full'
+                                            >
+                                                MESSAGE
+                                            </button>
+                                        ) : (
+                                            <a href="/sign-in">
+                                                <button
+                                                    type="button"
+                                                    className='bg-[#523D35] rounded p-3 text-white uppercase font-bold w-full'
+                                                >
+                                                    SIGN IN TO MESSAGE
+                                                </button>
+                                            </a>
+                                        )
+                                    }
                                 </form>
-
                             </div>
                         </div>
 

@@ -1,5 +1,5 @@
 import express from "express";
-import { test, updateUser, deleteUser, getUserListings, getSellerInfo, getUserPosts, getUsers, deleteUserAdmin, getUserInfo, getUserListingsAdmin, getUserPostsAdmin, createForm, UserVerified } from "../controllers/user.controller.js";
+import { test, updateUser, deleteUser, getUserListings, getSellerInfo, getUserPosts, getUsers, deleteUserAdmin, getUserInfo, getUserListingsAdmin, getUserPostsAdmin, createForm, UserVerified, generate2FASecret, enable2FA } from "../controllers/user.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = express.Router();
@@ -17,5 +17,7 @@ router.get('/admin/listings/:id', verifyToken, getUserListingsAdmin);
 router.get('/admin/posts/:id', verifyToken, getUserPostsAdmin);
 router.post('/createVerifyForm/:id', verifyToken, createForm);
 router.post('/userVerified/:id',verifyToken , UserVerified);
+router.post('/generate-2fa-secret',verifyToken, generate2FASecret);
+router.post('/enable-2fa',verifyToken, enable2FA);
 
 export default router;

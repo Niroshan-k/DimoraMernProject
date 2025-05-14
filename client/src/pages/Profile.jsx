@@ -8,7 +8,7 @@ import {
   deleteUserStart, deleteUserFailure, deleteUserSuccess,
   signOutUserFailure, signOutUserStart, signOutUserSuccess
 } from '../redux/User/userSlice.js';
-import { FaCheckCircle, FaFrownOpen, FaRecycle, FaTimes, FaUserCircle, FaWindowClose } from 'react-icons/fa';
+import { FaCheckCircle, FaFrownOpen, FaRecycle, FaTimes, FaTimesCircle, FaUserCircle, FaWindowClose } from 'react-icons/fa';
 import L from 'leaflet';
 import { Link } from 'react-router-dom';
 
@@ -26,6 +26,10 @@ export default function Profile() {
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false);
   const [userError, setErrorUser] =useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState(null); // Store the QR code URL
+  const [token, setToken] = useState(''); // Store the TOTP code entered by the user
+  const [message, setMessage] = useState(''); // Store success/error messages
+  const [is2FAEnabled, setIs2FAEnabled] = useState(currentUser?.isTwoFactorEnabled || false); // Track 2FA status
   
 
   useEffect(() => {
@@ -187,12 +191,59 @@ export default function Profile() {
   }
   console.log("currentUser:", currentUser);
   //console.log('userData', userData);
+
+  const generate2FA = async () => {
+    try {
+      const res = await fetch('/api/user/generate-2fa-secret', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
+        },
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setQrCodeUrl(data.qrCodeUrl); // Set the QR code URL
+        setMessage('Scan the QR code with your authenticator app.');
+      } else {
+        setMessage(data.message || 'Failed to generate 2FA secret.');
+      }
+    } catch (error) {
+      console.error('Error generating 2FA secret:', error);
+      setMessage('An error occurred while generating the QR code.');
+    }
+  };
+
+  // Function to verify the TOTP code and enable 2FA
+  const verify2FA = async () => {
+    try {
+      const res = await fetch('/api/user/enable-2fa', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Include JWT token
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setIs2FAEnabled(true); // Update the 2FA status
+        setMessage('2FA has been successfully enabled! Please click the UPDATE button to update your account..');
+        setQrCodeUrl(null); // Hide the QR code after successful setup
+      } else {
+        setMessage(data.message || 'Invalid 2FA token.');
+      }
+    } catch (error) {
+      console.error('Error verifying 2FA token:', error);
+      setMessage('An error occurred while verifying the 2FA token.');
+    }
+  };
   
   return (
 
     <div className='p-3 max-w-lg mx-auto'>
-      <p className='text-sm mt-10'>role:{currentUser.role}</p>
-      <p className='text-sm'>id:{currentUser._id}</p>
       <form onSubmit={handleSubmit} className='text-center mt-24'>
         <input
           onChange={(e) => setFile(e.target.files[0])}
@@ -239,6 +290,47 @@ export default function Profile() {
                 </div>}
             </>}
           </> : ""}
+
+        {/* Display 2FA Status */}
+        <div className="mb-6">
+          {is2FAEnabled ? (
+            <p className="text-green-500 text-sm font-bold flex items-center gap-2 justify-center">2FA is enabled for your account.<FaCheckCircle /></p>
+          ) : (
+            <div>
+              <p className="text-red-500 text-sm font-bold flex items-center gap-2 justify-center">2FA is not enabled for your account.<FaTimesCircle /></p>
+              <button
+                onClick={generate2FA}
+                className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+              >
+                Enable 2FA
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Display QR Code for 2FA Setup */}
+        {qrCodeUrl && (
+          <div className="mb-6">
+            <p>Scan this QR code with your authenticator app:</p>
+            <img src={qrCodeUrl} alt="QR Code" className="w-40 h-40 mx-auto my-4" />
+            <input
+              type="text"
+              placeholder="Enter 2FA Code"
+              value={token}
+              onChange={(e) => setToken(e.target.value)}
+              className="border p-2 rounded w-full"
+            />
+            <button
+              onClick={verify2FA}
+              className="bg-green-500 text-white px-4 py-2 rounded mt-2"
+            >
+              Verify 2FA Code
+            </button>
+          </div>
+        )}
+
+        {/* Display Success/Error Messages */}
+        {message && <p className="text-center mt-4">{message}</p>}
 
         <input
           type="text"

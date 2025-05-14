@@ -3,7 +3,7 @@ import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa'
 
 export default function Footer() {
  return (
-  <footer className="text-black shadow-xl px-10 py-12">
+  <footer className="text-black shadow-xl px-10 pt-12">
    <div className="flex flex-col items-center space-y-8">
     {/* Social Icons */}
     <div className="flex justify-center space-x-6 text-xl border-b border-gray-200 pb-10 w-full">
@@ -64,6 +64,7 @@ export default function Footer() {
      <h1> All Rights Reserved.</h1>
     </div>
    </div>
+   <p className='text-center mt-10 font-bold text-sm'>Powered by XionovaStudio<sup>TM</sup> </p>
   </footer>
  )
 }

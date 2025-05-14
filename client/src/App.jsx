@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import Home from './pages/Home';
@@ -24,15 +23,19 @@ import Verify from './pages/Verify';
 import ContractorProfile from './pages/ContractorProfile';
 import Footer from './components/Footer';
 import LikedListings from './pages/LikedListings';
+import AIagent from './components/AIagent';
+import LoginWith2FA from './pages/LoginWith2FA';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Header />
+      <AIagent />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<Signin />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/login-2fa" element={<LoginWith2FA />} />
         <Route path='/listing/:listingId' element={<Listing />}></Route>
         <Route path='/search' element={<Search />}></Route>
         <Route path='/dimora/admin/login' element={<AdminLogin />} />

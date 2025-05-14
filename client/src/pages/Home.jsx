@@ -119,12 +119,15 @@ export default function Home() {
   return (
     <main>
       <section id='banner'>
-        <div className='bg-[#00000083] h-screen w-full text-center md:text-left md:w-[30%] md:p-5'>
-          <h1 className='mt-50 md:mt-100' id='h1'>MAKE YOUR OWN</h1>
-          <h6 id='h6' className='uppercase'>Real Estate Network</h6>
-          <div className='flex justify-center md:justify-start'>
-            <button className='border-4 border-white mt-90 md:mt-10 text-white text-xl py-3 flex gap-2 items-center px-6 hover:bg-white hover:text-black uppercase'><MdLocationOn />Get Started</button>
+        <div className='bg-[#00000083] h-screen flex flex-col justify-between w-full md:text-left md:w-[30%] md:p-5'>
+          <div>
+            <h1 className='mt-50 md:mt-100' id='h1'>MAKE YOUR OWN</h1>
+            <h6 id='h6' className='uppercase'>Real Estate Network</h6>
+            <div className='flex md:justify-start'>
+              <button className='border-4 border-white mt-90 md:mt-10 text-white text-xl py-3 flex gap-2 items-center px-6 hover:bg-white hover:text-black uppercase'><MdLocationOn />Get Started</button>
+            </div>
           </div>
+          <p className='mt-10 font-bold'>Powered by XionovaStudio<sup>TM</sup> </p>
         </div>
       </section>
       <section id=''>

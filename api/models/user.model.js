@@ -57,7 +57,16 @@ const userSchema = new mongoose.Schema({
     loggedIn : {
         type : String,
         default : "logout"
-    }
+    },
+    isTwoFactorEnabled: { 
+        type: Boolean, 
+        default: false 
+    }, // Indicates if 2FA is enabled
+    twoFactorSecret: { 
+        type: String, 
+        default: null 
+    },
+    
 },{ timestamps: true });
 
 const User = mongoose.model('User', userSchema);

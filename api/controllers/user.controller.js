@@ -3,6 +3,10 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user.model.js';
 import Listing from "../models/listing.model.js";
 import Post from '../models/post.model.js';
+import speakeasy from 'speakeasy';
+import qrcode from 'qrcode';
+
+console.log('Speakeasy imported:', speakeasy);
 
 export const test = (req, res) => {
     res.json({
@@ -181,6 +185,94 @@ export const createForm = async (req, res, next) => {
     } else {
         console.error("Authorization failed."); // Log unauthorized access
         return next(errorHandler(401, "You're not authorized."));
+    }
+};
+
+// Generate 2FA Secret
+export const generate2FASecret = async (req, res) => {
+    try {
+        const secret = speakeasy.generateSecret({
+            name: `DimoraRealestate (${req.user.email})`, // App name and user email
+        });
+
+        // Save the secret to the user's database record
+        const user = await User.findById(req.user.id);
+        user.twoFactorSecret = secret.base32; // Save the base32 secret
+        await user.save();
+
+        // Generate a QR code for the user to scan
+        const qrCodeUrl = await qrcode.toDataURL(secret.otpauth_url);
+
+        res.status(200).json({
+            success: true,
+            qrCodeUrl, // Send the QR code URL to the frontend
+            secret: secret.base32, // Optional: Send the secret (for testing purposes)
+        });
+    } catch (error) {
+        console.error('Error generating 2FA secret:', error);
+        res.status(500).json({ success: false, message: 'Failed to generate 2FA secret.' });
+    }
+};
+
+// Verify 2FA Code
+export const verify2FA = async (req, res) => {
+    try {
+        const { token } = req.body;
+
+        // Retrieve the user's 2FA secret from the database
+        const user = await User.findById(req.user.id);
+        if (!user || !user.twoFactorSecret) {
+            return res.status(400).json({ success: false, message: '2FA is not enabled for this user.' });
+        }
+
+        // Verify the TOTP token
+        const isVerified = speakeasy.totp.verify({
+            secret: user.twoFactorSecret,
+            encoding: 'base32',
+            token,
+        });
+
+        if (!isVerified) {
+            return res.status(400).json({ success: false, message: 'Invalid 2FA token.' });
+        }
+
+        res.status(200).json({ success: true, message: '2FA verification successful.' });
+    } catch (error) {
+        console.error('Error verifying 2FA token:', error);
+        res.status(500).json({ success: false, message: 'Failed to verify 2FA token.' });
+    }
+};
+
+// Enable 2FA
+export const enable2FA = async (req, res) => {
+    try {
+        const { token } = req.body;
+
+        // Retrieve the user's 2FA secret from the database
+        const user = await User.findById(req.user.id);
+        if (!user || !user.twoFactorSecret) {
+            return res.status(400).json({ success: false, message: '2FA is not enabled for this user.' });
+        }
+
+        // Verify the TOTP token
+        const isVerified = speakeasy.totp.verify({
+            secret: user.twoFactorSecret,
+            encoding: 'base32',
+            token,
+        });
+
+        if (!isVerified) {
+            return res.status(400).json({ success: false, message: 'Invalid 2FA token.' });
+        }
+
+        // Enable 2FA for the user
+        user.isTwoFactorEnabled = true;
+        await user.save();
+
+        res.status(200).json({ success: true, message: '2FA has been enabled.' });
+    } catch (error) {
+        console.error('Error enabling 2FA:', error);
+        res.status(500).json({ success: false, message: 'Failed to enable 2FA.' });
     }
 };
 
