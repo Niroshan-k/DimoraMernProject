@@ -3,10 +3,10 @@ name: Run Tests
 on:
   push:
     branches:
-      - main # Run tests on pushes to the main branch
+      - main
   pull_request:
     branches:
-      - main # Run tests on pull requests to the main branch
+      - main
 
 jobs:
   test:
@@ -33,7 +33,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Use the Node.js version your project requires
+          node-version: 18
 
       # Install dependencies for the backend
       - name: Install Backend Dependencies
@@ -44,7 +44,7 @@ jobs:
       - name: Run Backend Tests
         working-directory: ./api
         env:
-          MONGO: mongodb://localhost:27017/testdb # Set MongoDB URI for tests
+          MONGO: mongodb://localhost:27017/testdb
         run: npm test
 
       # Install dependencies for the frontend
