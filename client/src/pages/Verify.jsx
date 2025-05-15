@@ -218,6 +218,7 @@ export default function Profile() {
      className='bg-[#E8D9CD] h-12 w-full p-2 rounded'
      placeholder='Full Name'
      id='fullName'
+     aria-label="Full Name" 
     />
     <span className='text-sm flex mt-6'>Email</span>
     <input
@@ -226,6 +227,7 @@ export default function Profile() {
      onChange={handleChange}
      className='bg-[#E8D9CD] h-12 w-full p-2 rounded'
      id='email'
+     aria-label="Email"
     />
     <span className='text-sm flex mt-6'>Role</span>
     <input
@@ -262,6 +264,7 @@ export default function Profile() {
       onChange={handleChange}
       className='bg-[#E8D9CD] mt-6 h-12 w-full p-2 rounded'
       id='DOB'
+      aria-label="Date of Birth"
      />
     </>
     <span className='text-sm flex mt-6'>ID Type</span>
@@ -272,6 +275,7 @@ export default function Profile() {
      onChange={handleChange}
      required
      className="bg-[#E8D9CD] h-12 w-full p-2 rounded"
+     aria-label="ID Type"
     >
      <option value="" disabled>
       Select ID Type

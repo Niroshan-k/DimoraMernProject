@@ -49,6 +49,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-
+export default app;
 
 // git to git core add .env

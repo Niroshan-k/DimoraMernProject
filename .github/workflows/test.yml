@@ -1,0 +1,58 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - main # Run tests on pushes to the main branch
+  pull_request:
+    branches:
+      - main # Run tests on pull requests to the main branch
+
+jobs:
+  test:
+    name: Run Frontend and Backend Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:5.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand(\"ping\")'" 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18 # Use the Node.js version your project requires
+
+      # Install dependencies for the backend
+      - name: Install Backend Dependencies
+        working-directory: ./api
+        run: npm install
+
+      # Run backend tests
+      - name: Run Backend Tests
+        working-directory: ./api
+        env:
+          MONGO: mongodb://localhost:27017/testdb # Set MongoDB URI for tests
+        run: npm test
+
+      # Install dependencies for the frontend
+      - name: Install Frontend Dependencies
+        working-directory: ./client
+        run: npm install
+
+      # Run frontend tests
+      - name: Run Frontend Tests
+        working-directory: ./client
+        run: npm test

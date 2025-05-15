@@ -31,6 +31,9 @@ export default function Profile() {
   const [message, setMessage] = useState(''); // Store success/error messages
   const [is2FAEnabled, setIs2FAEnabled] = useState(currentUser?.isTwoFactorEnabled || false); // Track 2FA status
   
+  if (!currentUser) {
+        return <p>Loading user data...</p>; // Fallback UI when currentUser is null
+  }
 
   useEffect(() => {
     const fetchUser = async () => {

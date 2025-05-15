@@ -8,6 +8,14 @@ export const signup = async (req, res, next) => {
     try {
         const { username, email, password, role } = req.body;
 
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email already exists',
+            });
+        }
+
         const hashedPassword = bcryptjs.hashSync(password, 10);
         
         const newUser = new User({
@@ -21,7 +29,10 @@ export const signup = async (req, res, next) => {
         res.status(201).json({ success: true, message: "User created successfully" });
 
     } catch (error) {
-        next(error);
+        res.status(500).json({
+            success: false,
+            message: 'Internal Server Error',
+        });
     }
 };
 
