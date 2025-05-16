@@ -21,22 +21,38 @@ vi.mock('swiper/modules', () => ({
 }));
 
 // Mock leaflet
-vi.mock('leaflet', () => ({
-  map: () => ({
-    setView: () => {},
-    addTo: () => {},
-  }),
-  tileLayer: () => ({
-    addTo: () => {},
-  }),
-  marker: () => ({
+vi.mock('leaflet', () => {
+  const map = () => ({
+    setView: () => ({
+      on: () => {},
+      remove: () => {},
+    }),
+    on: () => {},
+    remove: () => {},
     addTo: () => ({
       bindPopup: () => ({
         openPopup: () => {},
       }),
     }),
-  }),
-}));
+  });
+  const tileLayer = () => ({
+    addTo: () => {},
+  });
+  const marker = () => ({
+    addTo: () => ({
+      bindPopup: () => ({
+        openPopup: () => {},
+      }),
+    }),
+  });
+  return {
+    __esModule: true,
+    default: { map, tileLayer, marker },
+    map,
+    tileLayer,
+    marker,
+  };
+});
 
 // Mock useParams
 vi.mock('react-router-dom', async () => {
