@@ -128,8 +128,8 @@ export default function AdminDashboard() {
         return color;
     };
     // Inside your component
-    const boostIncome = listing.filter((l) => l.packages === 'boost').length * 20000;
-    const normalIncome = listing.filter((l) => l.packages === 'normal').length * 12000;
+    const boostIncome = (listing || []).filter((l) => l.packages === 'boost').length * 20000;
+    const normalIncome = (listing || []).filter((l) => l.packages === 'normal').length * 12000;
     const currentMonthIncome = boostIncome + normalIncome;
     const thisMonth = new Date().toLocaleString('default', { month: 'short' });
     const data = [

@@ -155,22 +155,22 @@ export default function CreatePost() {
 
                         <div className='justify-between items-center'>
                             <p>Budget</p>
-                            <input onChange={handleChange} value={formData.budget} type="number" className='p-3 bg-[#E8D9CD] w-full' id='budget' required />
+                            <input data-testid="budget" onChange={handleChange} value={formData.budget} type="number" className='p-3 bg-[#E8D9CD] w-full' id='budget' required />
                         </div>
                         <div>
                             <p>Duration:</p>
                             <div className='flex gap-3'>
                             <div className='items-center'>
                                     <p className='text-sm'>Years</p>
-                                    <input onChange={handleChange} value={formData.years} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='years' min='0' max='10' required />
+                                    <input data-testid="years" onChange={handleChange} value={formData.years} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='years' min='0' max='10' required />
                                 </div>
                                 <div className='items-center'>
                                     <p className='text-sm'>Months</p>
-                                    <input onChange={handleChange} value={formData.months} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='months' min='0' max='12' required />
+                                    <input data-testid="months" onChange={handleChange} value={formData.months} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='months' min='0' max='12' required />
                                 </div>
                                 <div className='items-center'>
                                     <p className='text-sm'>Days</p>
-                                    <input onChange={handleChange} value={formData.days} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='days' min='0' max='31' required />
+                                    <input data-testid="days" onChange={handleChange} value={formData.days} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='days' min='0' max='31' required />
                                 </div>
                             </div>
                         </div>

@@ -29,6 +29,42 @@ export default function UpdatePost() {
     //console.log(params.postId);
     // console.log(currentUser);
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            if (formData.imageUrls.length < 2) {
+                setError('Please upload two images');
+                return;
+            }
+            setLoading(true);
+            setError(false);
+            const res = await fetch(`/api/posting/update/${params.postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    userRef: currentUser._id
+                }),
+            });
+            console.log('Fetch URL:', `/api/posting/update/${params.postId}`);
+            console.log('Fetch Payload:', {
+                ...formData,
+                userRef: currentUser._id,
+            });
+            const data = await res.json();
+            setLoading(false);
+            if (data.success === false) {
+                setError(data.message);
+            }
+            navigate('/contractor-dashboard');
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
         const fetchListings = async () => {
           const PostId = params.postId;
@@ -102,36 +138,7 @@ export default function UpdatePost() {
         setFormData({ ...formData, [e.target.id]: e.target.value });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            if (formData.imageUrls.length < 2) {
-                setError('Please upload two images');
-                return;
-            }
-            setLoading(true);
-            setError(false);
-            const res = await fetch(`/api/posting/update/${params.postId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    ...formData,
-                    userRef: currentUser._id
-                }),
-            });
-            const data = await res.json();
-            setLoading(false);
-            if (data.success === false) {
-                setError(data.message);
-            }
-            navigate('/contractor-dashboard');
-        } catch (error) {
-            setError(error.message);
-            setLoading(false);
-        }
-    }
+    
 
     useEffect(() => {
         if (!mapRef.current) return;
@@ -169,23 +176,23 @@ export default function UpdatePost() {
                         <textarea onChange={handleChange} value={formData.location} type="text" placeholder='location' className='p-3 bg-[#E8D9CD]' id='location' required />
 
                         <div className='justify-between items-center'>
-                            <p>Budget</p>
-                            <input onChange={handleChange} value={formData.budget} type="number" className='p-3 bg-[#E8D9CD] w-full' id='budget' required />
+                            <label htmlFor="budget">Budget</label>
+                            <input data-testid="budget" onChange={handleChange} value={formData.budget} type="number" className='p-3 bg-[#E8D9CD] w-full' id='budget' required />
                         </div>
                         <div>
                             <p>Duration:</p>
                             <div className='flex gap-3'>
                                 <div className='items-center'>
                                     <p className='text-sm'>Years</p>
-                                    <input onChange={handleChange} value={formData.years} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='years' min='0' max='10' required />
+                                    <input data-testid="years" onChange={handleChange} value={formData.years} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='years' min='0' max='10' required />
                                 </div>
                                 <div className='items-center'>
                                     <p className='text-sm'>Months</p>
-                                    <input onChange={handleChange} value={formData.months} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='months' min='0' max='12' required />
+                                    <input data-testid="months" onChange={handleChange} value={formData.months} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='months' min='0' max='12' required />
                                 </div>
                                 <div className='items-center'>
                                     <p className='text-sm'>Days</p>
-                                    <input onChange={handleChange} value={formData.days} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='days' min='0' max='31' required />
+                                    <input data-testid="days" onChange={handleChange} value={formData.days} className='p-3 bg-[#E8D9CD] w-2x' type="number" id='days' min='0' max='31' required />
                                 </div>
                             </div>
                         </div>

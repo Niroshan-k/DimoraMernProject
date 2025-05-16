@@ -165,7 +165,7 @@ export default function Listing() {
 
     return (
         <main>
-            {loading && <p>Loading...</p>}
+            {loading && <p>Loading</p>}
             {error && <p>There was an error fetching the listing</p>}
             {userData && listing && !loading && !error && (
                 <>

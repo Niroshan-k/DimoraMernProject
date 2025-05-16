@@ -92,7 +92,7 @@ export default function SignUp() {
 
     return (
         <div className='p-3 max-w-lg mx-auto'>
-            <h6 className='mt-20 text-6xl mb-12 uppercase'>Sign Up</h6>
+            <h6 className='mt-20 text-6xl mb-12 uppercase'>SIGN UP</h6>
             <form onSubmit={handleSubmit} className='flex flex-col'>
                 <label className='font-semibold text-sm' htmlFor="username">Username:</label>
                 <input type="text" id='username' onChange={handleChange} className='bg-[#E8D9CD] p-3 mb-8' />

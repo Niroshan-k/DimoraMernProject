@@ -42,31 +42,3 @@ export default function Searchbar() {
         </div>
     )
 }
-
-{/* <div class="grid grid-cols-3 gap-4 mb-6">
-    <div>
-        <label for="type" class="block text-sm text-gray-600 font-bold">Type</label>
-        <select id="type" class="w-full bg-brown-50 mt-1 px-4 py-2 rounded-sm">
-            <option>Luxury House</option>
-            <option>Residential House</option>
-            <option>Traditional House</option>
-            <option>Modern House</option>
-        </select>
-    </div>
-    <div>
-        <label for="district" class="block text-sm text-gray-600 font-bold">District</label>
-        <select id="district" class="w-full bg-brown-50 mt-1 px-4 py-2 rounded-sm">
-            <option>Colombo</option>
-            <option>Kandy</option>
-            <option>Galle</option>
-        </select>
-    </div>
-    <div>
-        <label for="city" class="block text-sm text-gray-600 font-bold">City</label>
-        <select id="city" class="w-full bg-brown-50 mt-1 px-4 py-2 rounded-sm">
-            <option>City A</option>
-            <option>City B</option>
-            <option>City C</option>
-        </select>
-    </div>
-</div> */}

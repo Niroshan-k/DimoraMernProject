@@ -19,6 +19,12 @@ export default function UserActivities() {
   const [showPostError, setShowPostError] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [updateError, setUpdateError] = useState(false);
+  const [emailSent, setEmailSent] = useState(false); // Add this state
+  const [email, setEmail] = useState(user.email || ''); 
+  const [message, setMessage] = useState('');
+  const [subject, setSubject] = useState('');
+  const [replyTo, setReplyTo] = useState('');
+  
   const [formData, setFormData] = useState({
     verified: 'false'
   });
@@ -157,6 +163,7 @@ export default function UserActivities() {
       .then(
         (result) => {
           console.log('Email sent successfully:', result.text);
+          setEmailSent(true);
           alert('Email sent successfully!');
         },
         (error) => {
@@ -257,7 +264,7 @@ export default function UserActivities() {
                 name="to_email" // Matches {{to_email}} in the template
                 id="to_email"
                 className="mt-1 bg-[#EFEFE9] p-3 block w-full rounded border-gray-300 shadow-sm sm:text-sm"
-                value={user.email}
+                defaultValue={user.email}
                 required
               />
             </div>
@@ -272,6 +279,7 @@ export default function UserActivities() {
                 className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 value="DimoraLand(pvt) Ltd."
                 required
+                readOnly
               />
             </div>
             <div className="mb-4">
@@ -283,6 +291,7 @@ export default function UserActivities() {
                 name="reply_to" // Matches {{reply_to}} in the template
                 id="reply_to"
                 className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                onChange={(e) => setReplyTo(e.target.value)}
                 placeholder="Enter reply-to email"
                 required
               />
@@ -320,6 +329,7 @@ export default function UserActivities() {
                 name="subject" // Matches {{subject}} in the template
                 id="subject"
                 className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                onChange={(e) => setSubject(e.target.value)}
                 placeholder="Enter email subject"
                 required
               />
@@ -332,6 +342,7 @@ export default function UserActivities() {
                 name="message" // Matches {{message}} in the template
                 id="message"
                 className="bg-[#EFEFE9] p-3 mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder="Enter your message"
                 required
               />
@@ -342,6 +353,9 @@ export default function UserActivities() {
             >
               Send Email
             </button>
+            {emailSent && (
+              <p className="text-green-500 mt-4 text-sm">Email sent successfully!</p>
+            )}
           </form>
 
           {user.verifiedFormData && user.verifiedFormData.length > 0 ? (

@@ -105,7 +105,7 @@ export default function Search() {
 
         navigate(`/search?${searchQuery}`)
     };
-    console.log(listing);
+    
     const onShowMoreClick = async () => {
         const nOfListing = listing.length;
         const startIndex = nOfListing;
@@ -144,7 +144,7 @@ export default function Search() {
                                 <input
                                     id="searchTerm"
                                     type="text"
-                                    placeholder="search..."
+                                    placeholder="search by title..."
                                     value={sideBarData.searchTerm}
                                     onChange={handleChange}
                                     class="bg-[#E8D9CD] w-full p-3 rounded-sm" />

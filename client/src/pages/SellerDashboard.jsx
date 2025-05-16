@@ -100,7 +100,7 @@ export default function SellerDashboard() {
   ];
 
   const percentage = Math.min((totalAds / 1000) * 100, 100); // full is 1000
-  console.log(recommend);
+
   return (
     <main className='p-10'>
       <div className='mt-10'>
@@ -251,7 +251,7 @@ export default function SellerDashboard() {
                     <Link to={`/update-listing/${listing._id}`} className='bg-[#523D35] rounded hover:shadow-lg text-white font-bold'>
                       <button className='bg-[#523D35] hover:shadow-lg rounded text-white font-bold px-3 py-2'>EDIT</button>
                     </Link>
-                    <button onClick={() => handleDelete(listing._id)} className='bg-red-500 hover:shadow-lg rounded text-white font-bold px-3 py-2'>DELETE</button>
+                    <button type="button" onClick={() => handleDelete(listing._id)} className='bg-red-500 hover:shadow-lg rounded text-white font-bold px-3 py-2'>DELETE</button>
                   </div>
                 </div>
               </div>

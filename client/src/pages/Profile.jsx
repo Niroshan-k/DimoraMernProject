@@ -192,7 +192,7 @@ export default function Profile() {
   const clicked = () => {
     setVerifying(true);
   }
-  console.log("currentUser:", currentUser);
+  //console.log("currentUser:", currentUser);
   //console.log('userData', userData);
 
   const generate2FA = async () => {
