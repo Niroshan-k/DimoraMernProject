@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaBox, FaCube, FaCubes, FaHeart, FaHouseUser, FaImage, FaRegHeart, FaShareAlt, FaSpinner, FaWarehouse, FaWhatsapp, FaFacebook, FaTwitter, FaCopy, FaLinkedin, FaInstagram, FaEye, FaEyeSlash, FaEyeDropper } from 'react-icons/fa';
+import { FaBox, FaCube, FaCubes, FaHeart, FaHouseUser, FaImage, FaRegHeart, FaShareAlt, FaSpinner, FaWarehouse, FaWhatsapp, FaFacebook, FaTwitter, FaCopy, FaLinkedin, FaInstagram, FaEye, FaEyeSlash, FaEyeDropper, FaTimes, FaCheckCircle } from 'react-icons/fa';
 import { MdLocationOn } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import './listingitem.css';
@@ -11,6 +11,7 @@ export default function ListingItem({ listing }) {
     const [showFloatingLike, setShowFloatingLike] = useState(false); // State to manage floating like visibility
     const [showShareForm, setShowShareForm] = useState(false); // State to manage floating share form visibility
     const { currentUser } = useSelector((state) => state.user);
+    const [copied, setCopied] = useState(false); // State to manage copied status
 
     // Fetch the liked status when the component mounts
     useEffect(() => {
@@ -89,7 +90,10 @@ export default function ListingItem({ listing }) {
 
     const copyLink = () => {
         navigator.clipboard.writeText(`${window.location.origin}/listing/${listing._id}`);
-        alert('Link copied to clipboard!');
+        setCopied(true); // Set copied status to true
+        setTimeout(() => {
+            setCopied(false); // Reset copied status after 2 seconds
+        }, 2000);
     };
 
     const handleNewestUser = (date) => {
@@ -103,6 +107,10 @@ export default function ListingItem({ listing }) {
             return null; // Return an empty string if the user is not new
         }
     };
+
+    const closeClipboard = () => {
+        setCopied(false);
+    }
 
     return (
         <div className="mt-3 relative">
@@ -173,6 +181,18 @@ export default function ListingItem({ listing }) {
                     </div>
                 </div>
             )}
+            {
+
+                copied ? <div className='z-100 bg-white shadow-lg rounded-2xl p-2 fixed bottom-5 left-1/2 -translate-x-1/2 max-w-lg w-full text-center'>
+                    <div className='text-right justify-self-end'>
+                        <FaTimes className='cursor-pointer' onClick={closeClipboard} />
+                    </div>
+                    <p className='flex items-center justify-center gap-2'>
+                        <FaCheckCircle className='text-green-500' /> Link copied to clipboard!
+                    </p>
+                </div> : ""
+
+            }
 
             <div className="bg-[#EFEFE9] rounded flex overflow-hidden flex-col shadow-lg w-90 hover:shadow-2xl">
                 <div className="absolute z-0 text-white">
@@ -234,17 +254,17 @@ export default function ListingItem({ listing }) {
                     <div className="flex justify-between mt-5 text-xl">
                         <div className='flex items-center gap-1'>
                             {
-                                currentUser ?                                   
+                                currentUser ?
                                     liked ? (
-                                        <FaHeart className = "text-red-500 cursor-pointer" onClick = { unsaveFavorite } />
-                                    ): (
-                                        <FaRegHeart className = "cursor-pointer" onClick = { saveFavorite } />
+                                        <FaHeart className="text-red-500 cursor-pointer" onClick={unsaveFavorite} />
+                                    ) : (
+                                        <FaRegHeart className="cursor-pointer" onClick={saveFavorite} />
                                     )
-                                : (
-                                    <Link to="/sign-in">
-                                        <FaRegHeart className = "cursor-pointer"/>
-                                    </Link>
-                                )
+                                    : (
+                                        <Link to="/sign-in">
+                                            <FaRegHeart className="cursor-pointer" />
+                                        </Link>
+                                    )
                             }
                             <p>{likesCount}</p>
                         </div>

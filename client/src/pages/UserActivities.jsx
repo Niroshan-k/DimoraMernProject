@@ -557,7 +557,7 @@ export default function UserActivities() {
           <div className="relative">
             {/* Close Button */}
             <button
-              className="absolute top-5 right-5 text-white text-5xl font-bold"
+              className="absolute top-5 right-5 bg-black rounded-full w-10 h-10 text-white text-5xl font-bold"
               onClick={closeModal}
             >
               &times;

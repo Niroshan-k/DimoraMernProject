@@ -13,8 +13,8 @@ mongoose
     .connect(process.env.MONGO)
     .then(() => {
         console.log('connected to MongoDB');
-        console.log('Environment:', process.env.NODE_ENV);
-        console.log('Node.js version:', process.version);
+        //console.log('Environment:', process.env.NODE_ENV);
+        //console.log('Node.js version:', process.version);
     })
     .catch((err) => {
         console.log(err);

@@ -282,11 +282,6 @@ export default function Post({ post }) {
             {/* Bottom Buttons */}
             <div className='flex justify-between gap-3 pt-3 border-t border-gray-300'>
                 <button className='transition'>
-                    {liked ? (
-                        <FaHeart className="text-red-500 cursor-pointer text-2xl" onClick={saveFavorite} />
-                    ) : (
-                        <FaRegHeart className="cursor-pointer text-2xl" onClick={saveFavorite} />
-                    )}
                 </button>
                 <div className="flex gap-3 items-center">
                     <FaWhatsapp
